@@ -1,0 +1,3395 @@
+{%- liquid
+  assign isModal = false
+  if template == 'product.modal'
+    assign isModal = true
+  endif
+-%}
+
+{%- render 'product-template',
+  product: product,
+  section_id: section.id,
+  blocks: section.blocks,
+  image_position: section.settings.image_position,
+  image_container_width: section.settings.image_size,
+  product_zoom_enable: section.settings.product_zoom_enable,
+  sku_enable: section.settings.sku_enable,
+  isModal: isModal,
+  thumbnail_position: section.settings.thumbnail_position,
+  thumbnail_height: section.settings.thumbnail_height,
+  thumbnail_arrows: section.settings.thumbnail_arrows,
+  mobile_layout: section.settings.mobile_layout,
+  video_looping: section.settings.enable_video_looping,
+  video_style: section.settings.product_video_style,
+  context: 'main-product',
+-%}
+
+{% schema %}
+{
+  "name": "t:sections.main-product.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "sku_enable",
+      "label": "t:sections.main-product.settings.sku_enable.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-product.settings.header_media"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.main-product.settings.content"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:sections.main-product.settings.image_position.label",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.main-product.settings.image_position.options.left.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.main-product.settings.image_position.options.right.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "t:sections.main-product.settings.image_size.label",
+      "default": "medium",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:sections.main-product.settings.image_size.options.small.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.main-product.settings.image_size.options.medium.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.main-product.settings.image_size.options.large.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "product_zoom_enable",
+      "label": "t:sections.main-product.settings.product_zoom_enable.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "thumbnail_position",
+      "label": "t:sections.main-product.settings.thumbnail_position.label",
+      "default": "beside",
+      "options": [
+        {
+          "value": "beside",
+          "label": "t:sections.main-product.settings.thumbnail_position.options.beside.label"
+        },
+        {
+          "value": "below",
+          "label": "t:sections.main-product.settings.thumbnail_position.options.below.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "thumbnail_height",
+      "label": "t:sections.main-product.settings.thumbnail_height.label",
+      "info": "t:sections.main-product.settings.thumbnail_height.info",
+      "default": "flexible",
+      "options": [
+        {
+          "value": "fixed",
+          "label": "t:sections.main-product.settings.thumbnail_height.options.fixed.label"
+        },
+        {
+          "value": "flexible",
+          "label": "t:sections.main-product.settings.thumbnail_height.options.flexible.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "thumbnail_arrows",
+      "label": "t:sections.main-product.settings.thumbnail_arrows.label"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "t:sections.main-product.settings.mobile_layout.label",
+      "default": "partial",
+      "options": [
+        {
+          "value": "partial",
+          "label": "t:sections.main-product.settings.mobile_layout.options.partial.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-product.settings.mobile_layout.options.full.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "t:sections.main-product.settings.enable_video_looping.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "product_video_style",
+      "label": "t:sections.main-product.settings.product_video_style.label",
+      "default": "muted",
+      "options": [
+        {
+          "value": "muted",
+          "label": "t:sections.main-product.settings.product_video_style.options.muted.label"
+        },
+        {
+          "value": "unmuted",
+          "label": "t:sections.main-product.settings.product_video_style.options.unmuted.label"
+        }
+      ],
+      "info": "t:sections.main-product.settings.product_video_style.info"
+    }
+  ],
+  "blocks": [{
+  "type": "@app"
+},
+{
+  "type": "price",
+  "name": "t:product_block.price.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing personalizzato"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_spacing",
+      "label": "Abilita spacing custom",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top desktop",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom desktop",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top desktop",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom desktop",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top mobile",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom mobile",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Opzioni visibilità"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_compare_price",
+      "label": "Nascondi prezzo scontato",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_savings",
+      "label": "Mostra risparmio",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_unit_price",
+      "label": "Nascondi prezzo unitario",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_policies",
+      "label": "Nascondi politiche",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Stile prezzo"
+    },
+    {
+      "type": "select",
+      "id": "price_alignment",
+      "label": "Allineamento prezzo",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Destra"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "range",
+      "id": "price_font_size_desktop",
+      "label": "Font size desktop",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "price_font_size_mobile",
+      "label": "Font size mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Colori personalizzati"
+    },
+    {
+      "type": "color",
+      "id": "custom_price_color",
+      "label": "Colore prezzo"
+    },
+    {
+      "type": "color",
+      "id": "custom_compare_color",
+      "label": "Colore prezzo scontato"
+    },
+    {
+      "type": "color",
+      "id": "custom_save_color",
+      "label": "Colore risparmio"
+    }
+  ]
+},
+{
+  "type": "quantity_selector",
+  "name": "t:product_block.quantity_selector.name",
+  "limit": 1
+},
+    {
+  "type": "size_guide",
+  "name": "Guida taglie",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Impostazioni pulsante"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Testo pulsante",
+      "default": "Guida alle taglie"
+    },
+    {
+      "type": "range",
+      "id": "button_margin",
+      "label": "Margine pulsante",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Colore sfondo pulsante",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Colore testo pulsante",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Colore bordo pulsante",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Sfondo pulsante hover",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Testo pulsante hover",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "Impostazioni modal"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Titolo modal",
+      "default": "Guida alle taglie e misure"
+    },
+    {
+      "type": "color",
+      "id": "modal_bg_color",
+      "label": "Sfondo modal",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "modal_text_color",
+      "label": "Colore testo modal",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Sfondo header modal",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "header_text_color",
+      "label": "Testo header modal",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Colore bordi",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "header",
+      "content": "Impostazioni tabs"
+    },
+    {
+      "type": "text",
+      "id": "tab1_title",
+      "label": "Titolo tab 1",
+      "default": "Tabella taglie"
+    },
+    {
+      "type": "text",
+      "id": "tab2_title",
+      "label": "Titolo tab 2",
+      "default": "Come prendere le misure"
+    },
+    {
+      "type": "text",
+      "id": "tab3_title",
+      "label": "Titolo tab 3",
+      "default": "Informazioni utili"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Colore tab attivo",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "tab_inactive_color",
+      "label": "Colore tab inattivo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "header",
+      "content": "Tabella taglie"
+    },
+    {
+      "type": "text",
+      "id": "size_label",
+      "label": "Etichetta taglia",
+      "default": "Taglia"
+    },
+    {
+      "type": "text",
+      "id": "bust_label",
+      "label": "Etichetta busto",
+      "default": "Busto (cm)"
+    },
+    {
+      "type": "text",
+      "id": "waist_label",
+      "label": "Etichetta vita",
+      "default": "Vita (cm)"
+    },
+    {
+      "type": "text",
+      "id": "hips_label",
+      "label": "Etichetta fianchi",
+      "default": "Fianchi (cm)"
+    },
+    {
+      "type": "text",
+      "id": "length_label",
+      "label": "Etichetta lunghezza",
+      "default": "Lunghezza (cm)"
+    },
+    {
+      "type": "color",
+      "id": "table_border_color",
+      "label": "Colore bordi tabella",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "table_header_bg",
+      "label": "Sfondo header tabella",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "table_header_text",
+      "label": "Testo header tabella",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "table_alt_bg",
+      "label": "Sfondo righe alternate",
+      "default": "#FAFAFA"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 1"
+    },
+    {
+      "type": "text",
+      "id": "size_1",
+      "label": "Taglia",
+      "default": "XS"
+    },
+    {
+      "type": "text",
+      "id": "bust_1",
+      "label": "Busto",
+      "default": "82-86"
+    },
+    {
+      "type": "text",
+      "id": "waist_1",
+      "label": "Vita",
+      "default": "62-66"
+    },
+    {
+      "type": "text",
+      "id": "hips_1",
+      "label": "Fianchi",
+      "default": "88-92"
+    },
+    {
+      "type": "text",
+      "id": "length_1",
+      "label": "Lunghezza",
+      "default": "98"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 2"
+    },
+    {
+      "type": "text",
+      "id": "size_2",
+      "label": "Taglia",
+      "default": "S"
+    },
+    {
+      "type": "text",
+      "id": "bust_2",
+      "label": "Busto",
+      "default": "86-90"
+    },
+    {
+      "type": "text",
+      "id": "waist_2",
+      "label": "Vita",
+      "default": "66-70"
+    },
+    {
+      "type": "text",
+      "id": "hips_2",
+      "label": "Fianchi",
+      "default": "92-96"
+    },
+    {
+      "type": "text",
+      "id": "length_2",
+      "label": "Lunghezza",
+      "default": "100"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 3"
+    },
+    {
+      "type": "text",
+      "id": "size_3",
+      "label": "Taglia",
+      "default": "M"
+    },
+    {
+      "type": "text",
+      "id": "bust_3",
+      "label": "Busto",
+      "default": "90-94"
+    },
+    {
+      "type": "text",
+      "id": "waist_3",
+      "label": "Vita",
+      "default": "70-74"
+    },
+    {
+      "type": "text",
+      "id": "hips_3",
+      "label": "Fianchi",
+      "default": "96-100"
+    },
+    {
+      "type": "text",
+      "id": "length_3",
+      "label": "Lunghezza",
+      "default": "102"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 4"
+    },
+    {
+      "type": "text",
+      "id": "size_4",
+      "label": "Taglia",
+      "default": "L"
+    },
+    {
+      "type": "text",
+      "id": "bust_4",
+      "label": "Busto",
+      "default": "94-98"
+    },
+    {
+      "type": "text",
+      "id": "waist_4",
+      "label": "Vita",
+      "default": "74-78"
+    },
+    {
+      "type": "text",
+      "id": "hips_4",
+      "label": "Fianchi",
+      "default": "100-104"
+    },
+    {
+      "type": "text",
+      "id": "length_4",
+      "label": "Lunghezza",
+      "default": "104"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 5"
+    },
+    {
+      "type": "text",
+      "id": "size_5",
+      "label": "Taglia",
+      "default": "XL"
+    },
+    {
+      "type": "text",
+      "id": "bust_5",
+      "label": "Busto",
+      "default": "98-102"
+    },
+    {
+      "type": "text",
+      "id": "waist_5",
+      "label": "Vita",
+      "default": "78-82"
+    },
+    {
+      "type": "text",
+      "id": "hips_5",
+      "label": "Fianchi",
+      "default": "104-108"
+    },
+    {
+      "type": "text",
+      "id": "length_5",
+      "label": "Lunghezza",
+      "default": "106"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 6"
+    },
+    {
+      "type": "text",
+      "id": "size_6",
+      "label": "Taglia",
+      "default": "XXL"
+    },
+    {
+      "type": "text",
+      "id": "bust_6",
+      "label": "Busto",
+      "default": "102-106"
+    },
+    {
+      "type": "text",
+      "id": "waist_6",
+      "label": "Vita",
+      "default": "82-86"
+    },
+    {
+      "type": "text",
+      "id": "hips_6",
+      "label": "Fianchi",
+      "default": "108-112"
+    },
+    {
+      "type": "text",
+      "id": "length_6",
+      "label": "Lunghezza",
+      "default": "108"
+    },
+    {
+      "type": "textarea",
+      "id": "size_note",
+      "label": "Nota tabella taglie",
+      "default": "Le misure sono indicative. I prodotti Fabindia sono realizzati artigianalmente e potrebbero avere leggere variazioni."
+    },
+    {
+      "type": "header",
+      "content": "Come prendere le misure"
+    },
+    {
+      "type": "image_picker",
+      "id": "measurement_image",
+      "label": "Infografica misure"
+    },
+    {
+      "type": "text",
+      "id": "measurement_title",
+      "label": "Titolo sezione",
+      "default": "Come prendere correttamente le misure"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_1",
+      "label": "Consiglio 1",
+      "default": "Utilizza un metro da sarta morbido"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_2",
+      "label": "Consiglio 2",
+      "default": "Prendi le misure sopra la biancheria intima"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_3",
+      "label": "Consiglio 3",
+      "default": "Mantieni il metro parallelo al pavimento"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_4",
+      "label": "Consiglio 4",
+      "default": "Non stringere troppo il metro"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_5",
+      "label": "Consiglio 5",
+      "default": "Fatti aiutare da qualcuno per maggiore precisione"
+    },
+    {
+      "type": "header",
+      "content": "Informazioni aggiuntive"
+    },
+    {
+      "type": "text",
+      "id": "info_title_1",
+      "label": "Titolo info 1",
+      "default": "Vestibilità dei prodotti Fabindia"
+    },
+    {
+      "type": "textarea",
+      "id": "info_content_1",
+      "label": "Contenuto info 1",
+      "default": "I nostri capi sono realizzati con tessuti naturali che potrebbero avere una leggera variazione nelle misure."
+    },
+    {
+      "type": "text",
+      "id": "info_title_2",
+      "label": "Titolo info 2",
+      "default": "Consigli per la scelta"
+    },
+    {
+      "type": "textarea",
+      "id": "info_content_2",
+      "label": "Contenuto info 2",
+      "default": "Se sei indeciso tra due taglie, consigliamo di scegliere quella più grande per una vestibilità comoda."
+    },
+    {
+      "type": "text",
+      "id": "care_title",
+      "label": "Titolo cura capi",
+      "default": "Istruzioni di lavaggio"
+    },
+    {
+      "type": "textarea",
+      "id": "care_instructions",
+      "label": "Istruzioni lavaggio",
+      "default": "Lavare a mano in acqua fredda. Non candeggiare. Stendere all'ombra. Stirare a bassa temperatura."
+    },
+    {
+      "type": "color",
+      "id": "info_bg_color",
+      "label": "Sfondo sezioni info",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "info_title_color",
+      "label": "Colore titoli info",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "info_icon_color",
+      "label": "Colore icone info",
+      "default": "#C33A32"
+    }
+  ]
+},
+    {
+  "type": "ultimate_product_details",
+  "name": "Dettagli Ultimate",
+  "settings": [
+    {
+      "type": "header",
+      "content": "⚙️ Impostazioni Generali"
+    },
+    {
+      "type": "checkbox",
+      "id": "force_show",
+      "label": "Forza visualizzazione",
+      "info": "Mostra il blocco anche se non ci sono campi compilati",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Mostra header decorativo",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "header_title",
+      "label": "Titolo header",
+      "default": "Dettagli Prodotto"
+    },
+    {
+      "type": "text",
+      "id": "header_subtitle",
+      "label": "Sottotitolo header",
+      "placeholder": "Scopri ogni dettaglio"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Personalizzati"
+    },
+    {
+      "type": "color",
+      "id": "colore_primario",
+      "label": "Colore primario",
+      "default": "#D6AA76"
+    },
+    {
+      "type": "color",
+      "id": "colore_secondario",
+      "label": "Colore secondario",
+      "default": "#8B4513"
+    },
+    {
+      "type": "color",
+      "id": "colore_accento",
+      "label": "Colore accento",
+      "default": "#F4E5D3"
+    },
+    {
+      "type": "color",
+      "id": "colore_testo",
+      "label": "Colore testo",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "colore_sfondo",
+      "label": "Colore sfondo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "colore_bordi",
+      "label": "Colore bordi",
+      "default": "#E5E5E5"
+    },
+    {
+      "type": "header",
+      "content": "🏷️ Badge Informativi"
+    },
+    {
+      "type": "text",
+      "id": "quick_badges",
+      "label": "Badge rapidi",
+      "info": "Formato: 🌿:100% Naturale|🇮🇹:Made in Italy|⏰:Pronta Consegna",
+      "placeholder": "🌿:100% Naturale|🇮🇹:Made in Italy"
+    },
+    {
+      "type": "header",
+      "content": "📖 Descrizione"
+    },
+    {
+      "type": "text",
+      "id": "descrizione_breve",
+      "label": "Descrizione breve",
+      "info": "Max 150 caratteri - Appare in evidenza"
+    },
+    {
+      "type": "richtext",
+      "id": "descrizione_completa",
+      "label": "Descrizione completa"
+    },
+    {
+      "type": "textarea",
+      "id": "dettagli_unici",
+      "label": "Cosa rende unico questo prodotto"
+    },
+    {
+      "type": "text",
+      "id": "titolo_dettagli_unici",
+      "label": "Titolo box dettagli unici",
+      "default": "Cosa Rende Unico Questo Prodotto"
+    },
+    {
+      "type": "header",
+      "content": "🧵 Materiali e Composizione"
+    },
+    {
+      "type": "textarea",
+      "id": "materiali_composizione",
+      "label": "Materiali",
+      "info": "Formato: Nome:Percentuale:Icona:URL_Immagine:Descrizione",
+      "placeholder": "Cotone:100%:🌿::Traspirante|Seta:20%:🦋::Lucente"
+    },
+    {
+      "type": "textarea",
+      "id": "proprieta_materiali",
+      "label": "Proprietà dei materiali"
+    },
+    {
+      "type": "text",
+      "id": "titolo_materiali",
+      "label": "Titolo sezione materiali",
+      "default": "Composizione & Materiali"
+    },
+    {
+      "type": "text",
+      "id": "titolo_proprieta",
+      "label": "Titolo proprietà materiali",
+      "default": "Proprietà dei Materiali"
+    },
+    {
+      "type": "header",
+      "content": "✨ Caratteristiche"
+    },
+    {
+      "type": "textarea",
+      "id": "caratteristiche",
+      "label": "Caratteristiche principali",
+      "info": "Formato: Titolo:Descrizione:Icona|Titolo:Descrizione:Icona",
+      "placeholder": "Reversibile:Due look in uno:🔄"
+    },
+    {
+      "type": "text",
+      "id": "titolo_caratteristiche",
+      "label": "Titolo sezione caratteristiche",
+      "default": "Caratteristiche Principali"
+    },
+    {
+      "type": "header",
+      "content": "🧺 Cura e Lavaggio"
+    },
+    {
+      "type": "textarea",
+      "id": "istruzioni_lavaggio",
+      "label": "Istruzioni di lavaggio"
+    },
+    {
+      "type": "text",
+      "id": "titolo_cura",
+      "label": "Titolo sezione cura",
+      "default": "Come Prendersi Cura"
+    },
+    {
+      "type": "checkbox",
+      "id": "no_stiro",
+      "label": "Non stirare",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "no_candeggina",
+      "label": "Non candeggiare",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📸 Immagini Istruzioni Lavaggio"
+    },
+    {
+      "type": "image_picker",
+      "id": "care_icon_cold",
+      "label": "Icona acqua fredda",
+      "info": "Carica un'icona personalizzata per acqua fredda"
+    },
+    {
+      "type": "image_picker",
+      "id": "care_icon_hand",
+      "label": "Icona lavaggio a mano",
+      "info": "Carica un'icona personalizzata per lavaggio a mano"
+    },
+    {
+      "type": "image_picker",
+      "id": "care_icon_dry",
+      "label": "Icona lavaggio a secco",
+      "info": "Carica un'icona personalizzata per lavaggio a secco"
+    },
+    {
+      "type": "image_picker",
+      "id": "care_icon_gentle",
+      "label": "Icona lavaggio delicato",
+      "info": "Carica un'icona personalizzata per lavaggio delicato"
+    },
+    {
+      "type": "image_picker",
+      "id": "care_icon_no_iron",
+      "label": "Icona non stirare",
+      "info": "Carica un'icona personalizzata per non stirare"
+    },
+    {
+      "type": "image_picker",
+      "id": "care_icon_no_bleach",
+      "label": "Icona non candeggiare",
+      "info": "Carica un'icona personalizzata per non candeggiare"
+    },
+    {
+      "type": "header",
+      "content": "📏 Taglie"
+    },
+    {
+      "type": "html",
+      "id": "tabella_taglie_html",
+      "label": "Tabella taglie HTML",
+      "info": "Inserisci il codice HTML completo della tabella"
+    },
+    {
+      "type": "text",
+      "id": "taglie_disponibili",
+      "label": "Taglie disponibili",
+      "info": "Separate da virgola",
+      "placeholder": "S, M, L, XL, Taglia Unica"
+    },
+    {
+      "type": "text",
+      "id": "titolo_taglie",
+      "label": "Titolo sezione taglie",
+      "default": "Guida alle Taglie"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Produzione"
+    },
+    {
+      "type": "textarea",
+      "id": "tecniche_produzione",
+      "label": "Tecniche di produzione",
+      "info": "Formato: Fase:Descrizione|Fase:Descrizione",
+      "placeholder": "Design:Creazione del pattern|Stampa:Block print tradizionale"
+    },
+    {
+      "type": "text",
+      "id": "titolo_produzione",
+      "label": "Titolo sezione produzione",
+      "default": "Come Nasce il Prodotto"
+    },
+    {
+      "type": "header",
+      "content": "💡 Utilizzi"
+    },
+    {
+      "type": "textarea",
+      "id": "utilizzi_prodotto",
+      "label": "Utilizzi del prodotto",
+      "info": "Formato: Uso:Descrizione:Icona|Uso:Descrizione:Icona",
+      "placeholder": "Tavola:Come tovaglia elegante:🍽️"
+    },
+    {
+      "type": "text",
+      "id": "titolo_utilizzi",
+      "label": "Titolo sezione utilizzi",
+      "default": "Mille Modi per Usarlo"
+    },
+    {
+      "type": "header",
+      "content": "👗 Stile"
+    },
+    {
+      "type": "textarea",
+      "id": "consigli_stile",
+      "label": "Consigli di stile",
+      "info": "Formato: Stile:Descrizione:Icona|Stile:Descrizione:Icona",
+      "placeholder": "Casual:Con jeans per il giorno:👖"
+    },
+    {
+      "type": "text",
+      "id": "titolo_stile",
+      "label": "Titolo sezione stile",
+      "default": "Consigli di Stile"
+    },
+    {
+      "type": "header",
+      "content": "🏛️ Heritage"
+    },
+    {
+      "type": "richtext",
+      "id": "storia_prodotto",
+      "label": "Storia e tradizione del prodotto"
+    },
+    {
+      "type": "text",
+      "id": "titolo_heritage",
+      "label": "Titolo sezione heritage",
+      "default": "Storia e Tradizione"
+    },
+    {
+      "type": "header",
+      "content": "🏅 Certificazioni e Note"
+    },
+    {
+      "type": "textarea",
+      "id": "certificazioni",
+      "label": "Certificazioni",
+      "info": "Formato: Nome:Icona|Nome:Icona",
+      "placeholder": "GOTS Certified:✓|Fair Trade:✓"
+    },
+    {
+      "type": "textarea",
+      "id": "nota_artigianale",
+      "label": "Nota artigianale",
+      "default": "Il nostro tessuto è unico nel suo genere e presenta delle irregolarità dovute alla lavorazione artigianale"
+    },
+    {
+      "type": "text",
+      "id": "firma_artigiano",
+      "label": "Firma artigiano",
+      "default": "Gli Artigiani di Fabindia Roma"
+    },
+    {
+      "type": "header",
+      "content": "🏷️ Nomi Tab Personalizzati"
+    },
+    {
+      "type": "text",
+      "id": "tab_descrizione",
+      "label": "Nome tab descrizione",
+      "default": "Descrizione"
+    },
+    {
+      "type": "text",
+      "id": "tab_materiali",
+      "label": "Nome tab materiali",
+      "default": "Materiali"
+    },
+    {
+      "type": "text",
+      "id": "tab_caratteristiche",
+      "label": "Nome tab caratteristiche",
+      "default": "Caratteristiche"
+    },
+    {
+      "type": "text",
+      "id": "tab_cura",
+      "label": "Nome tab cura",
+      "default": "Cura"
+    },
+    {
+      "type": "text",
+      "id": "tab_taglie",
+      "label": "Nome tab taglie",
+      "default": "Taglie"
+    },
+    {
+      "type": "text",
+      "id": "tab_produzione",
+      "label": "Nome tab produzione",
+      "default": "Produzione"
+    },
+    {
+      "type": "text",
+      "id": "tab_utilizzi",
+      "label": "Nome tab utilizzi",
+      "default": "Utilizzi"
+    },
+    {
+      "type": "text",
+      "id": "tab_stile",
+      "label": "Nome tab stile",
+      "default": "Stile"
+    },
+    {
+      "type": "text",
+      "id": "tab_heritage",
+      "label": "Nome tab heritage",
+      "default": "Heritage"
+    }
+  ]
+},
+    {
+  "type": "payment_icons",
+  "name": "Icone Pagamento",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Impostazioni Icone"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_1",
+      "label": "Icona 1"
+    },
+    {
+      "type": "url",
+      "id": "icon_link_1",
+      "label": "Link Icona 1"
+    },
+    {
+      "type": "text",
+      "id": "icon_tooltip_1",
+      "label": "Tooltip Icona 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_2",
+      "label": "Icona 2"
+    },
+    {
+      "type": "url",
+      "id": "icon_link_2",
+      "label": "Link Icona 2"
+    },
+    {
+      "type": "text",
+      "id": "icon_tooltip_2",
+      "label": "Tooltip Icona 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_3",
+      "label": "Icona 3"
+    },
+    {
+      "type": "url",
+      "id": "icon_link_3",
+      "label": "Link Icona 3"
+    },
+    {
+      "type": "text",
+      "id": "icon_tooltip_3",
+      "label": "Tooltip Icona 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_4",
+      "label": "Icona 4"
+    },
+    {
+      "type": "url",
+      "id": "icon_link_4",
+      "label": "Link Icona 4"
+    },
+    {
+      "type": "text",
+      "id": "icon_tooltip_4",
+      "label": "Tooltip Icona 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_5",
+      "label": "Icona 5"
+    },
+    {
+      "type": "url",
+      "id": "icon_link_5",
+      "label": "Link Icona 5"
+    },
+    {
+      "type": "text",
+      "id": "icon_tooltip_5",
+      "label": "Tooltip Icona 5"
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout e Dimensioni"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Dimensione icone Desktop",
+      "min": 20,
+      "max": 180,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Dimensione icone Mobile",
+      "min": 20,
+      "max": 160,
+      "step": 5,
+      "unit": "px",
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "icons_gap",
+      "label": "Spazio tra icone Desktop",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "icons_gap_mobile",
+      "label": "Spazio tra icone Mobile",
+      "min": 5,
+      "max": 25,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Allineamento icone",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "flex-end",
+          "label": "Destra"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "force_single_row_desktop",
+      "label": "Forza riga singola Desktop",
+      "info": "Mantiene tutte le icone su una sola riga su desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "force_single_row_mobile",
+      "label": "Forza riga singola Mobile",
+      "info": "Mantiene tutte le icone su una sola riga su mobile",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Apri link in nuova scheda",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "📏 Spaziature Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding superiore",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding inferiore",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "📱 Spaziature Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding superiore",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding inferiore",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "💬 Tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_tooltip",
+      "label": "Abilita tooltip",
+      "info": "Hover su desktop, click su mobile",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "tooltip_bg_color",
+      "label": "Colore sfondo tooltip",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_text_color",
+      "label": "Colore testo tooltip",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "header",
+      "content": "✨ Animazione"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pulse",
+      "label": "Abilita pulsazione",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "pulse_duration",
+      "label": "Durata pulsazione",
+      "min": 1,
+      "max": 5,
+      "step": 0.5,
+      "unit": "s",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "pulse_scale",
+      "label": "Scala pulsazione",
+      "min": 1.1,
+      "max": 1.3,
+      "step": 0.1,
+      "default": 1.2
+    }
+  ]
+},
+    {
+  "type": "fabindia_order_timeline",
+  "name": "Timeline Ordine Fabindia",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "📐 Layout e Spaziature"
+    },
+    {
+      "type": "range",
+      "id": "section_margin_top",
+      "label": "Margine superiore",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "section_margin_bottom",
+      "label": "Margine inferiore", 
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding superiore",
+      "min": 8,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding inferiore",
+      "min": 8,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_left_right",
+      "label": "Padding laterale",
+      "min": 8,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Angoli arrotondati",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Spessore bordo",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "📱 Layout Mobile"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Layout mobile",
+      "options": [
+        {
+          "value": "",
+          "label": "2+1 layout (raccomandato per 3 step)"
+        },
+        {
+          "value": "ft-mobile-single-row",
+          "label": "Tutti in una riga"
+        }
+      ],
+      "default": "",
+      "info": "Layout 2+1: primi due step in riga, terzo centrato sotto"
+    },
+    {
+      "type": "header",
+      "content": "🔗 Connettori Timeline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_connectors",
+      "label": "Mostra connettori animati",
+      "default": true,
+      "info": "Linee dinamiche che collegano gli step"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Principali"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Sfondo blocco",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Colore bordo",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "date_color",
+      "label": "Colore date",
+      "default": "#B5A397"
+    },
+    {
+      "type": "header",
+      "content": "🔗 Timeline e Step"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Sfondo icone",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Colore icone",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "connector_color",
+      "label": "Colore connettori",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_bg",
+      "label": "Sfondo tooltip",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_text",
+      "label": "Testo tooltip",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "header",
+      "content": "📝 Contenuti Generali"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Mostra titolo blocco",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "timeline_title",
+      "label": "Titolo principale",
+      "default": "Cronologia del tuo Ordine"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Dal design romano all'artigianato indiano"
+    },
+    {
+      "type": "text",
+      "id": "title_icon",
+      "label": "Icona titolo (emoji)",
+      "default": "📦",
+      "info": "Usa emoji o lascia vuoto"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Dimensione titolo Desktop",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Dimensione titolo Mobile",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "text",
+      "id": "font_family",
+      "label": "Font family",
+      "default": "inherit",
+      "info": "inherit per usare il font del tema"
+    },
+    {
+      "type": "header",
+      "content": "📏 Font Size Step"
+    },
+    {
+      "type": "range",
+      "id": "step_title_size_desktop",
+      "label": "Titoli step (Desktop)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "step_title_size_mobile",
+      "label": "Titoli step (Mobile)",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "step_date_size_desktop",
+      "label": "Date step (Desktop)",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "step_date_size_mobile",
+      "label": "Date step (Mobile)",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "header",
+      "content": "1️⃣ Step 1: Ordine + Lavorazione"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_order_step",
+      "label": "Mostra step ordine",
+      "default": true,
+      "info": "Disattiva per nascondere il primo step"
+    },
+    {
+      "type": "text",
+      "id": "order_title",
+      "label": "Titolo step",
+      "default": "Ordine Confermato"
+    },
+    {
+      "type": "textarea",
+      "id": "order_tooltip",
+      "label": "Tooltip step",
+      "default": "Il tuo ordine è confermato! I nostri artigiani indiani iniziano subito la lavorazione del tuo capo su misura utilizzando tecniche tradizionali"
+    },
+    {
+      "type": "range",
+      "id": "order_processing_days",
+      "label": "Giorni ordine + lavorazione",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 2,
+      "info": "Giorni totali per conferma e creazione artigianale"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_order",
+      "label": "Icona personalizzata",
+      "info": "Sostituisce l'icona predefinita"
+    },
+    {
+      "type": "header",
+      "content": "2️⃣ Step 2: Spedizione"
+    },
+    {
+      "type": "text",
+      "id": "shipping_title",
+      "label": "Titolo step",
+      "default": "Spedito"
+    },
+    {
+      "type": "textarea",
+      "id": "shipping_tooltip",
+      "label": "Tooltip step",
+      "default": "Il tuo capo artigianale è stato accuratamente imballato e affidato al corriere espresso. Inizia il viaggio verso casa tua!"
+    },
+    {
+      "type": "range",
+      "id": "shipping_min",
+      "label": "Giorni minimi spedizione",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "shipping_max",
+      "label": "Giorni massimi spedizione",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_shipping",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "header",
+      "content": "3️⃣ Step 3: Consegna"
+    },
+    {
+      "type": "text",
+      "id": "delivery_title",
+      "label": "Titolo step",
+      "default": "Consegnato"
+    },
+    {
+      "type": "textarea",
+      "id": "delivery_tooltip",
+      "label": "Tooltip step",
+      "default": "Il tuo capo Fabindia è arrivato! Benvenuto nella famiglia di chi apprezza l'autenticità e la bellezza dell'artigianato indiano"
+    },
+    {
+      "type": "range",
+      "id": "delivery_min",
+      "label": "Giorni minimi consegna",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "delivery_max",
+      "label": "Giorni massimi consegna",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_delivery",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "header",
+      "content": "⏰ Rush Order"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rush_message",
+      "label": "Mostra messaggio urgenza",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "cutoff_hour",
+      "label": "Ora limite ordini",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "info": "Ordini dopo quest'ora slittano al giorno dopo"
+    },
+    {
+      "type": "text",
+      "id": "rush_message",
+      "label": "Testo messaggio urgenza",
+      "default": "Ordina entro TIME_HOURS h TIME_MINUTES m per spedizione rapida!",
+      "info": "Usa TIME_HOURS e TIME_MINUTES come placeholder"
+    },
+    {
+      "type": "color",
+      "id": "rush_bg_color",
+      "label": "Sfondo messaggio urgenza",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "rush_text_color",
+      "label": "Testo messaggio urgenza",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "ℹ️ Box Informazioni Spedizione"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_info_box",
+      "label": "Mostra box informazioni",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "info_custom_icon",
+      "label": "Icona/Emoji custom",
+      "default": "🚚",
+      "info": "Emoji o simbolo personalizzato"
+    },
+    {
+      "type": "image_picker",
+      "id": "info_custom_image",
+      "label": "Immagine custom",
+      "info": "Immagine personalizzata (priorità su emoji)"
+    },
+    {
+      "type": "range",
+      "id": "info_image_size",
+      "label": "Dimensione icona/immagine",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24,
+      "info": "Dimensione per emoji e immagini"
+    },
+    {
+      "type": "text",
+      "id": "shipping_method",
+      "label": "Metodo spedizione",
+      "default": "Corriere Espresso Italiano"
+    },
+    {
+      "type": "text",
+      "id": "shipping_desc",
+      "label": "Descrizione spedizione",
+      "default": "Tracking incluso, consegna sicura in 24-48h"
+    },
+    {
+      "type": "color",
+      "id": "info_bg_color",
+      "label": "Sfondo box info",
+      "default": "#FEFEFE"
+    }
+  ]
+},
+{
+  "type": "complementary_products",
+  "name": "Complementary products",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.product-complementary.settings.paragraph.content"
+    },
+    {
+      "type": "text",
+      "id": "product_complementary_heading",
+      "label": "t:sections.product-complementary.settings.product_complementary_heading.label",
+      "default": "Pairs well with"
+    },
+    {
+      "type": "range",
+      "id": "complementary_count",
+      "label": "t:sections.product-complementary.settings.complementary_count.label",
+      "default": 4,
+      "min": 2,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "per_slide",
+      "label": "t:sections.product-complementary.settings.per_slide.label",
+      "default": 2,
+      "min": 2,
+      "max": 4,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "control_type",
+      "label": "t:sections.product-complementary.settings.control_type.label",
+      "options": [
+        {
+          "value": "dots",
+          "label": "t:sections.product-complementary.settings.control_type.options.dots.label"
+        },
+        {
+          "value": "arrows",
+          "label": "t:sections.product-complementary.settings.control_type.options.arrows.label"
+        }
+      ],
+      "default": "dots"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.product-complementary.settings.header.content"
+    },
+    {
+      "type": "select",
+      "id": "image_style",
+      "label": "t:sections.product-complementary.settings.image_style.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.product-complementary.settings.image_style.options.default.label"
+        },
+        {
+          "value": "circle",
+          "label": "t:sections.product-complementary.settings.image_style.options.circle.label"
+        }
+      ],
+      "default": "default"
+    }
+  ]
+},
+    
+{
+  "type": "size_chart",
+  "name": "t:product_block.size_chart.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "page",
+      "id": "size_chart",
+      "label": "t:product_block.size_chart.settings.page.label"
+    }
+  ]
+},
+{
+  "type": "variant_picker",
+  "name": "Variant picker",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "variant_labels",
+      "label": "t:product_block.variant_picker.settings.variant_labels.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "picker_type",
+      "label": "t:product_block.variant_picker.settings.picker_type.label",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:product_block.variant_picker.settings.picker_type.options.button.label"
+        },
+        {
+          "value": "dropdown",
+          "label": "t:product_block.variant_picker.settings.picker_type.options.dropdown.label"
+        }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "checkbox",
+      "id": "product_dynamic_variants_enable",
+      "label": "t:product_block.variant_picker.settings.product_dynamic_variants_enable.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "color_swatches",
+      "label": "Enable color swatches",
+      "info": "Requires type to be set to 'Buttons'. [Learn how to set up swatches](https://archetypethemes.co/blogs/impulse/how-do-i-set-up-color-swatches)"
+    },
+    {
+      "type": "header",
+      "content": "Layout Varianti"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_fit_variants_mobile",
+      "label": "Auto-espandi mobile",
+      "default": false,
+      "info": "Distribuisce le taglie al 100%"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_fit_variants_desktop",
+      "label": "Auto-espandi desktop",
+      "default": false,
+      "info": "Distribuisce le taglie al 100%"
+    },
+    {
+      "type": "range",
+      "id": "variant_gap",
+      "label": "Spazio tra varianti",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Varianti Colore"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_variants",
+      "label": "Mostra varianti colore",
+      "default": true,
+      "info": "Usa metafield custom.related_products"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo sezione",
+      "default": "Varianti Colore"
+    },
+    {
+      "type": "text",
+      "id": "section_title_2",
+      "label": "Titolo Varianti Colore",
+      "default": "Varianti Colore"
+    },
+    {
+      "type": "text",
+      "id": "remove_string",
+      "label": "Rimuovi dal titolo",
+      "info": "Es: nome modello"
+    },
+    {
+      "type": "header",
+      "content": "Layout Colori"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_fit_colors_mobile",
+      "label": "Auto-espandi mobile",
+      "default": false,
+      "info": "Distribuisce i colori al 100%"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_fit_colors_desktop",
+      "label": "Auto-espandi desktop",
+      "default": false,
+      "info": "Distribuisce i colori al 100%"
+    },
+    {
+      "type": "range",
+      "id": "colors_per_row_mobile",
+      "label": "Colonne mobile",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "info": "Se auto-espandi è OFF"
+    },
+    {
+      "type": "range",
+      "id": "colors_per_row_desktop",
+      "label": "Colonne desktop",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "info": "Se auto-espandi è OFF"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Spazio griglia",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Feedback Visivo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_selected_size",
+      "label": "Mostra taglia selezionata",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "size_prefix",
+      "label": "Prefisso taglia",
+      "default": "Taglia: "
+    },
+    {
+      "type": "text",
+      "id": "size_alert_text",
+      "label": "Testo avviso taglia",
+      "default": "Taglia non disponibile nelle varianti mostrate"
+    },
+    {
+      "type": "text",
+      "id": "unavailable_text",
+      "label": "Testo non disponibile",
+      "default": "Non disponibile"
+    },
+    {
+      "type": "header",
+      "content": "Stile"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_prices",
+      "label": "Mostra prezzi",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase_names",
+      "label": "Nomi in maiuscolo",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Allineamento testo",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Destra"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Dimensione titolo",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "name_size",
+      "label": "Dimensione nome",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Dimensione prezzo",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Sfondo sezione",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Colore bordi",
+      "default": "#E5E7EB"
+    },
+    {
+      "type": "header",
+      "content": "Spaziatura"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Spazio sopra",
+      "min": 0,
+      "max": 48,
+      "step": 8,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Padding interno",
+      "min": 16,
+      "max": 40,
+      "step": 8,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Raggio bordi",
+      "min": 0,
+      "max": 16,
+      "step": 4,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Raggio immagini",
+      "min": 0,
+      "max": 12,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Mostra bordo",
+      "default": true
+    }
+  ]
+},
+{
+  "type": "fabindia_info_points",
+  "name": "Info Points Fabindia",
+  "limit": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout e Stile"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Tipo di layout",
+      "options": [
+        { "value": "vertical", "label": "Verticale" },
+        { "value": "grid", "label": "Griglia" },
+        { "value": "inline", "label": "In linea" }
+      ],
+      "default": "vertical"
+    },
+    {
+      "type": "checkbox",
+      "id": "vertical_inline",
+      "label": "Etichetta e testo affiancati",
+      "info": "Solo per layout verticale",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Allineamento testo",
+      "options": [
+        { "value": "left", "label": "Sinistra" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Destra" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Abilita animazioni",
+      "info": "Hover desktop e touch mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore sfondo",
+      "default": "#FFF8F3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#231301"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Colore etichette",
+      "default": "#a87d4d"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Colore icone",
+      "default": "#D17F34"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Colore bordo",
+      "default": "#E5D1B8"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_bg_color",
+      "label": "Sfondo tooltip",
+      "default": "#231301"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_text_color",
+      "label": "Testo tooltip",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Bordi e Spaziatura"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Spessore bordo",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Raggio bordo",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Spaziatura Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "min": -100,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "min": -100,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Spazio tra elementi",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Spaziatura Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Padding",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore",
+      "min": -100,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore",
+      "min": -100,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Spazio tra elementi",
+      "min": 5,
+      "max": 25,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Tipografia"
+    },
+    {
+      "type": "range",
+      "id": "label_size_desktop",
+      "label": "Font etichette (Desktop)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "label_size_mobile",
+      "label": "Font etichette (Mobile)",
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "content_size_desktop",
+      "label": "Font contenuto (Desktop)",
+      "min": 13,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "content_size_mobile",
+      "label": "Font contenuto (Mobile)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "label_weight",
+      "label": "Peso font etichette",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "label_transform",
+      "label": "Trasformazione testo",
+      "options": [
+        { "value": "none", "label": "Normale" },
+        { "value": "uppercase", "label": "MAIUSCOLO" },
+        { "value": "capitalize", "label": "Capitalizzato" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Dimensione icone default",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Punto 1"
+    },
+    {
+      "type": "text",
+      "id": "label_1",
+      "label": "Etichetta",
+      "default": "MATERIALE"
+    },
+    {
+      "type": "text",
+      "id": "content_1",
+      "label": "Contenuto",
+      "default": "100% Cotone Organico"
+    },
+    {
+      "type": "text",
+      "id": "tooltip_1",
+      "label": "Tooltip",
+      "info": "Testo mostrato al hover/touch"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide_1",
+      "label": "Nascondi se vuoto",
+      "info": "Mostra solo con contenuto",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon_type_1",
+      "label": "Tipo icona",
+      "options": [
+        { "value": "none", "label": "Nessuna" },
+        { "value": "dot", "label": "Punto" },
+        { "value": "check", "label": "Check" },
+        { "value": "arrow", "label": "Freccia" },
+        { "value": "star", "label": "Stella" },
+        { "value": "custom", "label": "Personalizzata" }
+      ],
+      "default": "dot"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_1",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "range",
+      "id": "custom_icon_size_1",
+      "label": "Dimensione icona custom",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Punto 2"
+    },
+    {
+      "type": "text",
+      "id": "label_2",
+      "label": "Etichetta",
+      "default": "PROVENIENZA"
+    },
+    {
+      "type": "text",
+      "id": "content_2",
+      "label": "Contenuto",
+      "default": "Artigianato Italiano"
+    },
+    {
+      "type": "text",
+      "id": "tooltip_2",
+      "label": "Tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide_2",
+      "label": "Nascondi se vuoto",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon_type_2",
+      "label": "Tipo icona",
+      "options": [
+        { "value": "none", "label": "Nessuna" },
+        { "value": "dot", "label": "Punto" },
+        { "value": "check", "label": "Check" },
+        { "value": "arrow", "label": "Freccia" },
+        { "value": "star", "label": "Stella" },
+        { "value": "custom", "label": "Personalizzata" }
+      ],
+      "default": "dot"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_2",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "range",
+      "id": "custom_icon_size_2",
+      "label": "Dimensione icona custom",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Punto 3"
+    },
+    {
+      "type": "text",
+      "id": "label_3",
+      "label": "Etichetta",
+      "default": "CURA"
+    },
+    {
+      "type": "text",
+      "id": "content_3",
+      "label": "Contenuto",
+      "default": "Lavare a 30°"
+    },
+    {
+      "type": "text",
+      "id": "tooltip_3",
+      "label": "Tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide_3",
+      "label": "Nascondi se vuoto",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "icon_type_3",
+      "label": "Tipo icona",
+      "options": [
+        { "value": "none", "label": "Nessuna" },
+        { "value": "dot", "label": "Punto" },
+        { "value": "check", "label": "Check" },
+        { "value": "arrow", "label": "Freccia" },
+        { "value": "star", "label": "Stella" },
+        { "value": "custom", "label": "Personalizzata" }
+      ],
+      "default": "dot"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_3",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "range",
+      "id": "custom_icon_size_3",
+      "label": "Dimensione icona custom",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Punto 4"
+    },
+    {
+      "type": "text",
+      "id": "label_4",
+      "label": "Etichetta"
+    },
+    {
+      "type": "text",
+      "id": "content_4",
+      "label": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "tooltip_4",
+      "label": "Tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide_4",
+      "label": "Nascondi se vuoto",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon_type_4",
+      "label": "Tipo icona",
+      "options": [
+        { "value": "none", "label": "Nessuna" },
+        { "value": "dot", "label": "Punto" },
+        { "value": "check", "label": "Check" },
+        { "value": "arrow", "label": "Freccia" },
+        { "value": "star", "label": "Stella" },
+        { "value": "custom", "label": "Personalizzata" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_4",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "range",
+      "id": "custom_icon_size_4",
+      "label": "Dimensione icona custom",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Punto 5"
+    },
+    {
+      "type": "text",
+      "id": "label_5",
+      "label": "Etichetta"
+    },
+    {
+      "type": "text",
+      "id": "content_5",
+      "label": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "tooltip_5",
+      "label": "Tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide_5",
+      "label": "Nascondi se vuoto",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon_type_5",
+      "label": "Tipo icona",
+      "options": [
+        { "value": "none", "label": "Nessuna" },
+        { "value": "dot", "label": "Punto" },
+        { "value": "check", "label": "Check" },
+        { "value": "arrow", "label": "Freccia" },
+        { "value": "star", "label": "Stella" },
+        { "value": "custom", "label": "Personalizzata" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_5",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "range",
+      "id": "custom_icon_size_5",
+      "label": "Dimensione icona custom",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Punto 6"
+    },
+    {
+      "type": "text",
+      "id": "label_6",
+      "label": "Etichetta"
+    },
+    {
+      "type": "text",
+      "id": "content_6",
+      "label": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "tooltip_6",
+      "label": "Tooltip"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_hide_6",
+      "label": "Nascondi se vuoto",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "icon_type_6",
+      "label": "Tipo icona",
+      "options": [
+        { "value": "none", "label": "Nessuna" },
+        { "value": "dot", "label": "Punto" },
+        { "value": "check", "label": "Check" },
+        { "value": "arrow", "label": "Freccia" },
+        { "value": "star", "label": "Stella" },
+        { "value": "custom", "label": "Personalizzata" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon_6",
+      "label": "Icona personalizzata"
+    },
+    {
+      "type": "range",
+      "id": "custom_icon_size_6",
+      "label": "Dimensione icona custom",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    }
+  ]
+},
+    
+{
+  "type": "description",
+  "name": "t:product_block.description.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "is_tab",
+      "label": "t:product_block.description.settings.is_tab.label"
+    }
+  ]
+},
+{
+  "type": "buy_buttons",
+  "name": "t:product_block.buy_buttons.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "t:product_block.buy_buttons.settings.show_dynamic_checkout.label",
+      "info": "t:product_block.buy_buttons.settings.show_dynamic_checkout.info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "surface_pickup_enable",
+      "label": "t:product_block.buy_buttons.settings.surface_pickup_enable.label",
+      "info": "t:product_block.buy_buttons.settings.surface_pickup_enable.info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_card_recipient",
+      "default": false,
+      "label": "t:common.gift_card.show_gift_card_recipient.label",
+      "info": "t:common.gift_card.show_gift_card_recipient.info"
+    }
+  ]
+},
+{
+  "type": "inventory_status",
+  "name": "t:product_block.inventory_status.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "range",
+      "id": "inventory_threshold",
+      "label": "t:product_block.inventory_status.settings.inventory_threshold.label",
+      "default": 10,
+      "min": 0,
+      "max": 20,
+      "step": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "inventory_transfers_enable",
+      "label": "t:product_block.inventory_status.settings.inventory_transfers_enable.label",
+      "info": "t:product_block.inventory_status.settings.inventory_transfers_enable.info",
+      "default": true
+    }
+  ]
+},
+{
+  "type": "sales_point",
+  "name": "t:product_block.sales_point.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "t:product_block.sales_point.settings.icon.label",
+      "default": "globe",
+      "options": [
+        {
+          "value": "checkmark",
+          "label": "t:product_block.sales_point.settings.icon.options.checkmark.label"
+        },
+        {
+          "value": "gift",
+          "label": "t:product_block.sales_point.settings.icon.options.gift.label"
+        },
+        {
+          "value": "globe",
+          "label": "t:product_block.sales_point.settings.icon.options.globe.label"
+        },
+        {
+          "value": "heart",
+          "label": "t:product_block.sales_point.settings.icon.options.heart.label"
+        },
+        {
+          "value": "leaf",
+          "label": "t:product_block.sales_point.settings.icon.options.leaf.label"
+        },
+        {
+          "value": "lock",
+          "label": "t:product_block.sales_point.settings.icon.options.lock.label"
+        },
+        {
+          "value": "package",
+          "label": "t:product_block.sales_point.settings.icon.options.package.label"
+        },
+        {
+          "value": "phone",
+          "label": "t:product_block.sales_point.settings.icon.options.phone.label"
+        },
+        {
+          "value": "ribbon",
+          "label": "t:product_block.sales_point.settings.icon.options.ribbon.label"
+        },
+        {
+          "value": "shield",
+          "label": "t:product_block.sales_point.settings.icon.options.shield.label"
+        },
+        {
+          "value": "tag",
+          "label": "t:product_block.sales_point.settings.icon.options.tag.label"
+        },
+        {
+          "value": "truck",
+          "label": "t:product_block.sales_point.settings.icon.options.truck.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:product_block.sales_point.settings.text.label",
+      "default": "Free worldwide shipping"
+    }
+  ]
+},
+{
+  "type": "text",
+  "name": "t:product_block.text.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "default": "Text block",
+      "label": "t:product_block.text.settings.text.label"
+    }
+  ]
+},
+{
+  "type": "trust_badge",
+  "name": "t:product_block.trust_badge.name",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "trust_image",
+      "label": "t:product_block.trust_badge.settings.trust_image.label"
+    }
+  ]
+},
+{
+  "type": "tab",
+  "name": "t:product_block.tab.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:product_block.tab.settings.title.label",
+      "default": "Shipping information"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "t:product_block.tab.settings.content.label",
+      "default": "<p>Use collapsible tabs for more detailed information that will help customers make a purchasing decision.</p><p>Ex: Shipping and return policies, size guides, and other common questions.</p>"
+    },
+    {
+      "type": "page",
+      "id": "page",
+      "label": "t:product_block.tab.settings.page.label"
+    }
+  ]
+},
+{
+  "type": "share",
+  "name": "t:product_block.share_on_social.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:product_block.share_on_social.settings.content"
+    }
+  ]
+},
+{
+  "type": "separator",
+  "name": "t:product_block.separator.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing personalizzato"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_spacing",
+      "label": "Abilita spacing custom",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top desktop",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom desktop",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top desktop",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom desktop",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top mobile",
+      "min": -100,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom mobile",
+      "min": -100,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top mobile",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom mobile",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+},
+{
+  "type": "contact",
+  "name": "t:product_block.contact_form.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:product_block.contact_form.settings.content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:product_block.contact_form.settings.title.label",
+      "default": "Ask a question"
+    },
+    {
+      "type": "checkbox",
+      "id": "phone",
+      "label": "t:product_block.contact_form.settings.phone.label"
+    }
+  ]
+},
+{
+  "type": "custom",
+  "name": "t:product_block.html.name",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "code",
+      "label": "t:product_block.html.settings.code.label",
+      "default": "<h4>Custom code block</h4><p>Use this advanced section to add custom HTML, app scripts, or liquid.</p>",
+      "info": "t:product_block.html.settings.code.info"
+    }
+  ]
+}
+]
+}
+{% endschema %}

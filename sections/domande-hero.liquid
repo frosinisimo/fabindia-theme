@@ -1,0 +1,1403 @@
+<!-- FABINDIA ROMA - HERO FAQ SECTION - VERSIONE CORRETTA E ISOLATA -->
+<!-- Sezione FAQ con isolamento completo per evitare interferenze -->
+
+<style>
+  /* === CONTENIMENTO E ISOLAMENTO SEZIONE === */
+  #shopify-section-{{ section.id }} {
+    /* Contenimento assoluto per evitare overflow */
+    position: relative;
+    overflow: hidden;
+    contain: layout style;
+    isolation: isolate;
+  }
+
+  /* === UTILITY RESPONSIVE CON NAMESPACE === */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      {%- unless section.settings.max_width == 'default' -%}
+        max-width: {{ section.settings.max_width }};
+        margin-left: auto;
+        margin-right: auto;
+      {%- endunless -%}
+      
+      {%- if section.settings.padding_top_desktop > 0 or section.settings.padding_bottom_desktop > 0 -%}
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.margin_top_desktop != 0 or section.settings.margin_bottom_desktop != 0 -%}
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.hide_on_desktop -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      {%- if section.settings.padding_top_mobile > 0 or section.settings.padding_bottom_mobile > 0 -%}
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.margin_top_mobile != 0 or section.settings.margin_bottom_mobile != 0 -%}
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.hide_on_mobile -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  {%- if section.settings.enable_smooth_transitions -%}
+    #shopify-section-{{ section.id }} * {
+      transition: all 0.3s ease;
+    }
+  {%- endif -%}
+
+  /* === SEZIONE FAQ STYLES CON NAMESPACE === */
+  #shopify-section-{{ section.id }} .fabindia-faq-hero {
+    background-color: {{ section.settings.background_color | default: '#FEFEFE' }};
+    position: relative;
+    overflow: hidden;
+    /* Assicura che il contenuto rimanga all'interno */
+    z-index: 1;
+  }
+
+  /* Background Pattern - Contenuto nella sezione */
+  {%- if section.settings.enable_pattern -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='{{ section.settings.pattern_color | default: '#E5DDD5' | remove: '#' }}' fill-opacity='{{ section.settings.pattern_opacity | divided_by: 100.0 }}'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: {{ section.settings.pattern_opacity | divided_by: 100.0 }};
+    pointer-events: none;
+    /* Z-index negativo per stare dietro al contenuto */
+    z-index: -1;
+  }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .fabindia-faq-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+    position: relative;
+    /* Z-index basso per non interferire */
+    z-index: 2;
+  }
+
+  /* Header Styles con namespace */
+  #shopify-section-{{ section.id }} .fabindia-faq-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-title {
+    color: {{ section.settings.title_color | default: '#C33A32' }};
+    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+    font-weight: var(--typeHeaderWeight);
+    font-size: calc(var(--typeHeaderSize) * {{ section.settings.title_size | divided_by: 100.0 }});
+    line-height: var(--typeHeaderLineHeight);
+    letter-spacing: var(--typeHeaderSpacing);
+    margin-bottom: 15px;
+    position: relative;
+  }
+
+  {%- if section.settings.title_animation == 'underline' -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: {{ section.settings.title_color | default: '#C33A32' }};
+    opacity: 0.5;
+  }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .fabindia-faq-subtitle {
+    color: {{ section.settings.text_color | default: '#3E3E3E' }};
+    font-size: 1.1em;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Layout Styles con namespace */
+  #shopify-section-{{ section.id }} .fabindia-faq-wrapper {
+    position: relative;
+  }
+
+  /* Grid Layout */
+  #shopify-section-{{ section.id }} .fabindia-faq-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+    gap: {{ section.settings.gap }}px;
+    margin-bottom: 40px;
+  }
+
+  /* Carousel Layout */
+  #shopify-section-{{ section.id }} .fabindia-faq-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 20px;
+    padding-bottom: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-carousel .fabindia-faq-item {
+    flex: 0 0 calc(100% / {{ section.settings.columns_desktop }});
+    scroll-snap-align: start;
+  }
+
+  /* Accordion Layout */
+  #shopify-section-{{ section.id }} .fabindia-faq-accordion .fabindia-faq-item {
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-accordion .fabindia-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-accordion .fabindia-faq-item.active .fabindia-faq-answer {
+    max-height: 500px;
+  }
+
+  /* FAQ Item Styles */
+  #shopify-section-{{ section.id }} .fabindia-faq-item {
+    background: {{ section.settings.card_background | default: '#F0E6E0' }};
+    border-radius: {{ section.settings.border_radius }}px;
+    padding: {{ section.settings.card_padding }}px;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  {%- if section.settings.card_shadow -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-item {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  {%- endif -%}
+
+  {%- if section.settings.hover_effect == 'lift' -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  }
+  {%- elsif section.settings.hover_effect == 'glow' -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-item:hover {
+    box-shadow: 0 0 30px {{ section.settings.card_glow_color | default: 'rgba(195, 58, 50, 0.3)' }};
+  }
+  {%- elsif section.settings.hover_effect == 'scale' -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-item:hover {
+    transform: scale(1.05);
+  }
+  {%- endif -%}
+
+  /* Badge */
+  #shopify-section-{{ section.id }} .fabindia-faq-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: {{ section.settings.badge_color | default: '#C33A32' }};
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  /* Icon Styles */
+  #shopify-section-{{ section.id }} .fabindia-faq-icon {
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    background: {{ section.settings.icon_background | default: '#C33A32' }};
+    border-radius: {{ section.settings.icon_border_radius }}%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  {%- if section.settings.icon_animation -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-item:hover .fabindia-faq-icon {
+    transform: rotate(360deg) scale(1.1);
+  }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .fabindia-faq-icon svg {
+    width: 60%;
+    height: 60%;
+    color: {{ section.settings.icon_color | default: '#FFFFFF' }};
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ section.settings.icon_border_radius }}%;
+  }
+
+  /* Content */
+  #shopify-section-{{ section.id }} .fabindia-faq-content {
+    flex: 1;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-question {
+    color: {{ section.settings.question_color | default: '#3E3E3E' }};
+    font-weight: {{ section.settings.question_weight }};
+    font-size: {{ section.settings.question_size }}em;
+    margin-bottom: 15px;
+    line-height: 1.4;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-answer {
+    color: {{ section.settings.answer_color | default: '#3E3E3E' }};
+    line-height: 1.7;
+    font-size: {{ section.settings.answer_size }}em!important;
+    opacity: {{ section.settings.answer_opacity | divided_by: 100.0 }};
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-highlight {
+    color: {{ section.settings.highlight_color | default: '#C33A32' }};
+    font-weight: 600;
+  }
+
+  /* Image */
+  #shopify-section-{{ section.id }} .fabindia-faq-image {
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-item:hover .fabindia-faq-image img {
+    transform: scale(1.05);
+  }
+
+  /* CTA Section */
+  #shopify-section-{{ section.id }} .fabindia-faq-cta {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-btn {
+    display: inline-block;
+    background: var(--colorBtnPrimary);
+    color: var(--colorBtnPrimaryText);
+    padding: {{ section.settings.btn_padding_y }}px {{ section.settings.btn_padding_x }}px;
+    text-decoration: none;
+    font-weight: var(--typeButtonWeight);
+    letter-spacing: var(--typeButtonSpacing);
+    text-transform: var(--typeButtonCase);
+    border-radius: var(--buttonRadius);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  {%- if section.settings.btn_animation == 'sweep' -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.2);
+    transition: left 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-btn:hover::before {
+    left: 100%;
+  }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .fabindia-faq-btn:hover {
+    background: var(--colorBtnPrimaryHover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  /* Carousel Controls */
+  #shopify-section-{{ section.id }} .fabindia-carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{ section.settings.dot_color | default: '#B5A397' }};
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-carousel-dot.active {
+    opacity: 1;
+    background: {{ section.settings.dot_active_color | default: '#C33A32' }};
+    transform: scale(1.2);
+  }
+
+  /* Mobile Responsive con namespace */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .fabindia-faq-title {
+      font-size: calc(var(--typeHeaderSize) * {{ section.settings.title_size_mobile | divided_by: 100.0 }});
+    }
+
+    #shopify-section-{{ section.id }} .fabindia-faq-grid {
+      grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
+      gap: {{ section.settings.gap_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .fabindia-faq-carousel .fabindia-faq-item {
+      flex: 0 0 calc(100% / {{ section.settings.columns_mobile }});
+    }
+
+    #shopify-section-{{ section.id }} .fabindia-faq-item {
+      padding: {{ section.settings.card_padding_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .fabindia-faq-icon {
+      width: {{ section.settings.icon_size_mobile }}px;
+      height: {{ section.settings.icon_size_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .fabindia-faq-question {
+      font-size: {{ section.settings.question_size_mobile }}em;
+    }
+
+    #shopify-section-{{ section.id }} .fabindia-faq-answer {
+    font-size: {{ section.settings.answer_size_mobile }}em!important;
+  }
+    
+  }
+
+  /* Animations con namespace e scope limitato */
+  @keyframes fabindia-faq-fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate {
+    opacity: 0;
+    animation: fabindia-faq-fadeInUp 0.6s ease forwards;
+  }
+
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate:nth-child(1) { animation-delay: 0.1s; }
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate:nth-child(2) { animation-delay: 0.2s; }
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate:nth-child(3) { animation-delay: 0.3s; }
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate:nth-child(4) { animation-delay: 0.4s; }
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate:nth-child(5) { animation-delay: 0.5s; }
+  #shopify-section-{{ section.id }} .fabindia-faq-aos-animate:nth-child(6) { animation-delay: 0.6s; }
+
+  {%- if section.settings.enable_parallax -%}
+  #shopify-section-{{ section.id }} .fabindia-faq-item {
+    transform: translateY(0);
+    transition: transform 0.6s ease;
+  }
+  {%- endif -%}
+</style>
+
+<div class="fabindia-faq-hero" data-section-id="{{ section.id }}">
+  <div class="fabindia-faq-container">
+    <!-- Header -->
+    <div class="fabindia-faq-header fabindia-faq-aos-animate">
+      <h2 class="fabindia-faq-title">{{ section.settings.main_title }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="fabindia-faq-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <!-- FAQ Wrapper -->
+    <div class="fabindia-faq-wrapper">
+      <!-- Layout based on selection -->
+      <div class="fabindia-faq-{{ section.settings.layout_type }}">
+        {%- for block in section.blocks -%}
+          <div class="fabindia-faq-item fabindia-faq-aos-animate" {{ block.shopify_attributes }}>
+            {%- if block.settings.show_badge and block.settings.badge_text != blank -%}
+              <span class="fabindia-faq-badge">{{ block.settings.badge_text }}</span>
+            {%- endif -%}
+            
+            <div class="fabindia-faq-icon">
+              {%- if block.settings.icon_type == 'svg' -%}
+                {%- case block.settings.icon_svg -%}
+                  {%- when 'check' -%}
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  {%- when 'question' -%}
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                  {%- when 'info' -%}
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                  {%- when 'star' -%}
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                  {%- when 'heart' -%}
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  {%- when 'shield' -%}
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                {%- endcase -%}
+              {%- elsif block.settings.icon_type == 'image' and block.settings.icon_image != blank -%}
+                <img src="{{ block.settings.icon_image | img_url: '100x100' }}" alt="{{ block.settings.question }}" loading="lazy">
+              {%- else -%}
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+              {%- endif -%}
+            </div>
+            
+            <div class="fabindia-faq-content">
+              <div class="parte_sopra"><h3 class="fabindia-faq-question">{{ block.settings.question }}</h3>
+              <div class="fabindia-faq-answer">
+                {{ block.settings.answer }}
+              </div></div>
+              
+              {%- if block.settings.image != blank -%}
+                <div class="fabindia-faq-image">
+                  <img src="{{ block.settings.image | img_url: '400x' }}" alt="{{ block.settings.question }}" loading="lazy">
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- Carousel Controls -->
+      {%- if section.settings.layout_type == 'carousel' -%}
+        <div class="fabindia-carousel-controls">
+          {%- for block in section.blocks -%}
+            <span class="fabindia-carousel-dot {%- if forloop.first -%}active{%- endif -%}" data-index="{{ forloop.index0 }}"></span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- CTA Section -->
+    {%- if section.settings.show_cta -%}
+    <div class="fabindia-faq-cta fabindia-faq-aos-animate">
+      <a href="{{ section.settings.cta_link }}" class="fabindia-faq-btn">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  // Esegui il codice solo quando il DOM è pronto
+  function initFaqSection{{ section.id | replace: '-', '_' }}() {
+    const sectionId = '{{ section.id }}';
+    const section = document.querySelector(`[data-section-id="${sectionId}"]`);
+    
+    if (!section) return;
+
+    // Animations con scope limitato alla sezione
+    const animateElements = section.querySelectorAll('.fabindia-faq-aos-animate');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+        }
+      });
+    }, { 
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+    
+    animateElements.forEach(el => observer.observe(el));
+
+    // Accordion functionality con scope limitato
+    {%- if section.settings.layout_type == 'accordion' -%}
+    const accordionItems = section.querySelectorAll('.fabindia-faq-item');
+    accordionItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('active');
+        accordionItems.forEach(other => {
+          if (other !== this) other.classList.remove('active');
+        });
+      });
+    });
+    {%- endif -%}
+
+    // Carousel functionality con scope limitato
+    {%- if section.settings.layout_type == 'carousel' -%}
+    const carousel = section.querySelector('.fabindia-faq-carousel');
+    const dots = section.querySelectorAll('.fabindia-carousel-dot');
+    const items = carousel.querySelectorAll('.fabindia-faq-item');
+    
+    if (carousel && dots.length && items.length) {
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const itemWidth = items[0].offsetWidth + 20;
+          carousel.scrollTo({
+            left: itemWidth * index,
+            behavior: 'smooth'
+          });
+          dots.forEach(d => d.classList.remove('active'));
+          dot.classList.add('active');
+        });
+      });
+
+      // Update active dot on scroll
+      let scrollTimeout;
+      carousel.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const itemWidth = items[0].offsetWidth + 20;
+          const currentIndex = Math.round(carousel.scrollLeft / itemWidth);
+          dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+          });
+        }, 50);
+      });
+    }
+    {%- endif -%}
+
+    // Parallax effect con scope limitato e throttling
+    {%- if section.settings.enable_parallax -%}
+    let ticking = false;
+    function updateParallax() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.pageYOffset;
+          const items = section.querySelectorAll('.fabindia-faq-item');
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+          
+          // Applica parallax solo quando la sezione è visibile
+          if (scrolled > sectionTop - window.innerHeight && scrolled < sectionTop + sectionHeight) {
+            items.forEach((item, index) => {
+              const speed = 0.5 + (index * 0.1);
+              const yPos = -(scrolled * speed * 0.1); // Ridotto l'effetto
+              item.style.transform = `translateY(${yPos}px)`;
+            });
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    
+    window.addEventListener('scroll', updateParallax, { passive: true });
+    {%- endif -%}
+  }
+
+  // Inizializza quando il DOM è pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFaqSection{{ section.id | replace: '-', '_' }});
+  } else {
+    initFaqSection{{ section.id | replace: '-', '_' }}();
+  }
+})();
+</script>
+
+<!-- Schema Markup per SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for block in section.blocks -%}
+    {
+      "@type": "Question",
+      "name": {{ block.settings.question | json }},
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": {{ block.settings.answer | strip_html | json }}
+      }
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Hero Ultra",
+  "settings": [
+    {
+      "type": "header",
+      "content": "📝 Contenuti Header"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Titolo principale",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Layout e Design"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Tipo di layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Griglia"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        },
+        {
+          "value": "accordion",
+          "label": "Accordion"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Colonne desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Colonne mobile",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Spazio tra elementi",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Spazio mobile",
+      "min": 10,
+      "max": 30,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Stile Titolo"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Dimensione titolo",
+      "min": 100,
+      "max": 200,
+      "step": 10,
+      "default": 150,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Dimensione mobile",
+      "min": 80,
+      "max": 150,
+      "step": 10,
+      "default": 120,
+      "unit": "%"
+    },
+    {
+      "type": "select",
+      "id": "title_animation",
+      "label": "Animazione titolo",
+      "options": [
+        {
+          "value": "none",
+          "label": "Nessuna"
+        },
+        {
+          "value": "underline",
+          "label": "Sottolineatura"
+        }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Card Design"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Raggio bordi",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Padding card",
+      "min": 20,
+      "max": 50,
+      "step": 5,
+      "default": 35,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_padding_mobile",
+      "label": "Padding mobile",
+      "min": 15,
+      "max": 35,
+      "step": 5,
+      "default": 25,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_shadow",
+      "label": "Ombra card",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "hover_effect",
+      "label": "Effetto hover",
+      "options": [
+        {
+          "value": "none",
+          "label": "Nessuno"
+        },
+        {
+          "value": "lift",
+          "label": "Solleva"
+        },
+        {
+          "value": "glow",
+          "label": "Bagliore"
+        },
+        {
+          "value": "scale",
+          "label": "Ingrandisci"
+        }
+      ],
+      "default": "lift"
+    },
+    {
+      "type": "header",
+      "content": "🎯 Icone"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Dimensione icona",
+      "min": 40,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Dimensione mobile",
+      "min": 30,
+      "max": 60,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_border_radius",
+      "label": "Raggio icona",
+      "min": 0,
+      "max": 50,
+      "step": 10,
+      "default": 50,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "icon_animation",
+      "label": "Anima icona hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "📝 Testi"
+    },
+    {
+      "type": "select",
+      "id": "question_weight",
+      "label": "Peso domande",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normale"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "bold",
+          "label": "Grassetto"
+        }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "range",
+      "id": "question_size",
+      "label": "Dimensione domande",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "question_size_mobile",
+      "label": "Dimensione mobile",
+      "min": 0.3,
+      "max": 5,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "answer_size",
+      "label": "Dimensione risposte",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "answer_size_mobile",
+      "label": "Dimensione risposte mobile",
+      "min": 0.3,
+      "max": 5,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "answer_opacity",
+      "label": "Opacità risposte",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "default": 85,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Sfondo card",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "card_glow_color",
+      "label": "Colore bagliore",
+      "default": "rgba(195, 58, 50, 0.3)"
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Sfondo icone",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Colore icone",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Colore domande",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Colore risposte",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Colore evidenze",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Colore badge",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Colore dots",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "dot_active_color",
+      "label": "Dots attivi",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "🔘 Call to Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Mostra CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA",
+      "default": "Scopri di più"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA"
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_x",
+      "label": "Padding X",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "btn_padding_y",
+      "label": "Padding Y",
+      "min": 10,
+      "max": 25,
+      "step": 5,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "btn_animation",
+      "label": "Animazione CTA",
+      "options": [
+        {
+          "value": "none",
+          "label": "Nessuna"
+        },
+        {
+          "value": "sweep",
+          "label": "Sweep"
+        }
+      ],
+      "default": "sweep"
+    },
+    {
+      "type": "header",
+      "content": "✨ Effetti Avanzati"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pattern",
+      "label": "Pattern sfondo",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "pattern_color",
+      "label": "Colore pattern",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "range",
+      "id": "pattern_opacity",
+      "label": "Opacità pattern",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 20,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Effetto parallax",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout & Spacing"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Larghezza max",
+      "options": [
+        {
+          "value": "default",
+          "label": "Standard"
+        },
+        {
+          "value": "100%",
+          "label": "Full width"
+        },
+        {
+          "value": "1400px",
+          "label": "Extra large"
+        },
+        {
+          "value": "1200px",
+          "label": "Large"
+        },
+        {
+          "value": "1100px",
+          "label": "Medium-large"
+        },
+        {
+          "value": "1000px",
+          "label": "Medium"
+        },
+        {
+          "value": "900px",
+          "label": "Compact"
+        },
+        {
+          "value": "800px",
+          "label": "Small"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "📱 Responsive"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_mobile",
+      "label": "Nascondi mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_desktop",
+      "label": "Nascondi desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📏 Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin top",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin bottom",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "💻 Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin top",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin bottom",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "⚡ Avanzate"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_smooth_transitions",
+      "label": "Transizioni fluide",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Domanda",
+          "default": "Domanda FAQ"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Risposta",
+          "default": "<p>Risposta alla domanda</p>"
+        },
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Tipo icona",
+          "options": [
+            {
+              "value": "svg",
+              "label": "Icona SVG"
+            },
+            {
+              "value": "image",
+              "label": "Immagine custom"
+            }
+          ],
+          "default": "svg"
+        },
+        {
+          "type": "select",
+          "id": "icon_svg",
+          "label": "Icona SVG",
+          "options": [
+            {
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "value": "question",
+              "label": "Domanda"
+            },
+            {
+              "value": "info",
+              "label": "Info"
+            },
+            {
+              "value": "star",
+              "label": "Stella"
+            },
+            {
+              "value": "heart",
+              "label": "Cuore"
+            },
+            {
+              "value": "shield",
+              "label": "Scudo"
+            }
+          ],
+          "default": "question"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icona custom"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine FAQ"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_badge",
+          "label": "Mostra badge",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Testo badge",
+          "default": "NEW"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Hero Ultra",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Domanda 1",
+            "answer": "<p>Risposta 1</p>",
+            "icon_svg": "check"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Domanda 2",
+            "answer": "<p>Risposta 2</p>",
+            "icon_svg": "info"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Domanda 3",
+            "answer": "<p>Risposta 3</p>",
+            "icon_svg": "shield"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

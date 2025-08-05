@@ -1,0 +1,1191 @@
+{%- assign per_row = section.settings.per_row -%}
+{%- assign product_limit = per_row | times: section.settings.rows -%}
+{%- assign collection = collections[section.settings.home_featured_products] -%}
+
+{%- if section.settings.divider -%}<div class="section--divider">{%- endif -%}
+
+<style>
+  /* === FABINDIA UTILITY STYLES === */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      {%- unless section.settings.max_width == 'default' -%}
+        max-width: {{ section.settings.max_width }}!important;
+        margin-left: auto;
+        margin-right: auto;
+      {%- endunless -%}
+      
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      
+      {%- if section.settings.hide_on_desktop -%}
+        display: none !important;
+      {%- endif -%}
+    }
+
+    #shopify-section-{{ section.id }} .page-width{
+      max-width: none!important;
+    }
+    
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      
+      {%- if section.settings.hide_on_mobile -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  {%- if section.settings.enable_smooth_transitions -%}
+    #shopify-section-{{ section.id }} {
+      transition: all 0.3s ease;
+    }
+  {%- endif -%}
+
+  /* === FABINDIA FEATURED COLLECTION STYLES === */
+  #CollectionSection-{{ section.id }} {
+    background-color: {{ section.settings.section_background_color }};
+    position: relative;
+  }
+
+  /* Pattern di sfondo migliorato */
+  {%- if section.settings.enable_background_pattern -%}
+    #CollectionSection-{{ section.id }}::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 1px 1px, {{ section.settings.pattern_color }} {{ section.settings.pattern_size }}px, transparent {{ section.settings.pattern_size }}px);
+      background-size: {{ section.settings.pattern_spacing }}px {{ section.settings.pattern_spacing }}px;
+      opacity: {{ section.settings.pattern_opacity | divided_by: 100.0 }};
+      pointer-events: none;
+    }
+  {%- endif -%}
+
+  /* Header Styles */
+  #CollectionSection-{{ section.id }} .fabindia-collection-header {
+    text-align: center;
+    margin-bottom: {{ section.settings.header_spacing }}px;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-collection-title {
+    color: {{ section.settings.title_color }};
+    margin: 0 0 12px;
+    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+    font-weight: var(--typeHeaderWeight);
+    font-style: var(--typeHeaderStyle);
+    font-size: {{ section.settings.custom_title_size }}px;
+    letter-spacing: var(--typeHeaderSpacing);
+    line-height: var(--typeHeaderLineHeight);
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-collection-subtitle {
+    color: {{ section.settings.subtitle_color }};
+    font-size: 16px;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  /* Product Grid */
+  #CollectionSection-{{ section.id }} .fabindia-products-grid {
+    display: grid;
+    grid-template-columns: repeat({{ per_row }}, 1fr);
+    gap: {{ section.settings.grid_gap_desktop }}px;
+  }
+
+  /* Product Card */
+  #CollectionSection-{{ section.id }} .fabindia-product-card {
+    background-color: {{ section.settings.card_background_color }};
+    border-radius: {{ section.settings.card_border_radius }}px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+    {%- if section.settings.card_border_width > 0 -%}
+      border: {{ section.settings.card_border_width }}px solid {{ section.settings.card_border_color }};
+    {%- endif -%}
+    {%- if section.settings.enable_card_shadow -%}
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    {%- endif -%}
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-card:hover {
+    {%- if section.settings.enable_hover_effect -%}
+      transform: translateY(-{{ section.settings.hover_lift }}px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    {%- endif -%}
+  }
+
+  /* Image Container - Simplified */
+  #CollectionSection-{{ section.id }} .fabindia-product-image-container {
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f8f8;
+    display: block;
+    line-height: 0;
+    aspect-ratio: 4/5;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Per l'animazione, le immagini devono essere sovrapposte */
+  #CollectionSection-{{ section.id }} .fabindia-product-image[data-animation-image] {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Badge */
+  #CollectionSection-{{ section.id }} .fabindia-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: {{ section.settings.badge_bg_color }};
+    color: {{ section.settings.badge_text_color }};
+    padding: 6px 12px;
+    border-radius: {{ section.settings.badge_border_radius }}px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+
+  /* Product Info Container - Con padding controllabile */
+  #CollectionSection-{{ section.id }} .fabindia-product-info {
+    padding: {{ section.settings.content_padding_desktop }}px;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-title {
+    color: {{ section.settings.product_title_color }};
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 8px;
+    line-height: 1.4;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-title a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-title a:hover {
+    opacity: 0.7;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-price {
+    color: {{ section.settings.price_color }};
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-price .original-price {
+    color: {{ section.settings.compare_price_color }};
+    text-decoration: line-through;
+    margin-left: 8px;
+    font-size: 16px;
+    opacity: 0.7;
+  }
+
+  /* Extra Info */
+  #CollectionSection-{{ section.id }} .fabindia-product-extra {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid {{ section.settings.card_border_color }};
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-description {
+    color: {{ section.settings.extra_info_text_color }};
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0 0 8px;
+    opacity: 0.85;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-bullets li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: {{ section.settings.extra_info_text_color }};
+    line-height: 1.4;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-bullets li::before {
+    content: '{{ section.settings.bullet_icon }}';
+    position: absolute;
+    left: 0;
+    color: {{ section.settings.bullet_color }};
+  }
+
+  /* CTA Button */
+  #CollectionSection-{{ section.id }} .fabindia-collection-cta {
+    text-align: center;
+    margin-top: {{ section.settings.cta_spacing }}px;
+  }
+
+  /* Mobile Styles */
+  @media only screen and (max-width: 768px) {
+    #CollectionSection-{{ section.id }} .fabindia-collection-title {
+      font-size: {{ section.settings.custom_title_size_mobile }}px;
+    }
+
+    #CollectionSection-{{ section.id }} .fabindia-products-grid {
+      {%- if section.settings.mobile_scrollable -%}
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: {{ section.settings.grid_gap_mobile }}px;
+        margin: 0 -20px;
+        padding: 0 20px;
+      {%- else -%}
+        grid-template-columns: repeat({{ section.settings.per_row_mobile }}, 1fr);
+        gap: {{ section.settings.grid_gap_mobile }}px;
+      {%- endif -%}
+    }
+
+    {%- if section.settings.mobile_scrollable -%}
+      #CollectionSection-{{ section.id }} .fabindia-product-card {
+        flex: 0 0 calc({{ 100 | divided_by: section.settings.per_row_mobile }}% - 10px);
+        scroll-snap-align: start;
+      }
+    {%- endif -%}
+
+    #CollectionSection-{{ section.id }} .fabindia-product-info {
+      padding: {{ section.settings.content_padding_mobile }}px;
+    }
+
+    #CollectionSection-{{ section.id }} .fabindia-product-title {
+      font-size: 14px;
+    }
+
+    #CollectionSection-{{ section.id }} .fabindia-product-price {
+      font-size: 16px;
+    }
+  }
+
+  /* Quick Shop Button */
+  #CollectionSection-{{ section.id }} .fabindia-quick-shop {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--colorBtnPrimary);
+    color: var(--colorBtnPrimaryText);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  #CollectionSection-{{ section.id }} .fabindia-product-card:hover .fabindia-quick-shop {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+</style>
+
+<div
+  id="CollectionSection-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="collection-grid"
+  data-context="featured-collection">
+  
+  <div class="page-width">
+    {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
+      <div class="fabindia-collection-header">
+        {%- if section.settings.title != blank -%}
+          <h2 class="fabindia-collection-title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="fabindia-collection-subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+        {%- if section.settings.show_cta_top and section.settings.view_all -%}
+          <div class="fabindia-collection-cta" style="margin-top: 20px;">
+            <a href="{{ collections[section.settings.home_featured_products].url }}" class="btn">
+              {{ section.settings.cta_text | default: 'Visualizza tutto' }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="fabindia-products-grid">
+      {%- if section.settings.product_mode == 'manual' and section.blocks.size > 0 -%}
+        {%- comment -%} Modalità Manuale con Blocchi {%- endcomment -%}
+        {%- for block in section.blocks limit: product_limit -%}
+          {%- assign manual_product = all_products[block.settings.product] -%}
+          {%- if manual_product != blank -%}
+            <div class="fabindia-product-card" data-product-id="{{ manual_product.id }}" data-product-title="{{ manual_product.title }}" {{ block.shopify_attributes }}>
+              {%- if section.settings.enable_badges and manual_product.metafields.custom.badge_text != blank -%}
+                <span class="fabindia-badge">{{ manual_product.metafields.custom.badge_text }}</span>
+              {%- endif -%}
+              
+              <a href="{{ manual_product.url }}" class="fabindia-product-image-container">
+                {%- if manual_product.featured_image -%}
+                  <img 
+                    src="{{ manual_product.featured_image | img_url: '600x600' }}"
+                    alt="{{ manual_product.title | escape }}"
+                    class="fabindia-product-image"
+                    loading="lazy"
+                    width="600"
+                    height="750"
+                  >
+                  {%- if section.settings.enable_image_animation and manual_product.images.size > 1 -%}
+                    {%- for image in manual_product.images offset: 1 limit: section.settings.animation_image_count -%}
+                      <img 
+                        src="{{ image | img_url: '600x600' }}"
+                        alt="{{ manual_product.title | escape }}"
+                        class="fabindia-product-image"
+                        style="opacity: 0;"
+                        loading="lazy"
+                        data-animation-image="{{ forloop.index }}"
+                        width="600"
+                        height="750"
+                      >
+                    {%- endfor -%}
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'fabindia-product-image' }}
+                {%- endif -%}
+              </a>
+
+              <div class="fabindia-product-info">
+                <h3 class="fabindia-product-title">
+                  <a href="{{ manual_product.url }}">{{ manual_product.title }}</a>
+                </h3>
+                <p class="fabindia-product-price">
+                  {{ manual_product.price | money }}
+                  {%- if manual_product.compare_at_price > manual_product.price -%}
+                    <span class="original-price">{{ manual_product.compare_at_price | money }}</span>
+                  {%- endif -%}
+                </p>
+
+                {%- if section.settings.show_extra_info -%}
+                  {%- if manual_product.metafields.custom.short_description != blank or manual_product.metafields.custom.product_features != blank -%}
+                    <div class="fabindia-product-extra">
+                      {%- if manual_product.metafields.custom.short_description != blank -%}
+                        <p class="fabindia-product-description">
+                          {{ manual_product.metafields.custom.short_description }}
+                        </p>
+                      {%- endif -%}
+                      
+                      {%- if manual_product.metafields.custom.product_features != blank -%}
+                        <ul class="fabindia-product-bullets">
+                          {%- assign features = manual_product.metafields.custom.product_features | split: '|' -%}
+                          {%- for feature in features -%}
+                            <li>{{ feature | strip }}</li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+
+              {%- if settings.quick_shop_enable -%}
+                <a href="{{ manual_product.url }}" class="fabindia-quick-shop quick-product-modal" data-product-handle="{{ manual_product.handle }}">
+                  {{ 'products.product.quick_shop' | t }}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+        
+      {%- elsif section.settings.home_featured_products == blank or collections[section.settings.home_featured_products].empty? or collections[section.settings.home_featured_products].products_count == 0 -%}
+        {%- comment -%} Placeholder quando non c'è collezione {%- endcomment -%}
+        {%- for i in (1..product_limit) -%}
+          <div class="fabindia-product-card">
+            <div class="fabindia-product-image-container">
+              {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'fabindia-product-image' }}
+            </div>
+            <div class="fabindia-product-info">
+              <h3 class="fabindia-product-title">
+                <a href="#">Prodotto di esempio</a>
+              </h3>
+              <p class="fabindia-product-price">€29,00</p>
+            </div>
+          </div>
+        {%- endfor -%}
+
+      {%- else -%}
+        {%- comment -%} Modalità Automatica dalla Collezione {%- endcomment -%}
+        {%- for product in collection.products limit: product_limit -%}
+          <div class="fabindia-product-card" data-product-id="{{ product.id }}" data-product-title="{{ product.title }}">
+            {%- if section.settings.enable_badges and product.metafields.custom.badge_text != blank -%}
+              <span class="fabindia-badge">{{ product.metafields.custom.badge_text }}</span>
+            {%- endif -%}
+            
+            <a href="{{ product.url | within: collection }}" class="fabindia-product-image-container">
+              {%- if product.featured_image -%}
+                <img 
+                  src="{{ product.featured_image | img_url: '600x600' }}"
+                  alt="{{ product.title | escape }}"
+                  class="fabindia-product-image"
+                  loading="lazy"
+                  width="600"
+                  height="750"
+                >
+                {%- if section.settings.enable_image_animation and product.images.size > 1 -%}
+                  {%- for image in product.images offset: 1 limit: section.settings.animation_image_count -%}
+                    <img 
+                      src="{{ image | img_url: '600x600' }}"
+                      alt="{{ product.title | escape }}"
+                      class="fabindia-product-image"
+                      style="opacity: 0;"
+                      loading="lazy"
+                      data-animation-image="{{ forloop.index }}"
+                      width="600"
+                      height="750"
+                    >
+                  {%- endfor -%}
+                {%- endif -%}
+              {%- else -%}
+                {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'fabindia-product-image' }}
+              {%- endif -%}
+            </a>
+
+            <div class="fabindia-product-info">
+              <h3 class="fabindia-product-title">
+                <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+              </h3>
+              <p class="fabindia-product-price">
+                {{ product.price | money }}
+                {%- if product.compare_at_price > product.price -%}
+                  <span class="original-price">{{ product.compare_at_price | money }}</span>
+                {%- endif -%}
+              </p>
+
+              {%- if section.settings.show_extra_info -%}
+                {%- if product.metafields.custom.short_description != blank or product.metafields.custom.product_features != blank -%}
+                  <div class="fabindia-product-extra">
+                    {%- if product.metafields.custom.short_description != blank -%}
+                      <p class="fabindia-product-description">
+                        {{ product.metafields.custom.short_description }}
+                      </p>
+                    {%- endif -%}
+                    
+                    {%- if product.metafields.custom.product_features != blank -%}
+                      <ul class="fabindia-product-bullets">
+                        {%- assign features = product.metafields.custom.product_features | split: '|' -%}
+                        {%- for feature in features -%}
+                          <li>{{ feature | strip }}</li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+
+            {%- if settings.quick_shop_enable -%}
+              <a href="{{ product.url | within: collection }}" class="fabindia-quick-shop quick-product-modal" data-product-handle="{{ product.handle }}">
+                {{ 'products.product.quick_shop' | t }}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_cta_bottom and section.settings.view_all -%}
+      <div class="fabindia-collection-cta">
+        <a href="{{ collections[section.settings.home_featured_products].url }}" class="btn">
+          {{ section.settings.cta_text | default: 'Visualizza tutto' }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- if section.settings.divider -%}</div>{%- endif -%}
+
+{%- if section.settings.enable_image_animation -%}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('#CollectionSection-{{ section.id }} .fabindia-product-card');
+    
+    cards.forEach(card => {
+      const images = card.querySelectorAll('.fabindia-product-image');
+      if (images.length > 1) {
+        let currentIndex = 0;
+        let interval;
+        
+        card.addEventListener('mouseenter', function() {
+          interval = setInterval(() => {
+            images[currentIndex].style.opacity = '0';
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].style.opacity = '1';
+          }, {{ section.settings.animation_duration | times: 1000 | divided_by: images.length }});
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          clearInterval(interval);
+          images.forEach((img, index) => {
+            img.style.opacity = index === 0 ? '1' : '0';
+          });
+          currentIndex = 0;
+        });
+      }
+    });
+  });
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Featured Collection Pro",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "📦 Contenuto Base"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Collezione in Evidenza"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Scopri i nostri prodotti selezionati"
+    },
+    {
+      "type": "collection",
+      "id": "home_featured_products",
+      "label": "Collezione"
+    },
+    {
+      "type": "header",
+      "content": "🎯 Modalità Prodotti"
+    },
+    {
+      "type": "select",
+      "id": "product_mode",
+      "label": "Modalità selezione",
+      "options": [
+        {
+          "value": "automatic",
+          "label": "Automatica da collezione"
+        },
+        {
+          "value": "manual",
+          "label": "Manuale con blocchi"
+        }
+      ],
+      "default": "automatic",
+      "info": "Scegli se mostrare prodotti automaticamente dalla collezione o selezionarli manualmente"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Layout e Griglia"
+    },
+    {
+      "type": "range",
+      "id": "per_row",
+      "label": "Prodotti per riga (Desktop)",
+      "default": 4,
+      "min": 2,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "per_row_mobile",
+      "label": "Prodotti per riga (Mobile)",
+      "default": 2,
+      "min": 1,
+      "max": 3,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Numero di righe",
+      "default": 1,
+      "min": 1,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_scrollable",
+      "label": "Scorrevole su mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_desktop",
+      "label": "Spazio tra prodotti (Desktop)",
+      "default": 20,
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "label": "Spazio tra prodotti (Mobile)",
+      "default": 12,
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "🎯 Call to Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "view_all",
+      "label": "Mostra pulsante CTA",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_top",
+      "label": "Mostra CTA sopra i prodotti",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_bottom",
+      "label": "Mostra CTA sotto i prodotti",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA",
+      "default": "Visualizza tutto"
+    },
+    {
+      "type": "range",
+      "id": "cta_spacing",
+      "label": "Spazio prima della CTA",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Sezione"
+    },
+    {
+      "type": "color",
+      "id": "section_background_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Colore sottotitolo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_background_pattern",
+      "label": "Abilita pattern sfondo",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "pattern_color",
+      "label": "Colore pattern",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "range",
+      "id": "pattern_opacity",
+      "label": "Opacità pattern",
+      "default": 20,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "pattern_size",
+      "label": "Dimensione pattern",
+      "default": 1,
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "pattern_spacing",
+      "label": "Spaziatura pattern",
+      "default": 20,
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "🃏 Card Prodotto"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Sfondo card",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Raggio bordo card",
+      "default": 8,
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Spessore bordo",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Colore bordo",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_card_shadow",
+      "label": "Abilita ombra card",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_effect",
+      "label": "Effetto hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "hover_lift",
+      "label": "Sollevamento hover",
+      "default": 4,
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "📐 Spaziatura Contenuto"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_desktop",
+      "label": "Padding contenuto (Desktop)",
+      "default": 20,
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_mobile",
+      "label": "Padding contenuto (Mobile)",
+      "default": 16,
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Spazio dopo header",
+      "default": 40,
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "🖼️ Immagini"
+    },
+    {
+      "type": "range",
+      "id": "image_ratio",
+      "label": "Rapporto immagine",
+      "default": 125,
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "info": "100% = quadrato, 125% = verticale"
+    },
+    {
+      "type": "header",
+      "content": "🎞️ Animazione Immagini"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_image_animation",
+      "label": "Abilita animazione GIF",
+      "default": false,
+      "info": "Mostra le immagini in sequenza al passaggio del mouse"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Durata animazione",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "step": 0.5,
+      "unit": "s"
+    },
+    {
+      "type": "range",
+      "id": "animation_image_count",
+      "label": "Numero immagini",
+      "default": 4,
+      "min": 2,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "💰 Prezzi"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Colore titolo prodotto",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Colore prezzo",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "compare_price_color",
+      "label": "Colore prezzo scontato",
+      "default": "#B5A397"
+    },
+    {
+      "type": "header",
+      "content": "📝 Info Extra Prodotto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_extra_info",
+      "label": "Mostra info extra",
+      "default": false,
+      "info": "Mostra metafield custom"
+    },
+    {
+      "type": "color",
+      "id": "extra_info_text_color",
+      "label": "Colore testo extra",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "text",
+      "id": "bullet_icon",
+      "label": "Icona bullet",
+      "default": "✓"
+    },
+    {
+      "type": "color",
+      "id": "bullet_color",
+      "label": "Colore bullet",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "🏷️ Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_badges",
+      "label": "Abilita badge",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Sfondo badge",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Testo badge",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "label": "Raggio bordo badge",
+      "default": 16,
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "📏 Dimensioni Testo"
+    },
+    {
+      "type": "range",
+      "id": "custom_title_size",
+      "label": "Dimensione titolo desktop",
+      "default": 36,
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "custom_title_size_mobile",
+      "label": "Dimensione titolo mobile",
+      "default": 28,
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "divider",
+      "label": "Mostra divisore",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout & Spacing"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Larghezza Massima Desktop",
+      "options": [
+        {
+          "value": "default",
+          "label": "Larghezza standard tema"
+        },
+        {
+          "value": "100%",
+          "label": "Schermo intero (100%)"
+        },
+        {
+          "value": "1400px",
+          "label": "Extra large (1400px)"
+        },
+        {
+          "value": "1200px",
+          "label": "Large (1200px)"
+        },
+        {
+          "value": "1100px",
+          "label": "Medium-large (1100px)"
+        },
+        {
+          "value": "1000px",
+          "label": "Medium (1000px)"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "📱 Visibilità Responsive"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_mobile",
+      "label": "Nascondi su Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_desktop",
+      "label": "Nascondi su Desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📏 Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding superiore",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding inferiore",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "💻 Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding superiore",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding inferiore",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "⚡ Opzioni Avanzate"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_smooth_transitions",
+      "label": "Abilita transizioni fluide",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Prodotto",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Seleziona prodotto"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection Pro",
+      "category": "Fabindia Custom"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer", "header", "custom.popups"]
+  }
+}
+{% endschema %}

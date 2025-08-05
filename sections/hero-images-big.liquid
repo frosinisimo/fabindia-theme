@@ -1,0 +1,1118 @@
+<!-- Sezione Hero Full-Screen Interattiva per Fabindia Roma - V3 Ultimate -->
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --hero-bg-color: {{ section.settings.background_color }};
+    --hero-text-color: {{ section.settings.text_color }};
+    --hero-title-color: {{ section.settings.title_color }};
+    --hero-border-radius: {{ section.settings.border_radius }}px;
+    --hero-cta-radius: {{ section.settings.cta_border_radius }}px;
+    --hero-desktop-width: {{ section.settings.desktop_width }}%;
+    --hero-mobile-width: {{ section.settings.mobile_width }}%;
+    --hero-spacing: {{ section.settings.spacing }}px;
+    --hero-mobile-spacing: {{ section.settings.mobile_spacing }}px;
+    --hero-desktop-columns: {{ section.settings.desktop_columns }};
+    --hero-mobile-columns: {{ section.settings.mobile_columns }};
+  }
+
+  .fabindia-hero-fullscreen {
+    position: relative;
+    width: 100%;
+    /* min-height: 100vh; */
+    background-color: var(--hero-bg-color);
+    overflow: hidden;
+  }
+
+  h3.hero-title {
+    letter-spacing: 0.1em!important;
+}
+
+  a.hero-cta.btn.btn--primary {
+    font-weight: 700 !important;
+}
+  
+  .hero-container {
+    max-width: var(--hero-desktop-width);
+    margin: 0 auto;
+    padding: var(--hero-spacing);
+    /* min-height: 100vh; */
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: var(--hero-spacing);
+    width: 100%;
+    grid-template-columns: repeat(var(--hero-desktop-columns), 1fr);
+    align-items: stretch;
+    grid-auto-rows: minmax(400px, auto);
+  }
+
+  .hero-block {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--hero-border-radius);
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #f5f5f5;
+  }
+
+  .hero-block.format-square { aspect-ratio: 1 / 1; }
+  .hero-block.format-vertical { aspect-ratio: 3 / 4; }
+  .hero-block.format-horizontal { aspect-ratio: 16 / 9; }
+  .hero-block.format-natural { 
+    aspect-ratio: unset; 
+    height: 100%;
+    min-height: 400px;
+  }
+
+  .hero-media-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .hero-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  .hero-block.format-natural .hero-media {
+    object-fit: contain;
+    background-color: #f5f5f5;
+  }
+
+  .hero-block.format-natural.fit-cover .hero-media {
+    object-fit: cover;
+  }
+
+  .hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Fixed Overlay (sempre visibile) */
+  .hero-fixed-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Hover Overlay */
+  .hero-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 2;
+  }
+
+  .hero-block.overlay-enabled:hover .hero-hover-overlay {
+    opacity: 1;
+  }
+
+  /* Content Positioning */
+  .hero-content {
+    position: absolute;
+    padding: 30px;
+    z-index: 3;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Text Alignment */
+  .hero-content.text-left { text-align: left; }
+  .hero-content.text-center { text-align: center; }
+  .hero-content.text-right { text-align: right; }
+
+  /* 9 Position Classes */
+  .hero-content.position-top-left {
+    top: 30px; left: 30px; right: 30px;
+  }
+  .hero-content.position-top-center {
+    top: 30px; left: 50%; right: auto; 
+    transform: translateX(-50%);
+    width: calc(100% - 60px);
+  }
+  .hero-content.position-top-right {
+    top: 30px; right: 30px; left: 30px;
+  }
+  .hero-content.position-center-left {
+    top: 50%; left: 30px; right: 30px;
+    transform: translateY(-50%);
+  }
+  .hero-content.position-center {
+    top: 50%; left: 50%; right: auto;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 60px);
+  }
+  .hero-content.position-center-right {
+    top: 50%; right: 30px; left: 30px;
+    transform: translateY(-50%);
+  }
+  .hero-content.position-bottom-left {
+    bottom: 30px; left: 30px; right: 30px;
+  }
+  .hero-content.position-bottom-center {
+    bottom: 30px; left: 50%; right: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 60px);
+  }
+  .hero-content.position-bottom-right {
+    bottom: 30px; right: 30px; left: 30px;
+  }
+
+  /* Hover Content Animation */
+  .hero-block.overlay-enabled .hero-content {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .hero-block.overlay-enabled:hover .hero-content {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Fixed Title (sempre visibile quando overlay è disattivato) */
+  .hero-fixed-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 
+                 0 0 20px rgba(0,0,0,0.5),
+                 0 0 40px rgba(0,0,0,0.3);
+    margin: 0;
+  }
+
+  /* Animazioni Hover */
+  .hero-block.animation-zoom:hover .hero-media {
+    transform: scale(1.1);
+  }
+
+  .hero-block.animation-rotate:hover {
+    transform: rotateY(5deg) rotateX(5deg);
+  }
+
+  .hero-block.animation-slide:hover .hero-media {
+    transform: translateX(10px);
+  }
+
+  .hero-block.animation-blur:hover .hero-media {
+    filter: blur(3px);
+  }
+
+  .hero-block.animation-fade:hover .hero-media {
+    opacity: 0.8;
+  }
+
+  .hero-block.animation-3d:hover {
+    transform: perspective(1000px) rotateY(10deg);
+  }
+
+  .hero-block.animation-glitch:hover {
+    animation: glitch 0.3s infinite;
+  }
+
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+
+  .hero-text {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .hero-cta {
+    display: inline-block;
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: var(--hero-cta-radius);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    font-weight: 500;
+  }
+
+  .hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  }
+
+  /* Parallax Specific Styles */
+  .hero-block.parallax-enabled {
+    will-change: transform;
+    transition: none;
+  }
+
+  .hero-block.parallax-enabled .hero-media {
+    transform: scale(1.2);
+  }
+
+  /* Scroll Indicators */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    z-index: 10;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-10px); }
+    60% { transform: translateX(-50%) translateY(-5px); }
+  }
+
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .hero-container {
+      max-width: var(--hero-mobile-width);
+      padding: var(--hero-mobile-spacing);
+    }
+
+    .hero-grid {
+      gap: var(--hero-mobile-spacing);
+      grid-template-columns: repeat(var(--hero-mobile-columns), 1fr);
+      grid-auto-rows: minmax(300px, auto);
+    }
+
+    .hero-block.format-natural {
+      min-height: 300px;
+    }
+
+    .hero-title,
+    .hero-fixed-title {
+      font-size: 1.8rem;
+    }
+
+    .hero-text {
+      font-size: 1rem;
+    }
+
+    .hero-content {
+      padding: 20px;
+    }
+
+    /* Adjust positions for mobile */
+    .hero-content.position-top-left,
+    .hero-content.position-center-left,
+    .hero-content.position-bottom-left,
+    .hero-content.position-top-right,
+    .hero-content.position-center-right,
+    .hero-content.position-bottom-right {
+      left: 20px;
+      right: 20px;
+    }
+
+    .hero-content.position-top-center,
+    .hero-content.position-center,
+    .hero-content.position-bottom-center {
+      width: calc(100% - 40px);
+    }
+
+    .hero-content.position-top-left,
+    .hero-content.position-top-center,
+    .hero-content.position-top-right {
+      top: 20px;
+    }
+
+    .hero-content.position-bottom-left,
+    .hero-content.position-bottom-center,
+    .hero-content.position-bottom-right {
+      bottom: 20px;
+    }
+
+    .hero-block {
+      min-height: 40vh;
+    }
+
+    /* Mobile always shows content */
+    .hero-block.overlay-enabled .hero-content {
+      opacity: 1;
+      visibility: visible;
+      background: rgba(0,0,0,0.6);
+      border-radius: 8px;
+    }
+
+    /* Mobile Touch Animation */
+    .hero-block.touched {
+      transform: scale(0.98);
+    }
+  }
+
+  /* Loading Animation */
+  .hero-block.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: loading 1.5s infinite;
+    z-index: 4;
+  }
+
+  @keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Accessibility */
+  .hero-block:focus-visible {
+    outline: 3px solid #C07B4F;
+    outline-offset: 5px;
+  }
+
+  /* Performance */
+  .hero-media,
+  .hero-block {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+{%- endstyle -%}
+
+<div class="fabindia-hero-fullscreen" data-section-id="{{ section.id }}">
+  <div class="hero-container">
+    <div class="hero-grid">
+      {%- for block in section.blocks -%}
+        {%- assign overlay_opacity = block.settings.overlay_intensity | divided_by: 100.0 -%}
+        <div class="hero-block 
+             format-{{ block.settings.image_format }} 
+             animation-{{ block.settings.hover_animation }}
+             {% if block.settings.enable_overlay %}overlay-enabled{% endif %}
+             {% if block.settings.enable_parallax %}parallax-enabled{% endif %}
+             {% if block.settings.image_format == 'natural' and block.settings.natural_fit == 'cover' %}fit-cover{% endif %}"
+             data-block-id="{{ block.id }}"
+             data-parallax-speed="{{ block.settings.parallax_speed }}"
+             style="
+               --block-title-color: {{ block.settings.block_title_color }};
+               --block-text-color: {{ block.settings.block_text_color }};
+               --block-cta-bg: {{ block.settings.block_cta_bg_color }};
+               --block-cta-text: {{ block.settings.block_cta_text_color }};
+               --block-overlay-opacity: {{ overlay_opacity }};
+             "
+             {{ block.shopify_attributes }}>
+          
+          <div class="hero-media-wrapper">
+            {%- if block.settings.media_type == 'video' and block.settings.video != blank -%}
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="{{ block.settings.video }}" type="video/mp4">
+              </video>
+            {%- elsif block.settings.image != blank -%}
+              {%- render 'image-element',
+                img: block.settings.image,
+                classes: 'hero-media',
+                widths: '540, 720, 900, 1080, 1296, 1512, 1728, 2048'
+              -%}
+            {%- else -%}
+              <div class="hero-media loading" style="background-color: {{ block.settings.placeholder_color | default: '#F5E6D3' }};"></div>
+            {%- endif -%}
+          </div>
+          
+          {%- if block.settings.show_fixed_overlay -%}
+            <div class="hero-fixed-overlay" style="background: rgba(0,0,0,{{ overlay_opacity }});"></div>
+          {%- endif -%}
+          
+          {%- if block.settings.enable_overlay -%}
+            <div class="hero-hover-overlay" style="background: rgba(0,0,0,{{ overlay_opacity }});"></div>
+          {%- endif -%}
+          
+          <div class="hero-content position-{{ block.settings.content_position }} text-{{ block.settings.text_alignment }}">
+            {%- if block.settings.enable_overlay -%}
+              {%- if block.settings.title != blank -%}
+                <h3 class="hero-title" style="color: var(--block-title-color);">{{ block.settings.title }}</h3>
+              {%- endif -%}
+              
+              {%- if block.settings.text != blank -%}
+                <p class="hero-text" style="color: var(--block-text-color);">{{ block.settings.text }}</p>
+              {%- endif -%}
+              
+              {%- if block.settings.link_type == 'url' and block.settings.button_text != blank -%}
+                <a href="{{ block.settings.button_link }}" 
+                   class="hero-cta btn btn--primary" 
+                   style="background-color: var(--block-cta-bg); color: var(--block-cta-text);">
+                  {{ block.settings.button_text }}
+                </a>
+              {%- elsif block.settings.link_type == 'collection' and block.settings.collection != blank -%}
+                <a href="{{ block.settings.collection.url }}" 
+                   class="hero-cta btn btn--primary"
+                   style="background-color: var(--block-cta-bg); color: var(--block-cta-text);">
+                  {{ block.settings.collection.title }}
+                </a>
+              {%- endif -%}
+            {%- else -%}
+              {%- if block.settings.fixed_title != blank -%}
+                <h3 class="hero-fixed-title" style="color: var(--block-title-color);">{{ block.settings.fixed_title }}</h3>
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    
+    {%- if section.settings.show_scroll_indicator -%}
+      <div class="scroll-indicator">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path d="M15 20L8 13L9.4 11.6L15 17.2L20.6 11.6L22 13L15 20Z" fill="{{ section.settings.text_color }}"/>
+        </svg>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+    const blocks = section.querySelectorAll('.hero-block');
+    let rafId = null;
+    let parallaxElements = [];
+    
+    // Initialize parallax elements
+    blocks.forEach(block => {
+      if (block.classList.contains('parallax-enabled')) {
+        const media = block.querySelector('.hero-media');
+        if (media) {
+          parallaxElements.push({
+            element: block,
+            media: media,
+            speed: parseFloat(block.dataset.parallaxSpeed) || 0.5
+          });
+        }
+      }
+    });
+    
+    // Utility Functions Integration
+    {% if section.settings.enable_autoplay_videos %}
+      const videos = section.querySelectorAll('video');
+      videos.forEach(video => {
+        video.play().catch(e => console.log('Autoplay prevented:', e));
+      });
+    {% endif %}
+    
+    {% if section.settings.enable_scroll_animations %}
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      };
+      
+      const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+      
+      blocks.forEach(block => {
+        if (!block.classList.contains('parallax-enabled')) {
+          block.style.opacity = '0';
+          block.style.transform = 'translateY(30px)';
+          block.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+          scrollObserver.observe(block);
+        }
+      });
+    {% endif %}
+    
+    // Fixed Parallax Implementation
+    {% if section.settings.enable_parallax %}
+      function updateParallax() {
+        const scrolled = window.pageYOffset;
+        const windowHeight = window.innerHeight;
+        
+        parallaxElements.forEach(item => {
+          const rect = item.element.getBoundingClientRect();
+          const speed = item.speed;
+          
+          // Check if element is in viewport
+          if (rect.bottom >= 0 && rect.top <= windowHeight) {
+            const yPos = -(scrolled - item.element.offsetTop) * speed;
+            item.media.style.transform = `translateY(${yPos}px) scale(1.2)`;
+          }
+        });
+      }
+      
+      function onScroll() {
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+        }
+        rafId = requestAnimationFrame(updateParallax);
+      }
+      
+      window.addEventListener('scroll', onScroll);
+      updateParallax(); // Initial call
+    {% endif %}
+    
+    // Mobile touch interactions
+    if ('ontouchstart' in window) {
+      blocks.forEach(block => {
+        block.addEventListener('touchstart', function() {
+          this.classList.add('touched');
+        });
+        
+        block.addEventListener('touchend', function() {
+          setTimeout(() => {
+            this.classList.remove('touched');
+          }, 300);
+        });
+      });
+    }
+    
+    // Advanced mouse movement effect for desktop
+    {% if section.settings.enable_mouse_effects %}
+      if (!('ontouchstart' in window)) {
+        let mouseX = 0;
+        let mouseY = 0;
+        let animationFrame = null;
+        
+        function updateMouseEffect() {
+          blocks.forEach((block, index) => {
+            if (!block.classList.contains('parallax-enabled')) {
+              const delay = index * 0.05;
+              const intensity = 10;
+              
+              const xRotate = (mouseY - 0.5) * intensity;
+              const yRotate = (mouseX - 0.5) * intensity;
+              
+              block.style.transform = `
+                perspective(1000px)
+                rotateX(${-xRotate}deg)
+                rotateY(${yRotate}deg)
+                translateZ(${Math.abs(mouseX * mouseY) * 20}px)
+              `;
+            }
+          });
+        }
+        
+        section.addEventListener('mousemove', (e) => {
+          const rect = section.getBoundingClientRect();
+          mouseX = (e.clientX - rect.left) / rect.width;
+          mouseY = (e.clientY - rect.top) / rect.height;
+          
+          if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
+          }
+          animationFrame = requestAnimationFrame(updateMouseEffect);
+        });
+        
+        section.addEventListener('mouseleave', () => {
+          mouseX = 0.5;
+          mouseY = 0.5;
+          blocks.forEach(block => {
+            if (!block.classList.contains('parallax-enabled')) {
+              block.style.transform = '';
+            }
+          });
+        });
+      }
+    {% endif %}
+    
+    // Lazy loading
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.classList.remove('loading');
+              imageObserver.unobserve(img);
+            }
+          }
+        });
+      });
+      
+      section.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+    
+    // Analytics tracking
+    {% if section.settings.enable_analytics %}
+      blocks.forEach((block, index) => {
+        block.addEventListener('click', function(e) {
+          if (window.gtag) {
+            gtag('event', 'hero_block_click', {
+              'event_category': 'engagement',
+              'event_label': `Block ${index + 1}`,
+              'value': index + 1
+            });
+          }
+        });
+      });
+    {% endif %}
+    
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hero Full-Screen",
+  "tag": "section",
+  "class": "fabindia-hero-fullscreen-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Desktop"
+    },
+    {
+      "type": "select",
+      "id": "desktop_columns",
+      "label": "Colonne desktop",
+      "options": [
+        { "value": "1", "label": "1 colonna" },
+        { "value": "2", "label": "2 colonne" },
+        { "value": "3", "label": "3 colonne" },
+        { "value": "4", "label": "4 colonne" },
+        { "value": "5", "label": "5 colonne" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width",
+      "label": "Larghezza desktop",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "label": "Spaziatura desktop",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Layout Mobile"
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Colonne mobile",
+      "options": [
+        { "value": "1", "label": "1 colonna" },
+        { "value": "2", "label": "2 colonne" },
+        { "value": "3", "label": "3 colonne" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "mobile_width",
+      "label": "Larghezza mobile",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "mobile_spacing",
+      "label": "Spaziatura mobile",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Raggio bordi",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "label": "Raggio bordi CTA",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore sfondo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titoli",
+      "default": "#2C3E50"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Effetti"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Abilita parallax",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll_animations",
+      "label": "Animazioni scroll",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_mouse_effects",
+      "label": "Effetti mouse 3D",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Indicatore scroll",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Utility Functions"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay_videos",
+      "label": "Autoplay video",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_analytics",
+      "label": "Tracciamento analytics",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hero_block",
+      "name": "Blocco Hero",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Media"
+        },
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Tipo media",
+          "options": [
+            { "value": "image", "label": "Immagine" },
+            { "value": "video", "label": "Video" }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "video",
+          "label": "URL Video"
+        },
+        {
+          "type": "select",
+          "id": "image_format",
+          "label": "Formato immagine",
+          "options": [
+            { "value": "square", "label": "Quadrato" },
+            { "value": "vertical", "label": "Verticale" },
+            { "value": "horizontal", "label": "Orizzontale" },
+            { "value": "natural", "label": "Naturale" }
+          ],
+          "default": "square"
+        },
+        {
+          "type": "select",
+          "id": "natural_fit",
+          "label": "Adattamento naturale",
+          "options": [
+            { "value": "cover", "label": "Riempi (cover)" },
+            { "value": "contain", "label": "Contieni (contain)" }
+          ],
+          "default": "cover",
+          "info": "Solo per formato naturale"
+        },
+        {
+          "type": "color",
+          "id": "placeholder_color",
+          "label": "Colore placeholder",
+          "default": "#F5E6D3"
+        },
+        {
+          "type": "header",
+          "content": "Overlay e Contenuto"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_overlay",
+          "label": "Abilita overlay hover",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_fixed_overlay",
+          "label": "Mostra overlay fisso",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "overlay_intensity",
+          "label": "Intensità overlay",
+          "min": 0,
+          "max": 90,
+          "step": 10,
+          "unit": "%",
+          "default": 40,
+          "info": "Nero con opacità variabile"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "Posizione contenuto",
+          "options": [
+            { "value": "top-left", "label": "Alto sinistra" },
+            { "value": "top-center", "label": "Alto centro" },
+            { "value": "top-right", "label": "Alto destra" },
+            { "value": "center-left", "label": "Centro sinistra" },
+            { "value": "center", "label": "Centro" },
+            { "value": "center-right", "label": "Centro destra" },
+            { "value": "bottom-left", "label": "Basso sinistra" },
+            { "value": "bottom-center", "label": "Basso centro" },
+            { "value": "bottom-right", "label": "Basso destra" }
+          ],
+          "default": "bottom-left"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Allineamento testo",
+          "options": [
+            { "value": "left", "label": "Sinistra" },
+            { "value": "center", "label": "Centro" },
+            { "value": "right", "label": "Destra" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "fixed_title",
+          "label": "Titolo fisso",
+          "info": "Visibile quando overlay è disabilitato"
+        },
+        {
+          "type": "header",
+          "content": "Contenuto Hover"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Titolo Blocco"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Testo",
+          "default": "Descrizione breve"
+        },
+        {
+          "type": "header",
+          "content": "Colori Personalizzati"
+        },
+        {
+          "type": "color",
+          "id": "block_title_color",
+          "label": "Colore titolo",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "block_text_color",
+          "label": "Colore testo",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "block_cta_bg_color",
+          "label": "Sfondo CTA",
+          "default": "#C33A32"
+        },
+        {
+          "type": "color",
+          "id": "block_cta_text_color",
+          "label": "Testo CTA",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "header",
+          "content": "Link"
+        },
+        {
+          "type": "select",
+          "id": "link_type",
+          "label": "Tipo link",
+          "options": [
+            { "value": "url", "label": "URL personalizzato" },
+            { "value": "collection", "label": "Collezione" }
+          ],
+          "default": "url"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Testo pulsante",
+          "default": "Scopri di più"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link pulsante"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collezione"
+        },
+        {
+          "type": "header",
+          "content": "Animazioni"
+        },
+        {
+          "type": "select",
+          "id": "hover_animation",
+          "label": "Animazione hover",
+          "options": [
+            { "value": "zoom", "label": "Zoom" },
+            { "value": "rotate", "label": "Rotazione" },
+            { "value": "slide", "label": "Slide" },
+            { "value": "blur", "label": "Sfocatura" },
+            { "value": "fade", "label": "Dissolvenza" },
+            { "value": "3d", "label": "Effetto 3D" },
+            { "value": "glitch", "label": "Glitch" }
+          ],
+          "default": "zoom"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_parallax",
+          "label": "Abilita parallax blocco",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "parallax_speed",
+          "label": "Velocità parallax",
+          "min": 0.1,
+          "max": 1,
+          "step": 0.1,
+          "default": 0.5
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Full-Screen",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "hero_block",
+          "settings": {
+            "title": "Artigianato Indiano",
+            "text": "Scopri la collezione",
+            "content_position": "bottom-left",
+            "text_alignment": "left"
+          }
+        },
+        {
+          "type": "hero_block",
+          "settings": {
+            "title": "Tessuti Pregiati",
+            "text": "Tradizione e qualità",
+            "content_position": "center",
+            "text_alignment": "center"
+          }
+        },
+        {
+          "type": "hero_block",
+          "settings": {
+            "title": "Design Sostenibile",
+            "text": "Per un futuro migliore",
+            "content_position": "bottom-right",
+            "text_alignment": "right"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

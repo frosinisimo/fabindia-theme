@@ -1,0 +1,1595 @@
+<!-- FABINDIA ROMA - SEZIONE "NON SIAMO UN PRODOTTO ETNICO" FIXED -->
+{%- assign section_id = section.id -%}
+
+<style>
+  /* === UTILITY STYLES === */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section_id }} {
+      {%- unless section.settings.max_width == 'default' -%}
+        max-width: {{ section.settings.max_width }};
+        margin-left: auto;
+        margin-right: auto;
+      {%- endunless -%}
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      {%- if section.settings.hide_on_desktop -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section_id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      {%- if section.settings.hide_on_mobile -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  {%- if section.settings.enable_smooth_transitions -%}
+    #shopify-section-{{ section_id }} {
+      transition: all 0.3s ease;
+    }
+  {%- endif -%}
+
+  /* === SECTION STYLES === */
+  .fabindia-not-ethnic {
+    background-color: {{ section.settings.section_bg_color }};
+    color: {{ section.settings.text_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fabindia-not-ethnic__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Hero Section */
+  .fabindia-not-ethnic__hero {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+  }
+
+  .fabindia-not-ethnic__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: {{ section.settings.title_color }};
+    margin-bottom: 20px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+  }
+
+  .fabindia-not-ethnic__subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: {{ section.settings.text_color }};
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  /* Split Image */
+  .fabindia-not-ethnic__split-image {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto 60px;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+
+  .split-image__side {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .split-image__side--left {
+    left: 0;
+    filter: grayscale(100%) opacity(0.4);
+  }
+
+  .split-image__side--right {
+    right: 0;
+  }
+
+  .split-image__side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .split-image__label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .split-image__side--left .split-image__label {
+    opacity: 1;
+  }
+
+  .split-image__side--right .split-image__label {
+    opacity: 0;
+  }
+
+  .fabindia-not-ethnic__split-image:hover .split-image__side--left {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .fabindia-not-ethnic__split-image:hover .split-image__side--right {
+    width: 100%;
+  }
+
+  .fabindia-not-ethnic__split-image:hover .split-image__side--left .split-image__label {
+    opacity: 0;
+  }
+
+  .fabindia-not-ethnic__split-image:hover .split-image__side--right .split-image__label {
+    opacity: 1;
+  }
+
+  /* Enhanced Flip Cards */
+  .fabindia-not-ethnic__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 80px;
+  }
+
+  .flip-card {
+    background-color: transparent;
+    perspective: 1000px;
+    height: 400px;
+    cursor: pointer;
+  }
+
+  .flip-card__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .flip-card:hover .flip-card__inner,
+  .flip-card.flipped .flip-card__inner,
+  .flip-card.auto-flipped .flip-card__inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card__face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flip-card__face--front {
+    background-color: {{ section.settings.card_bg_color }};
+    border: 1px solid {{ section.settings.card_border_color | default: '#E5DDD5' }};
+  }
+
+  .flip-card__face--back {
+    background-color: {{ section.settings.card_back_bg_color | default: '#C33A32' }};
+    transform: rotateY(180deg);
+  }
+
+  .flip-card__image-container {
+    width: 100%;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .flip-card__image-container.has-image {
+    height: 50%;
+  }
+
+  .flip-card__image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .flip-card:hover .flip-card__image-container img {
+    transform: scale(1.05);
+  }
+
+  .flip-card__icon-overlay {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .flip-card__content {
+    padding: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .flip-card__face--back .flip-card__content {
+    color: white;
+  }
+
+  .flip-card__icon {
+    font-size: 32px;
+    margin-bottom: 15px;
+    opacity: 0.8;
+  }
+
+  .flip-card__title {
+    font-size: {{ section.settings.card_title_size_desktop }}px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .flip-card__text {
+    font-size: {{ section.settings.card_text_size_desktop }}px;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  /* Enhanced Timeline */
+  .fabindia-not-ethnic__timeline {
+    position: relative;
+    margin-bottom: 80px;
+    padding: 40px 0;
+  }
+
+  .timeline__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+
+  .timeline__progress {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, {{ section.settings.accent_color | default: '#C33A32' }} 0%, {{ section.settings.accent_color_dark | default: '#A02B24' }} 100%);
+    transform: translateY(-50%);
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+  }
+
+  .timeline__step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .timeline__step:nth-child(1) { animation-delay: 0.2s; }
+  .timeline__step:nth-child(2) { animation-delay: 0.4s; }
+  .timeline__step:nth-child(3) { animation-delay: 0.6s; }
+  .timeline__step:nth-child(4) { animation-delay: 0.8s; }
+
+  .timeline__icon {
+    width: 80px;
+    height: 80px;
+    background: {{ section.settings.section_bg_color }};
+    border: 3px solid {{ section.settings.accent_color | default: '#C33A32' }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+    color: {{ section.settings.accent_color | default: '#C33A32' }};
+    transition: all 0.3s ease;
+  }
+
+  .timeline__step.active .timeline__icon {
+    transform: scale(1.1);
+    background: {{ section.settings.accent_color | default: '#C33A32' }};
+    color: white;
+    box-shadow: 0 4px 20px rgba(195, 58, 50, 0.3);
+  }
+
+  .timeline__label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: {{ section.settings.title_color }};
+  }
+
+  /* Comparison Slider - RIPRISTINATO ORIGINALE */
+  .fabindia-not-ethnic__comparison {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto 80px;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  }
+
+  .comparison__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .comparison__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .comparison__image--after {
+    width: 50%;
+    overflow: hidden;
+  }
+
+  /* Comparison Slider - SEMPLIFICATO E FUNZIONANTE */
+  .fabindia-not-ethnic__comparison {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto 80px;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  }
+
+  .comparison__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .comparison__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .comparison__image--after {
+    width: 50%;
+    overflow: hidden;
+  }
+
+  .comparison__slider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    background: {{ section.settings.accent_color | default: '#C33A32' }};
+    cursor: ew-resize;
+    transform: translateX(-50%);
+  }
+
+  .comparison__slider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    background: {{ section.settings.accent_color | default: '#C33A32' }};
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  .comparison__slider::after {
+    content: '↔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: white;
+    font-size: 20px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Enhanced Testimonials */
+  .fabindia-not-ethnic__testimonials {
+    max-width: 800px;
+    margin: 0 auto 60px;
+    text-align: center;
+    position: relative;
+    height: 200px;
+  }
+
+  .testimonial {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .testimonial.active {
+    opacity: 1;
+  }
+
+  .testimonial__quote {
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-bottom: 20px;
+    color: {{ section.settings.text_color }};
+    line-height: 1.6;
+  }
+
+  .testimonial__author {
+    font-weight: 500;
+    color: {{ section.settings.accent_color | default: '#C33A32' }};
+    font-size: 1.1rem;
+  }
+
+  /* Testimonial dots indicator */
+  .testimonials__dots {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+  }
+
+  .testimonials__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: {{ section.settings.text_color }};
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .testimonials__dot.active {
+    width: 24px;
+    border-radius: 4px;
+    background: {{ section.settings.accent_color | default: '#C33A32' }};
+    opacity: 1;
+  }
+
+  /* CTA */
+  .fabindia-not-ethnic__cta {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .fabindia-not-ethnic__button {
+    display: inline-block;
+    padding: 16px 40px;
+    background: {{ section.settings.button_bg_color | default: '#C33A32' }};
+    color: {{ section.settings.button_text_color | default: '#FFFFFF' }};
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fabindia-not-ethnic__button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.2);
+    transition: left 0.3s ease;
+  }
+
+  .fabindia-not-ethnic__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .fabindia-not-ethnic__button:hover::before {
+    left: 0;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .fabindia-not-ethnic__cards {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .flip-card {
+      height: 350px;
+    }
+
+    .flip-card__title {
+      font-size: {{ section.settings.card_title_size_mobile }}px;
+    }
+
+    .flip-card__text {
+      font-size: {{ section.settings.card_text_size_mobile }}px;
+    }
+
+    .timeline__container {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .timeline__progress {
+      width: 4px;
+      height: 0%;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+    }
+
+    .timeline__icon {
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+    }
+
+    .fabindia-not-ethnic__split-image {
+      height: 300px;
+    }
+
+    .fabindia-not-ethnic__comparison {
+      height: 350px;
+    }
+  }
+</style>
+
+<section class="fabindia-not-ethnic" data-section-id="{{ section_id }}">
+  <div class="fabindia-not-ethnic__container">
+    
+    <!-- Hero Section -->
+    <div class="fabindia-not-ethnic__hero">
+      <h2 class="fabindia-not-ethnic__title">{{ section.settings.title }}</h2>
+      <p class="fabindia-not-ethnic__subtitle">{{ section.settings.subtitle }}</p>
+      
+      <!-- Split Image with Labels -->
+      {%- if section.settings.left_image and section.settings.right_image -%}
+        <div class="fabindia-not-ethnic__split-image">
+          <div class="split-image__side split-image__side--left">
+            <img src="{{ section.settings.left_image | image_url: width: 800 }}" 
+                 alt="{{ section.settings.left_image_alt }}"
+                 loading="lazy">
+            <div class="split-image__label">Etnico tradizionale</div>
+          </div>
+          <div class="split-image__side split-image__side--right">
+            <img src="{{ section.settings.right_image | image_url: width: 800 }}" 
+                 alt="{{ section.settings.right_image_alt }}"
+                 loading="lazy">
+            <div class="split-image__label">Eleganza Fabindia</div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- Enhanced Flip Cards with Images -->
+    <div class="fabindia-not-ethnic__cards">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'flip_card' -%}
+            <div class="flip-card" data-flip-card {{ block.shopify_attributes }}>
+              <div class="flip-card__inner">
+                <div class="flip-card__face flip-card__face--front">
+                  {%- if block.settings.front_image -%}
+                    <div class="flip-card__image-container has-image">
+                      <img src="{{ block.settings.front_image | image_url: width: 600 }}" 
+                           alt="{{ block.settings.front_image_alt | default: block.settings.front_title }}"
+                           loading="lazy">
+                      <div class="flip-card__icon-overlay">❌</div>
+                    </div>
+                  {%- else -%}
+                    <div class="flip-card__image-container"></div>
+                  {%- endif -%}
+                  <div class="flip-card__content">
+                    {%- unless block.settings.front_image -%}
+                      <div class="flip-card__icon">❌</div>
+                    {%- endunless -%}
+                    <h3 class="flip-card__title">{{ block.settings.front_title }}</h3>
+                    <p class="flip-card__text">{{ block.settings.front_text }}</p>
+                  </div>
+                </div>
+                <div class="flip-card__face flip-card__face--back">
+                  {%- if block.settings.back_image -%}
+                    <div class="flip-card__image-container has-image">
+                      <img src="{{ block.settings.back_image | image_url: width: 600 }}" 
+                           alt="{{ block.settings.back_image_alt | default: block.settings.back_title }}"
+                           loading="lazy">
+                      <div class="flip-card__icon-overlay">✓</div>
+                    </div>
+                  {%- else -%}
+                    <div class="flip-card__image-container"></div>
+                  {%- endif -%}
+                  <div class="flip-card__content">
+                    {%- unless block.settings.back_image -%}
+                      <div class="flip-card__icon">✓</div>
+                    {%- endunless -%}
+                    <h3 class="flip-card__title">{{ block.settings.back_title }}</h3>
+                    <p class="flip-card__text">{{ block.settings.back_text }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <!-- Enhanced Timeline -->
+    <div class="fabindia-not-ethnic__timeline">
+      <div class="timeline__container">
+        <div class="timeline__progress"></div>
+        
+        <div class="timeline__step" data-step="1">
+          <div class="timeline__icon">🧵</div>
+          <div class="timeline__label">{{ section.settings.step_1_text }}</div>
+        </div>
+        
+        <div class="timeline__step" data-step="2">
+          <div class="timeline__icon">✏️</div>
+          <div class="timeline__label">{{ section.settings.step_2_text }}</div>
+        </div>
+        
+        <div class="timeline__step" data-step="3">
+          <div class="timeline__icon">👐</div>
+          <div class="timeline__label">{{ section.settings.step_3_text }}</div>
+        </div>
+        
+        <div class="timeline__step" data-step="4">
+          <div class="timeline__icon">💎</div>
+          <div class="timeline__label">{{ section.settings.step_4_text }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Slider -->
+    {%- if section.settings.before_image and section.settings.after_image -%}
+      <div class="fabindia-not-ethnic__comparison" id="comparison-{{ section_id }}">
+        <div class="comparison__image comparison__image--before">
+          <img src="{{ section.settings.before_image | image_url: width: 800 }}" 
+               alt="{{ section.settings.before_image_alt }}">
+        </div>
+        <div class="comparison__image comparison__image--after">
+          <img src="{{ section.settings.after_image | image_url: width: 800 }}" 
+               alt="{{ section.settings.after_image_alt }}">
+        </div>
+        <div class="comparison__slider"></div>
+      </div>
+    {%- endif -%}
+
+    <!-- Enhanced Testimonials with Dots -->
+    <div class="fabindia-not-ethnic__testimonials" id="testimonials-{{ section_id }}">
+      {%- assign testimonial_count = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'testimonial' -%}
+            {%- assign testimonial_count = testimonial_count | plus: 1 -%}
+            <div class="testimonial {% if forloop.first %}active{% endif %}" data-testimonial-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+              <p class="testimonial__quote">"{{ block.settings.quote }}"</p>
+              <p class="testimonial__author">— {{ block.settings.author }}</p>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+      
+      {%- if testimonial_count > 1 -%}
+        <div class="testimonials__dots">
+          {%- for i in (1..testimonial_count) -%}
+            <span class="testimonials__dot {% if forloop.first %}active{% endif %}" data-dot-index="{{ forloop.index0 }}"></span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- CTA -->
+    {%- if section.settings.cta_text != blank -%}
+      <div class="fabindia-not-ethnic__cta">
+        <a href="{{ section.settings.cta_link }}" class="btn">
+          {{ section.settings.cta_text }}
+        </a>
+      </div>
+    {%- endif -%}
+    
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sectionId = '{{ section_id }}';
+  const section = document.querySelector(`[data-section-id="${sectionId}"]`);
+  
+  if (!section) {
+    console.error('Section not found');
+    return;
+  }
+  
+  // Utility Functions
+  {%- if section.settings.auto_flip_cards_mobile -%}
+    const autoFlipEnabled = true;
+  {%- else -%}
+    const autoFlipEnabled = false;
+  {%- endif -%}
+  
+  // Flip cards functionality
+  const flipCards = section.querySelectorAll('.flip-card');
+  
+  // Manual flip on click
+  flipCards.forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (!autoFlipEnabled || window.innerWidth > 768) {
+        this.classList.toggle('flipped');
+      }
+    });
+  });
+  
+  // Auto-flip on scroll for mobile
+  if (autoFlipEnabled && window.innerWidth <= 768) {
+    const flipObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add auto-flipped class after a short delay
+          setTimeout(() => {
+            entry.target.classList.add('auto-flipped');
+          }, 300);
+        } else {
+          // Remove auto-flipped class when out of view
+          entry.target.classList.remove('auto-flipped');
+        }
+      });
+    }, { 
+      threshold: 0.7,
+      rootMargin: '-10% 0px'
+    });
+    
+    flipCards.forEach(card => {
+      flipObserver.observe(card);
+    });
+  }
+
+  // Timeline progress animation with step highlighting
+  const timeline = section.querySelector('.timeline__progress');
+  const timelineSteps = section.querySelectorAll('.timeline__step');
+  
+  const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Animate progress bar
+        setTimeout(() => {
+          if (window.innerWidth > 768) {
+            timeline.style.width = '100%';
+          } else {
+            timeline.style.height = '100%';
+          }
+        }, 300);
+        
+        // Highlight steps sequentially
+        timelineSteps.forEach((step, index) => {
+          setTimeout(() => {
+            step.classList.add('active');
+          }, 300 + (index * 200));
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  if (timeline) {
+    timelineObserver.observe(timeline.parentElement);
+  }
+
+  // Comparison slider functionality - VERSIONE DEFINITIVA
+  const comparison = document.getElementById(`comparison-${sectionId}`);
+  if (comparison) {
+    const slider = comparison.querySelector('.comparison__slider');
+    const afterImage = comparison.querySelector('.comparison__image--after');
+    
+    if (!slider || !afterImage) {
+      console.error('Slider elements not found');
+      return;
+    }
+    
+    let isDragging = false;
+
+    function updateSliderPosition(x) {
+      const rect = comparison.getBoundingClientRect();
+      const offsetX = x - rect.left;
+      const percentage = (offsetX / rect.width) * 100;
+      const clampedPercentage = Math.max(5, Math.min(95, percentage));
+      
+      slider.style.left = `${clampedPercentage}%`;
+      afterImage.style.width = `${clampedPercentage}%`;
+    }
+
+    // Mouse events
+    slider.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isDragging = true;
+      document.body.style.userSelect = 'none';
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        document.body.style.userSelect = '';
+      }
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        e.preventDefault();
+        updateSliderPosition(e.clientX);
+      }
+    });
+
+    // Touch events for mobile
+    slider.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      isDragging = true;
+    }, { passive: false });
+    
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+      if (isDragging && e.touches.length > 0) {
+        e.preventDefault();
+        updateSliderPosition(e.touches[0].clientX);
+      }
+    }, { passive: false });
+
+    // Click to position
+    comparison.addEventListener('click', (e) => {
+      if (e.target === comparison || e.target.tagName === 'IMG') {
+        updateSliderPosition(e.clientX);
+      }
+    });
+  }
+
+  // Enhanced Testimonials rotation with dots
+  const testimonials = section.querySelectorAll('.testimonial');
+  const dots = section.querySelectorAll('.testimonials__dot');
+  
+  if (testimonials.length > 1) {
+    let currentIndex = 0;
+    let testimonialInterval;
+    
+    function showTestimonial(index) {
+      testimonials.forEach(t => t.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      
+      testimonials[index].classList.add('active');
+      if (dots[index]) dots[index].classList.add('active');
+    }
+    
+    function nextTestimonial() {
+      currentIndex = (currentIndex + 1) % testimonials.length;
+      showTestimonial(currentIndex);
+    }
+    
+    // Auto-rotate
+    testimonialInterval = setInterval(nextTestimonial, 5000);
+    
+    // Dot click handlers
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        clearInterval(testimonialInterval);
+        currentIndex = index;
+        showTestimonial(currentIndex);
+        testimonialInterval = setInterval(nextTestimonial, 5000);
+      });
+    });
+    
+    // Pause on hover
+    const testimonialsContainer = document.getElementById(`testimonials-${sectionId}`);
+    testimonialsContainer.addEventListener('mouseenter', () => {
+      clearInterval(testimonialInterval);
+    });
+    
+    testimonialsContainer.addEventListener('mouseleave', () => {
+      testimonialInterval = setInterval(nextTestimonial, 5000);
+    });
+  }
+  
+  // Smooth reveal animation for elements
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+  
+  // Apply additional utility functions if enabled
+  {%- if section.settings.enable_parallax -%}
+    // Parallax effect
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = section.querySelectorAll('.fabindia-not-ethnic__hero, .fabindia-not-ethnic__split-image');
+      
+      parallaxElements.forEach(element => {
+        const speed = 0.5;
+        const yPos = -(scrolled * speed);
+        element.style.transform = `translateY(${yPos}px)`;
+      });
+    });
+  {%- endif -%}
+  
+  {%- if section.settings.enable_lazy_load -%}
+    // Enhanced lazy loading
+    const lazyImages = section.querySelectorAll('img[loading="lazy"]');
+    const imageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src || img.src;
+          imageObserver.unobserve(img);
+        }
+      });
+    });
+    
+    lazyImages.forEach(img => imageObserver.observe(img));
+  {%- endif -%}
+});
+</script>
+
+{% schema %}
+{
+  "name": "Non siamo etnici",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Colori Sezione"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titoli",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "accent_color_dark",
+      "label": "Colore accento scuro",
+      "default": "#A02B24"
+    },
+    {
+      "type": "header",
+      "content": "📝 Contenuti Hero"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo principale",
+      "default": "Non siamo un prodotto etnico"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Dal 1999, il nostro atelier romano reinterpreta le tecniche artigianali indiane con visione italiana. Il risultato? Eleganza trasversale che va oltre ogni definizione."
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Immagine sinistra",
+      "info": "Rappresenta lo stereotipo"
+    },
+    {
+      "type": "text",
+      "id": "left_image_alt",
+      "label": "Alt immagine sinistra",
+      "default": "Prodotto etnico tradizionale"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Immagine destra",
+      "info": "Rappresenta Fabindia"
+    },
+    {
+      "type": "text",
+      "id": "right_image_alt",
+      "label": "Alt immagine destra",
+      "default": "Eleganza Fabindia"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Cards"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Sfondo card fronte",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "card_back_bg_color",
+      "label": "Sfondo card retro",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Bordo card",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "header",
+      "content": "📏 Dimensioni testo Card"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_desktop",
+      "label": "Titolo card Desktop",
+      "default": 22,
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_text_size_desktop",
+      "label": "Testo card Desktop",
+      "default": 15,
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size_mobile",
+      "label": "Titolo card Mobile",
+      "default": 19,
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_text_size_mobile",
+      "label": "Testo card Mobile",
+      "default": 14,
+      "min": 11,
+      "max": 18,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "📱 Opzioni Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_flip_cards_mobile",
+      "label": "Auto-flip cards su mobile",
+      "info": "Le card si girano automaticamente quando scorri",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "⏱️ Timeline"
+    },
+    {
+      "type": "text",
+      "id": "step_1_text",
+      "label": "Step 1",
+      "default": "Disegno a Roma"
+    },
+    {
+      "type": "text",
+      "id": "step_2_text",
+      "label": "Step 2",
+      "default": "Tecniche millenarie"
+    },
+    {
+      "type": "text",
+      "id": "step_3_text",
+      "label": "Step 3",
+      "default": "26 anni di relazioni"
+    },
+    {
+      "type": "text",
+      "id": "step_4_text",
+      "label": "Step 4",
+      "default": "Il tuo pezzo unico"
+    },
+    {
+      "type": "header",
+      "content": "🔄 Slider Comparativo"
+    },
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "Immagine Prima",
+      "info": "Prodotto tradizionale"
+    },
+    {
+      "type": "text",
+      "id": "before_image_alt",
+      "label": "Alt Prima",
+      "default": "Stile tradizionale"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "Immagine Dopo",
+      "info": "Prodotto Fabindia"
+    },
+    {
+      "type": "text",
+      "id": "after_image_alt",
+      "label": "Alt Dopo",
+      "default": "Stile Fabindia"
+    },
+    {
+      "type": "header",
+      "content": "🔘 Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo pulsante",
+      "default": "Vieni a scoprire la differenza"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link pulsante"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Sfondo pulsante",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Testo pulsante",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout & Spacing"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Larghezza Max Desktop",
+      "info": "Limita la larghezza della sezione su schermi grandi",
+      "options": [
+        {
+          "value": "default",
+          "label": "Larghezza standard tema"
+        },
+        {
+          "value": "100%",
+          "label": "Schermo intero (100%)"
+        },
+        {
+          "value": "1400px",
+          "label": "Extra large (1400px)"
+        },
+        {
+          "value": "1200px",
+          "label": "Large (1200px)"
+        },
+        {
+          "value": "1100px",
+          "label": "Medium-large (1100px)"
+        },
+        {
+          "value": "1000px",
+          "label": "Medium (1000px)"
+        },
+        {
+          "value": "900px",
+          "label": "Compact (900px)"
+        },
+        {
+          "value": "800px",
+          "label": "Small (800px)"
+        },
+        {
+          "value": "700px",
+          "label": "Extra small (700px)"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "📱 Visibilità Responsive"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_mobile",
+      "label": "Nascondi su Mobile",
+      "info": "La sezione non sarà visibile su dispositivi mobili",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_desktop",
+      "label": "Nascondi su Desktop",
+      "info": "La sezione non sarà visibile su desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📏 Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding superiore",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding inferiore",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore",
+      "info": "Usa valori negativi per sovrapporre sezioni",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "💻 Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding superiore",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding inferiore",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "info": "Usa valori negativi per effetti di sovrapposizione",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "⚡ Opzioni Avanzate"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_smooth_transitions",
+      "label": "Abilita transizioni fluide",
+      "info": "Aggiunge animazioni smooth quando la sezione cambia dimensione",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Abilita effetto parallasse",
+      "info": "Aggiunge un effetto di movimento su scroll",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lazy_load",
+      "label": "Abilita lazy loading avanzato",
+      "info": "Carica le immagini solo quando necessario",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "flip_card",
+      "name": "Card Flip",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Lato Fronte (Non siamo)"
+        },
+        {
+          "type": "text",
+          "id": "front_title",
+          "label": "Titolo fronte",
+          "default": "Non siamo..."
+        },
+        {
+          "type": "textarea",
+          "id": "front_text",
+          "label": "Testo fronte",
+          "default": "Un mercato etnico economico"
+        },
+        {
+          "type": "image_picker",
+          "id": "front_image",
+          "label": "Immagine fronte",
+          "info": "Rappresenta lo stereotipo"
+        },
+        {
+          "type": "text",
+          "id": "front_image_alt",
+          "label": "Alt immagine fronte"
+        },
+        {
+          "type": "header",
+          "content": "Lato Retro (Siamo)"
+        },
+        {
+          "type": "text",
+          "id": "back_title",
+          "label": "Titolo retro",
+          "default": "Siamo..."
+        },
+        {
+          "type": "textarea",
+          "id": "back_text",
+          "label": "Testo retro",
+          "default": "Design contemporaneo italiano"
+        },
+        {
+          "type": "image_picker",
+          "id": "back_image",
+          "label": "Immagine retro",
+          "info": "Rappresenta Fabindia"
+        },
+        {
+          "type": "text",
+          "id": "back_image_alt",
+          "label": "Alt immagine retro"
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "name": "Testimonianza",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Citazione",
+          "default": "L'eleganza senza tempo che cercavo"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Autore",
+          "default": "Cliente Fabindia"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Non siamo etnici",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "flip_card",
+          "settings": {
+            "front_title": "Non siamo...",
+            "front_text": "Un mercato di souvenir esotici",
+            "back_title": "Siamo...",
+            "back_text": "Un atelier romano dove nascono design esclusivi, pensati per chi cerca eleganza senza ostentazione"
+          }
+        },
+        {
+          "type": "flip_card",
+          "settings": {
+            "front_title": "Non vendiamo...",
+            "front_text": "Prodotti standardizzati di massa",
+            "back_title": "Creiamo...",
+            "back_text": "Pezzi quasi unici: la stessa giacca esiste in 60 varianti, ma forse solo 3 nella tua taglia"
+          }
+        },
+        {
+          "type": "flip_card",
+          "settings": {
+            "front_title": "Non siamo...",
+            "front_text": "Incenso e braccialetti",
+            "back_title": "Siamo...",
+            "back_text": "Pattern che potrebbero essere Liberty inglesi o provenzali francesi, ma nascono dall'incontro Roma-India"
+          }
+        },
+        {
+          "type": "flip_card",
+          "settings": {
+            "front_title": "Non seguiamo...",
+            "front_text": "Le mode del momento",
+            "back_title": "Manteniamo...",
+            "back_text": "Lo stesso stile da 26 anni, perché l'eleganza vera non ha bisogno di cambiare"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Quando entri da Fabindia non compri una cosa, ne compri cinque. È l'unico posto dove trovo pezzi che sembrano fatti apposta per me.",
+            "author": "Architetto del centro storico"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I pattern sembrano usciti da un palazzo Liberty o da una casa provenzale, poi scopri che sono tessuti indiani reinterpretati. Geniale.",
+            "author": "Designer d'interni, Milano"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Ho regalato una loro giacca a mia suocera super esigente. È diventata il suo capo preferito. Ora ne vuole una in ogni colore.",
+            "author": "Cliente da 10 anni"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Vado da Prada per le borse, da Fabindia per tutto il resto. È radical chic nel senso migliore del termine.",
+            "author": "Professionista romana"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Ogni volta che torno a Roma, passo da loro. È come avere un sarto personale che ti capisce senza dover spiegare nulla.",
+            "author": "Cliente internazionale, Parigi"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

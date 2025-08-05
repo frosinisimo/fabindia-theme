@@ -1,0 +1,236 @@
+{%- comment -%}
+================================================================
+FABINDIA ROMA - ANNOUNCEMENT.LIQUID (SIMPLIFIED)
+Sezione principale ottimizzata
+================================================================
+{%- endcomment -%}
+
+{%- render 'announcement-bar', section: section -%}
+
+{% schema %}
+{
+  "name": "Barra Annunci",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Sfondo",
+      "default": "#A4B8C4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Testo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Bordo",
+      "default": "#91A8B8"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Spessore bordo",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "🎯 Colori Hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover",
+      "label": "Abilita hover",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_hover",
+      "label": "Sfondo hover",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "text_hover",
+      "label": "Testo hover",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "border_hover",
+      "label": "Bordo hover",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "✏️ Testo"
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Peso font",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "font_desktop",
+      "label": "Dimensione desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "font_mobile",
+      "label": "Dimensione mobile",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "text_shadow",
+      "label": "Abilita ombra",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "shadow_level",
+      "label": "Intensità ombra",
+      "options": [
+        {
+          "value": "light",
+          "label": "Leggera"
+        },
+        {
+          "value": "medium",
+          "label": "Media"
+        },
+        {
+          "value": "strong",
+          "label": "Forte"
+        },
+        {
+          "value": "intense",
+          "label": "Intensa"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "header",
+      "content": "📏 Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Padding verticale",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "👁️ Visibilità"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Nascondi mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Nascondi desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "hide_pages",
+      "label": "Nascondi su pagine",
+      "info": "ID pagine separate da virgola",
+      "placeholder": "product-123, collection-sale"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Annuncio",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Testo",
+          "default": "Benvenuti su Fabindia Roma"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Testo link"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Barra Annunci",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Spedizione gratuita sopra 50€",
+            "link_text": "Scopri di più",
+            "link": "/pages/spedizioni"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

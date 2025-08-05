@@ -1,0 +1,225 @@
+.fbi-color-name{
+  -webkit-line-clamp: var(--line-clamp-count, 1)!important;
+  -webkit-box-orient: vertical!important;
+  display: -webkit-box!important;
+  overflow: hidden!important;
+  margin-bottom: 0px !important;
+}
+
+
+.hero-collections__item-overlay {
+    top: 50px!important;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 170%)!important;
+}
+
+h4.fbi-title {
+    margin-bottom: 11px;
+  letter-spacing: 0.13em!important;
+}
+
+.fabindia-not-ethnic__timeline {
+    display: none;
+}
+
+.fabindia-not-ethnic__testimonials {
+    display: none !important;
+}
+
+.variant-input-wrap input[type=radio]:checked+label {
+    box-shadow: 0 0 0 1px var(--colorTextBody)!important;
+    color: #ffffff!important;
+    background-color: #C33A32!important;
+  font-weight: 600 !important;
+}
+
+label.variant__button-label {
+    border-radius: 8px !important;
+}
+
+
+
+.variant-input-wrap input[type=radio].disabled:checked+label{
+  background-color: #F6F6F6 !important;
+  color: #3e3e3e!important;
+  font-weight: 400!important;
+  box-shadow:none!important;
+  box-shadow: 0 0 0 1px var(--colorBorder);
+}
+
+.variant-input-wrap label.disabled:hover{
+    cursor: help;
+}
+
+
+.product__policies.rte.small--text-center {
+    display: none !important;
+}
+
+.fbi-color-image:hover {
+    border: 1px solid black !important;
+}
+
+label.variant__button-label:hover {
+    background-color: #E5DDD5;
+    color: #3E3E3E;
+}
+
+button.btn.btn--full.add-to-cart.disabled {
+    border: 1px solid #3E3E3E!important;
+    color: #3E3E3E!important;
+}
+
+.page-full, .page-width {
+    padding: 0 10px!important;
+}
+
+button.btn.btn--full.add-to-cart.disabled:hover {
+    background-color: #F6F6F6!important;
+}
+
+.step-cta .btn {
+    width: 100%!important;
+}
+
+button.size-guide-trigger {
+    border-radius: 12px;
+    border: 1px solid black;
+}
+
+.fbi-variants-section {
+    padding: 0px!important;
+}
+
+
+.fbi-color-info {
+    padding: 8px 0px 0px 0px !important;
+}
+
+/* MOBILE VISTA */
+@media only screen and (max-width: 589px) {
+
+  button.size-guide-trigger {
+    margin-top: -15px;
+}
+
+.ft-timeline-container{
+    padding: 20px 10px 10px!important;
+}
+
+  .ft-step-content {
+    min-height: 55px!important;
+}
+
+  .info-section {
+    border-radius: 20px;
+}
+
+  .hero-collections__item-content {
+    padding: 0px 0px 10px 0px;
+}
+
+
+  .process-reason {
+    margin-top: -20px!important;
+}
+
+ 
+
+  button.size-guide-trigger {
+    width: fit-content!important;
+    align-content: center;
+    justify-content: flex-start;
+    display: inline-flex;
+    padding: 12px 37px 12px 17px!important;
+    border: 1px solid #C33A32!important;
+    border-radius: 50px 0px 0px 50px !important;
+}
+
+ .product-block.product-block--size-guide {
+    text-align: right !important;
+    margin-right: -20px;
+}
+
+      .hero-collections__grid {
+        display: flex!important;
+        flex-wrap: nowrap!important;
+        padding: 0!important;
+    }
+
+  .btn, .rte .btn, .shopify-payment-button .shopify-payment-button__button--unbranded {
+        font-size: max(calc(var(--typeBaseSize) - 5px), 15px);
+        padding: 16px 17px!important;
+    }
+
+}
+
+/* DESKTOP VISTA */
+@media only screen and (min-width: 590px) {
+
+  .image-wrap.loaded {
+    border-radius: 8px;
+}
+
+  .size-guide-panel.active[data-panel="measurements"] {
+  display: flex;
+}
+
+  .product__thumb-item a.is-active:before, .product__thumb-item a:focus:before {
+    border-radius: 8px!important;
+}
+
+  .info-section {
+    padding: 25px;
+    border-radius: 20px;
+}
+
+
+  .fabindia-faq-content {
+    display: flex;
+    align-items: stretch;
+    gap: 90px;
+}
+
+  .parte_sopra {
+    flex-basis: 70%;
+}
+
+  .fabindia-faq-image {
+    flex-basis: 50%;
+}
+
+ div#HeaderWrapper .page-width {
+    max-width: 1700px!important;
+}
+
+ div#HeaderWrapper  .header-item {
+    align-items: flex-end;
+    justify-content: center;
+}
+
+  .process-reason {
+    margin-top: -10px!important;
+}
+
+  button.size-guide-trigger {
+    width: fit-content!important;
+    align-content: center;
+    justify-content: flex-start;
+    display: inline-flex;
+    padding: 12px 37px 12px 17px!important;
+    border: 1px solid #C33A32!important;
+    border-radius: 0px 50px 50px 0px !important;
+}
+
+
+ .hero-collections__cta-wrapper .btn--full {
+    width: 25%;
+}
+
+  .btn, .rte .btn, .shopify-payment-button .shopify-payment-button__button--unbranded {
+    font-size: max(calc(var(--typeBaseSize) - 4px), 15px);
+    padding: 15px 17px!important;
+    
+}
+
+}

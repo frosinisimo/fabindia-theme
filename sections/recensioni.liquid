@@ -1,0 +1,915 @@
+{% comment %}
+================================================================
+FABINDIA ROMA - SEZIONE TESTIMONIANZE E RECENSIONI
+================================================================
+Sezione per mostrare le recensioni dei clienti con carousel dinamico,
+rating visivo e possibilità di filtrare per categoria di prodotto.
+================================================================
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'testimonials-' | append: section.id
+  assign testimonials_count = section.blocks | where: 'type', 'testimonial' | size
+-%}
+
+<style>
+  {%- comment -%} === UTILITY STYLES === {%- endcomment -%}
+  {%- comment -%} Desktop Styles (769px e oltre) {%- endcomment -%}
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      {%- unless section.settings.max_width == 'default' -%}
+        max-width: {{ section.settings.max_width }};
+        margin-left: auto;
+        margin-right: auto;
+      {%- endunless -%}
+      
+      {%- if section.settings.padding_top_desktop > 0 or section.settings.padding_bottom_desktop > 0 -%}
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.margin_top_desktop != 0 or section.settings.margin_bottom_desktop != 0 -%}
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.hide_on_desktop -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  {%- comment -%} Mobile Styles (fino a 768px) {%- endcomment -%}
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      {%- if section.settings.padding_top_mobile > 0 or section.settings.padding_bottom_mobile > 0 -%}
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.margin_top_mobile != 0 or section.settings.margin_bottom_mobile != 0 -%}
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.hide_on_mobile -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  {%- comment -%} === SECTION STYLES === {%- endcomment -%}
+  #{{ section_id }} {
+    background-color: {{ section.settings.section_background }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  #{{ section_id }} .testimonials-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  #{{ section_id }} .section-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: {{ section.settings.title_color }};
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  #{{ section_id }} .section-subtitle {
+    font-size: 1.1rem;
+    color: {{ section.settings.text_color }};
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  {%- comment -%} === FILTER BUTTONS === {%- endcomment -%}
+  #{{ section_id }} .filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  #{{ section_id }} .filter-btn {
+    background: transparent;
+    border: 1px solid {{ section.settings.accent_color }};
+    color: {{ section.settings.text_color }};
+    padding: 8px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+  #{{ section_id }} .filter-btn:hover,
+  #{{ section_id }} .filter-btn.active {
+    background: {{ section.settings.accent_color }};
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  {%- comment -%} === TESTIMONIALS CONTAINER === {%- endcomment -%}
+  #{{ section_id }} .testimonials-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  #{{ section_id }} .testimonials-wrapper {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 30px;
+  }
+
+  #{{ section_id }} .testimonial-card {
+    flex: 0 0 100%;
+    background: {{ section.settings.card_background }};
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  #{{ section_id }} .testimonial-card.hidden {
+    display: none;
+  }
+
+  {%- comment -%} === QUOTE ICON === {%- endcomment -%}
+  #{{ section_id }} .quote-icon {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    width: 40px;
+    height: 40px;
+    opacity: 0.1;
+  }
+
+  #{{ section_id }} .quote-icon svg {
+    fill: {{ section.settings.accent_color }};
+  }
+
+  {%- comment -%} === RATING STARS === {%- endcomment -%}
+  #{{ section_id }} .rating {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+  }
+
+  #{{ section_id }} .star {
+    width: 20px;
+    height: 20px;
+  }
+
+  #{{ section_id }} .star svg {
+    fill: {{ section.settings.star_color }};
+  }
+
+  {%- comment -%} === TESTIMONIAL CONTENT === {%- endcomment -%}
+  #{{ section_id }} .testimonial-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: {{ section.settings.text_color }};
+    margin-bottom: 25px;
+    font-style: italic;
+  }
+
+  #{{ section_id }} .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  #{{ section_id }} .author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: {{ section.settings.accent_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  #{{ section_id }} .author-info h4 {
+    margin: 0;
+    color: {{ section.settings.title_color }};
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  #{{ section_id }} .author-info p {
+    margin: 0;
+    color: {{ section.settings.text_color }};
+    opacity: 0.7;
+    font-size: 0.9rem;
+  }
+
+  {%- comment -%} === NAVIGATION ARROWS === {%- endcomment -%}
+  #{{ section_id }} .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: {{ section.settings.card_background }};
+    border: 1px solid {{ section.settings.accent_color }};
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  #{{ section_id }} .nav-button:hover {
+    background: {{ section.settings.accent_color }};
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  #{{ section_id }} .nav-button svg {
+    fill: {{ section.settings.text_color }};
+    width: 20px;
+    height: 20px;
+  }
+
+  #{{ section_id }} .nav-button:hover svg {
+    fill: #ffffff;
+  }
+
+  #{{ section_id }} .nav-prev {
+    left: -25px;
+  }
+
+  #{{ section_id }} .nav-next {
+    right: -25px;
+  }
+
+  {%- comment -%} === PAGINATION DOTS === {%- endcomment -%}
+  #{{ section_id }} .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  #{{ section_id }} .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: {{ section.settings.text_color }};
+    opacity: 0.3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #{{ section_id }} .dot.active {
+    background: {{ section.settings.accent_color }};
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  {%- comment -%} === MOBILE STYLES === {%- endcomment -%}
+  @media (max-width: 768px) {
+    #{{ section_id }} .section-title {
+      font-size: 2rem;
+    }
+
+    #{{ section_id }} .testimonial-card {
+      padding: 30px 25px;
+    }
+
+    #{{ section_id }} .testimonial-text {
+      font-size: 1rem;
+    }
+
+    #{{ section_id }} .nav-button {
+      display: none;
+    }
+
+    #{{ section_id }} .testimonials-wrapper {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #{{ section_id }} .testimonial-card {
+      scroll-snap-align: center;
+      flex: 0 0 90%;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    #{{ section_id }} .testimonial-card {
+      flex: 0 0 100%;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    #{{ section_id }} .testimonials-wrapper {
+      gap: 30px;
+    }
+
+    #{{ section_id }} .testimonial-card {
+      flex: 0 0 calc(50% - 15px);
+    }
+  }
+
+  {%- comment -%} === ANIMATIONS === {%- endcomment -%}
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #{{ section_id }} .testimonial-card {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  {%- if section.settings.enable_smooth_transitions -%}
+    #{{ section_id }} * {
+      transition: all 0.3s ease;
+    }
+  {%- endif -%}
+</style>
+
+<section id="{{ section_id }}" class="testimonials-section">
+  <div class="container">
+    {%- if section.settings.section_title != blank or section.settings.section_subtitle != blank -%}
+      <div class="testimonials-header">
+        {%- if section.settings.section_title != blank -%}
+          <h2 class="section-title">{{ section.settings.section_title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.section_subtitle != blank -%}
+          <p class="section-subtitle">{{ section.settings.section_subtitle }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_filters -%}
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">Tutte</button>
+        <button class="filter-btn" data-filter="clothing">Abbigliamento</button>
+        <button class="filter-btn" data-filter="accessories">Accessori</button>
+        <button class="filter-btn" data-filter="home">Casa</button>
+      </div>
+    {%- endif -%}
+
+    <div class="testimonials-container">
+      <div class="testimonials-wrapper" data-current="0">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'testimonial' -%}
+              <div class="testimonial-card" data-category="{{ block.settings.category }}" {{ block.shopify_attributes }}>
+                <div class="quote-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+                  </svg>
+                </div>
+                
+                {%- if block.settings.rating > 0 -%}
+                  <div class="rating">
+                    {%- for i in (1..5) -%}
+                      <div class="star">
+                        <svg viewBox="0 0 24 24">
+                          {%- if i <= block.settings.rating -%}
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                          {%- else -%}
+                            <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.45 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/>
+                          {%- endif -%}
+                        </svg>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+                
+                <p class="testimonial-text">{{ block.settings.testimonial_text }}</p>
+                
+                <div class="testimonial-author">
+                  <div class="author-avatar">
+                    {{ block.settings.author_name | truncate: 1, '' | upcase }}
+                  </div>
+                  <div class="author-info">
+                    <h4>{{ block.settings.author_name }}</h4>
+                    {%- if block.settings.author_title != blank -%}
+                      <p>{{ block.settings.author_title }}</p>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if testimonials_count > 1 -%}
+        <button class="nav-button nav-prev" aria-label="Testimonianza precedente">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+        <button class="nav-button nav-next" aria-label="Testimonianza successiva">
+          <svg viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          </svg>
+        </button>
+
+        <div class="pagination">
+          {%- for i in (0..testimonials_count) -%}
+            {%- if i < testimonials_count -%}
+              <span class="dot {% if i == 0 %}active{% endif %}" data-index="{{ i }}"></span>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const section = document.getElementById('{{ section_id }}');
+  const wrapper = section.querySelector('.testimonials-wrapper');
+  const cards = section.querySelectorAll('.testimonial-card');
+  const prevBtn = section.querySelector('.nav-prev');
+  const nextBtn = section.querySelector('.nav-next');
+  const dots = section.querySelectorAll('.dot');
+  const filterBtns = section.querySelectorAll('.filter-btn');
+  
+  let currentIndex = 0;
+  let visibleCards = Array.from(cards);
+  let cardsPerView = window.innerWidth >= 1025 ? 2 : 1;
+  
+  // Update cards per view on resize
+  window.addEventListener('resize', function() {
+    cardsPerView = window.innerWidth >= 1025 ? 2 : 1;
+    updateSlider();
+  });
+  
+  // Filter functionality
+  if (filterBtns.length > 0) {
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const filter = this.dataset.filter;
+        
+        // Update active button
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Filter cards
+        if (filter === 'all') {
+          cards.forEach(card => card.classList.remove('hidden'));
+          visibleCards = Array.from(cards);
+        } else {
+          cards.forEach(card => {
+            if (card.dataset.category === filter) {
+              card.classList.remove('hidden');
+            } else {
+              card.classList.add('hidden');
+            }
+          });
+          visibleCards = Array.from(cards).filter(card => !card.classList.contains('hidden'));
+        }
+        
+        // Reset to first slide
+        currentIndex = 0;
+        updateSlider();
+        updateDots();
+      });
+    });
+  }
+  
+  function updateSlider() {
+    const cardWidth = 100 / cardsPerView;
+    const translateX = -currentIndex * cardWidth;
+    wrapper.style.transform = `translateX(${translateX}%)`;
+  }
+  
+  function updateDots() {
+    dots.forEach((dot, index) => {
+      if (index === Math.floor(currentIndex / cardsPerView)) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  }
+  
+  function nextSlide() {
+    const maxIndex = Math.max(0, visibleCards.length - cardsPerView);
+    if (currentIndex < maxIndex) {
+      currentIndex++;
+      updateSlider();
+      updateDots();
+    }
+  }
+  
+  function prevSlide() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateSlider();
+      updateDots();
+    }
+  }
+  
+  // Navigation buttons
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  
+  // Pagination dots
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', function() {
+      currentIndex = index * cardsPerView;
+      updateSlider();
+      updateDots();
+    });
+  });
+  
+  // Touch/swipe support for mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  wrapper.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  
+  wrapper.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  });
+  
+  function handleSwipe() {
+    if (touchEndX < touchStartX - 50) nextSlide();
+    if (touchEndX > touchStartX + 50) prevSlide();
+  }
+  
+  // Auto-play functionality
+  {%- if section.settings.enable_autoplay -%}
+    let autoplayInterval;
+    
+    function startAutoplay() {
+      autoplayInterval = setInterval(function() {
+        const maxIndex = Math.max(0, visibleCards.length - cardsPerView);
+        if (currentIndex < maxIndex) {
+          nextSlide();
+        } else {
+          currentIndex = 0;
+          updateSlider();
+          updateDots();
+        }
+      }, {{ section.settings.autoplay_speed }} * 1000);
+    }
+    
+    function stopAutoplay() {
+      clearInterval(autoplayInterval);
+    }
+    
+    startAutoplay();
+    
+    // Pause on hover
+    wrapper.addEventListener('mouseenter', stopAutoplay);
+    wrapper.addEventListener('mouseleave', startAutoplay);
+  {%- endif -%}
+});
+</script>
+
+{% schema %}
+{
+  "name": "Testimonianze Clienti",
+  "class": "fabindia-testimonials",
+  "settings": [
+    {
+      "type": "header",
+      "content": "📝 Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo sezione",
+      "default": "Cosa Dicono i Nostri Clienti"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Sottotitolo sezione",
+      "default": "Storie autentiche di chi ha scelto l'unicità di Fabindia Roma"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Sfondo sezione",
+      "default": "#FAF8F6"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titoli",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Sfondo card",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Colore stelle",
+      "default": "#F5C842"
+    },
+    {
+      "type": "header",
+      "content": "⚙️ Funzionalità"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Mostra filtri categorie",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Abilita autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Velocità autoplay",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "default": 5,
+      "info": "Visibile solo se autoplay è attivo"
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout Desktop"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Larghezza massima",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default tema"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1600px",
+          "label": "1600px"
+        },
+        {
+          "value": "100%",
+          "label": "Piena larghezza"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding superiore",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding inferiore",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "min": -50,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "min": -50,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_desktop",
+      "label": "Nascondi su desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📱 Layout Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding superiore mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding inferiore mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore mobile",
+      "min": -50,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore mobile",
+      "min": -50,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_mobile",
+      "label": "Nascondi su mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "⚡ Opzioni Avanzate"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_smooth_transitions",
+      "label": "Abilita transizioni fluide",
+      "info": "Aggiunge animazioni smooth",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonianza",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "testimonial_text",
+          "label": "Testo testimonianza",
+          "default": "Bellissimo negozio con oggetti etnici e di rara bellezza, perché sono tutti molto particolari e prodotti con grandissima cura e attenzione anche ai minimi dettagli."
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "label": "Nome cliente",
+          "default": "Maria R."
+        },
+        {
+          "type": "text",
+          "id": "author_title",
+          "label": "Titolo/Località",
+          "default": "Cliente da 5 anni",
+          "info": "Es: 'Roma' o 'Cliente fedele'"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Valutazione stelle",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Categoria prodotto",
+          "options": [
+            {
+              "value": "clothing",
+              "label": "Abbigliamento"
+            },
+            {
+              "value": "accessories",
+              "label": "Accessori"
+            },
+            {
+              "value": "home",
+              "label": "Casa"
+            }
+          ],
+          "default": "clothing",
+          "info": "Per filtro categorie"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonianze Clienti",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Bellissimo negozio con oggetti etnici e di rara bellezza, perché sono tutti molto particolari e prodotti con grandissima cura e attenzione anche ai minimi dettagli.",
+            "author_name": "Maria R.",
+            "author_title": "Cliente da 5 anni",
+            "rating": 5,
+            "category": "clothing"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "La qualità dei tessuti e la manifattura sono di altissimo livello. Ho comprato una splendida camicetta e delle borse. Tornerò sicuramente per acquistare altri capi!",
+            "author_name": "Sarah L.",
+            "author_title": "New York, USA",
+            "rating": 5,
+            "category": "clothing"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Questo negozio ha abbigliamento, accessori e oggetti per la casa bellissimi! Siamo tornati due giorni di fila durante il nostro viaggio a Roma.",
+            "author_name": "Jennifer M.",
+            "author_title": "Australia",
+            "rating": 5,
+            "category": "home"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1008 @@
+<!-- Fabindia Process Section Enhanced -->
+<section class="fabindia-process-section section-{{ section.id }}" data-section-id="{{ section.id }}">
+  <style>
+    .section-{{ section.id }} {
+      background-color: {{ section.settings.background_color }};
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Desktop Spacing */
+    @media (min-width: 769px) {
+      .section-{{ section.id }} {
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      }
+    }
+
+    /* Mobile Spacing */
+    @media (max-width: 768px) {
+      .section-{{ section.id }} {
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      }
+    }
+
+    .section-{{ section.id }} .process-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 10px;
+    }
+
+    .section-{{ section.id }} .process-header {
+      text-align: center;
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .section-{{ section.id }} .process-title {
+      font-size: {{ section.settings.title_size_desktop }}px;
+      font-weight: 700;
+      color: {{ section.settings.title_color }};
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .section-{{ section.id }} .process-subtitle {
+      font-size: {{ section.settings.subtitle_size_desktop }}px;
+      color: {{ section.settings.text_color }};
+      opacity: 0.9;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .section-{{ section.id }} .process-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+      position: relative;
+    }
+
+    .section-{{ section.id }} .process-step {
+      background: {{ section.settings.card_background }};
+      border-radius: 20px;
+      padding: 40px 30px;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeInUp 0.8s ease forwards;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .section-{{ section.id }} .process-step:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .section-{{ section.id }} .process-step:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+
+    .section-{{ section.id }} .process-step:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    .section-{{ section.id }} .process-step:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+
+    .section-{{ section.id }} .step-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .section-{{ section.id }} .step-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+    }
+
+    .section-{{ section.id }} .step-number {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      width: 40px;
+      height: 40px;
+      background: {{ section.settings.accent_color }};
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .section-{{ section.id }} .step-content {
+      text-align: center;
+    }
+
+    .section-{{ section.id }} .step-title {
+      font-size: {{ section.settings.step_title_size_desktop }}px;
+      font-weight: 600;
+      color: {{ section.settings.title_color }};
+      margin-bottom: 15px;
+      line-height: 1.3;
+    }
+
+    .section-{{ section.id }} .step-description {
+      font-size: {{ section.settings.step_text_size_desktop }}px;
+      color: {{ section.settings.text_color }};
+      line-height: 1.6;
+      opacity: 0.85;
+      margin-bottom: 20px;
+    }
+
+    .section-{{ section.id }} .step-image {
+      width: 100%;
+      margin: 20px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .section-{{ section.id }} .step-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .section-{{ section.id }} .step-image:hover img {
+      transform: scale(1.05);
+    }
+
+    .section-{{ section.id }} .step-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .section-{{ section.id }} .step-bullets li {
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 12px;
+      font-size: {{ section.settings.step_text_size_desktop }}px;
+      color: {{ section.settings.text_color }};
+      line-height: 1.5;
+    }
+
+    .section-{{ section.id }} .step-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      background: {{ section.settings.accent_color }};
+      border-radius: 50%;
+    }
+
+    .section-{{ section.id }} .step-cta {
+      margin-top: 25px;
+    }
+
+    .section-{{ section.id }} .step-cta .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      background: {{ section.settings.card_button_bg }};
+      color: {{ section.settings.card_button_text }};
+    }
+
+    .section-{{ section.id }} .step-cta .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      background: {{ section.settings.card_button_bg_hover }};
+    }
+
+    .section-{{ section.id }} .process-connector {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, {{ section.settings.accent_color }} 0%, transparent 100%);
+      z-index: -1;
+    }
+
+    .section-{{ section.id }} .process-reason {
+      background: linear-gradient(135deg, {{ section.settings.highlight_bg_1 }} 0%, {{ section.settings.highlight_bg_2 }} 100%);
+      border-radius: 25px;
+      padding: 50px;
+      margin-top: 60px;
+      text-align: center;
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease 0.6s forwards;
+    }
+
+    .section-{{ section.id }} .reason-title {
+      font-size: {{ section.settings.reason_title_size_desktop }}px;
+      font-weight: 700;
+      color: {{ section.settings.highlight_title_color }};
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .section-{{ section.id }} .reason-text {
+      font-size: {{ section.settings.reason_text_size_desktop }}px;
+      color: {{ section.settings.highlight_text_color }};
+      line-height: 1.7;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-{{ section.id }} .cta-wrapper {
+      margin-top: 30px;
+    }
+
+    .section-{{ section.id }} .btn {
+      display: inline-block;
+      padding: 15px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-{{ section.id }} .btn--primary {
+      background: {{ section.settings.button_bg }};
+      color: {{ section.settings.button_text_color }};
+      border: 2px solid transparent;
+    }
+
+    .section-{{ section.id }} .btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      background: {{ section.settings.button_bg_hover }};
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .section-{{ section.id }} .process-title {
+        font-size: {{ section.settings.title_size_mobile }}px;
+      }
+
+      .section-{{ section.id }} .process-subtitle {
+        font-size: {{ section.settings.subtitle_size_mobile }}px;
+      }
+
+      .section-{{ section.id }} .step-title {
+        font-size: {{ section.settings.step_title_size_mobile }}px;
+      }
+
+      .section-{{ section.id }} .step-description,
+      .section-{{ section.id }} .step-bullets li {
+        font-size: {{ section.settings.step_text_size_mobile }}px;
+      }
+
+      .section-{{ section.id }} .reason-title {
+        font-size: {{ section.settings.reason_title_size_mobile }}px;
+      }
+
+      .section-{{ section.id }} .reason-text {
+        font-size: {{ section.settings.reason_text_size_mobile }}px;
+      }
+
+      .section-{{ section.id }} .process-flow {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .section-{{ section.id }} .process-connector {
+        display: none;
+      }
+
+      .section-{{ section.id }} .process-reason {
+        padding: 30px 20px;
+      }
+
+      .section-{{ section.id }} .process-header {
+        margin-bottom: 40px;
+      }
+
+      .section-{{ section.id }} .process-step {
+        padding: 30px 20px;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Decorative elements */
+    .section-{{ section.id }}::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .section-{{ section.id }}::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+  </style>
+
+  <div class="process-container">
+    {% if section.settings.title != blank or section.settings.subtitle != blank %}
+      <div class="process-header">
+        {% if section.settings.title != blank %}
+          <h2 class="process-title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="process-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="process-flow">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'process_step' %}
+            <div class="process-step" {{ block.shopify_attributes }}>
+              <div class="step-icon">
+                {% if block.settings.icon != blank %}
+                  {{ block.settings.icon | image_url: width: 200 | image_tag }}
+                {% endif %}
+                <span class="step-number">{{ forloop.index }}</span>
+              </div>
+              
+              <div class="step-content">
+                {% if block.settings.step_title != blank %}
+                  <h3 class="step-title">{{ block.settings.step_title }}</h3>
+                {% endif %}
+                
+                {% if block.settings.step_description != blank %}
+                  <p class="step-description">{{ block.settings.step_description }}</p>
+                {% endif %}
+
+                {% if block.settings.step_image != blank %}
+                  <div class="step-image">
+                    {{ block.settings.step_image | image_url: width: 600 | image_tag }}
+                  </div>
+                {% endif %}
+
+                {% if block.settings.enable_bullets %}
+                  <ul class="step-bullets">
+                    {% if block.settings.bullet_1 != blank %}
+                      <li>{{ block.settings.bullet_1 }}</li>
+                    {% endif %}
+                    {% if block.settings.bullet_2 != blank %}
+                      <li>{{ block.settings.bullet_2 }}</li>
+                    {% endif %}
+                    {% if block.settings.bullet_3 != blank %}
+                      <li>{{ block.settings.bullet_3 }}</li>
+                    {% endif %}
+                    {% if block.settings.bullet_4 != blank %}
+                      <li>{{ block.settings.bullet_4 }}</li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+
+                {% if block.settings.enable_cta and block.settings.cta_text != blank and block.settings.cta_link != blank %}
+                  <div class="step-cta">
+                    <a href="{{ block.settings.cta_link }}" class="btn">
+                      {{ block.settings.cta_text }}
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+              
+              {% unless forloop.last %}
+                <div class="process-connector"></div>
+              {% endunless %}
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.reason_title != blank or section.settings.reason_text != blank %}
+      <div class="process-reason">
+        {% if section.settings.reason_title != blank %}
+          <h3 class="reason-title">{{ section.settings.reason_title }}</h3>
+        {% endif %}
+        {% if section.settings.reason_text != blank %}
+          <p class="reason-text">{{ section.settings.reason_text }}</p>
+        {% endif %}
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+          <div class="cta-wrapper">
+            <a href="{{ section.settings.button_link }}" class="btn btn--primary">
+              {{ section.settings.button_text }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const section = document.querySelector('.section-{{ section.id }}');
+      
+      // Intersection Observer per animazioni scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animationPlayState = 'running';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      // Osserva gli elementi animati
+      section.querySelectorAll('.process-header, .process-step, .process-reason').forEach(el => {
+        el.style.animationPlayState = 'paused';
+        observer.observe(el);
+      });
+
+      // Utility Functions
+      {% if section.settings.enable_lazy_load %}
+        // Lazy loading implementation
+        const images = section.querySelectorAll('img');
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                imageObserver.unobserve(img);
+              }
+            }
+          });
+        });
+        images.forEach(img => imageObserver.observe(img));
+      {% endif %}
+
+      {% if section.settings.enable_analytics %}
+        // Analytics tracking
+        const processSteps = section.querySelectorAll('.process-step');
+        processSteps.forEach((step, index) => {
+          step.addEventListener('click', () => {
+            if (typeof gtag !== 'undefined') {
+              gtag('event', 'process_step_click', {
+                'event_category': 'engagement',
+                'event_label': `Step ${index + 1}`
+              });
+            }
+          });
+        });
+      {% endif %}
+
+      {% if section.settings.enable_animations %}
+        // Enhanced animations
+        const steps = section.querySelectorAll('.process-step');
+        steps.forEach((step, index) => {
+          step.addEventListener('mouseenter', () => {
+            step.style.transform = 'translateY(-8px) scale(1.02)';
+          });
+          step.addEventListener('mouseleave', () => {
+            step.style.transform = 'translateY(0) scale(1)';
+          });
+        });
+      {% endif %}
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Processo Lavorazione",
+  "class": "fabindia-process-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto principale"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Il Nostro Processo"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Dal design alla realizzazione"
+    },
+    {
+      "type": "header",
+      "content": "Dimensioni testo Desktop"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Titolo principale",
+      "min": 28,
+      "max": 64,
+      "step": 2,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "label": "Sottotitolo",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "step_title_size_desktop",
+      "label": "Titoli step",
+      "min": 20,
+      "max": 36,
+      "step": 1,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "step_text_size_desktop",
+      "label": "Testo step",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "reason_title_size_desktop",
+      "label": "Titolo spiegazione",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "reason_text_size_desktop",
+      "label": "Testo spiegazione",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Dimensioni testo Mobile"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Titolo principale",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Sottotitolo",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "step_title_size_mobile",
+      "label": "Titoli step",
+      "min": 18,
+      "max": 32,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "step_text_size_mobile",
+      "label": "Testo step",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "reason_title_size_mobile",
+      "label": "Titolo spiegazione",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "reason_text_size_mobile",
+      "label": "Testo spiegazione",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Sezione spiegazione"
+    },
+    {
+      "type": "text",
+      "id": "reason_title",
+      "label": "Titolo spiegazione",
+      "default": "Perché l'India?"
+    },
+    {
+      "type": "textarea",
+      "id": "reason_text",
+      "label": "Testo spiegazione",
+      "default": "Le tecniche tradizionali indiane rappresentano un patrimonio unico"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Testo bottone",
+      "default": "Scopri di più"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Link bottone"
+    },
+    {
+      "type": "header",
+      "content": "Colori principali"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Sfondo sezione",
+      "default": "#FAF7F2"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titoli",
+      "default": "#2C3E50"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#4A5568"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Sfondo cards",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#D2691E"
+    },
+    {
+      "type": "header",
+      "content": "Colori highlight box"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg_1",
+      "label": "Sfondo gradiente 1",
+      "default": "#8B4513"
+    },
+    {
+      "type": "color",
+      "id": "highlight_bg_2",
+      "label": "Sfondo gradiente 2",
+      "default": "#D2691E"
+    },
+    {
+      "type": "color",
+      "id": "highlight_title_color",
+      "label": "Colore titolo highlight",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "highlight_text_color",
+      "label": "Colore testo highlight",
+      "default": "#FAF7F2"
+    },
+    {
+      "type": "header",
+      "content": "Colori bottone principale"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Sfondo bottone",
+      "default": "#2C3E50"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Colore testo bottone",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_hover",
+      "label": "Sfondo hover",
+      "default": "#1A252F"
+    },
+    {
+      "type": "header",
+      "content": "Colori bottoni cards"
+    },
+    {
+      "type": "color",
+      "id": "card_button_bg",
+      "label": "Sfondo bottone card",
+      "default": "#D2691E"
+    },
+    {
+      "type": "color",
+      "id": "card_button_text",
+      "label": "Testo bottone card",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_button_bg_hover",
+      "label": "Sfondo hover card",
+      "default": "#B8600D"
+    },
+    {
+      "type": "header",
+      "content": "Spaziatura Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding superiore",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding inferiore",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Spaziatura Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding superiore",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding inferiore",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Funzionalità avanzate"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lazy_load",
+      "label": "Abilita lazy loading",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_analytics",
+      "label": "Abilita analytics",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Animazioni avanzate",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "process_step",
+      "name": "Step processo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icona/Immagine"
+        },
+        {
+          "type": "text",
+          "id": "step_title",
+          "label": "Titolo step",
+          "default": "Design in Italia"
+        },
+        {
+          "type": "textarea",
+          "id": "step_description",
+          "label": "Descrizione",
+          "default": "Progettazione e design"
+        },
+        {
+          "type": "image_picker",
+          "id": "step_image",
+          "label": "Immagine aggiuntiva"
+        },
+        {
+          "type": "header",
+          "content": "Bullet Points"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_bullets",
+          "label": "Abilita bullet points",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "bullet_1",
+          "label": "Punto 1"
+        },
+        {
+          "type": "text",
+          "id": "bullet_2",
+          "label": "Punto 2"
+        },
+        {
+          "type": "text",
+          "id": "bullet_3",
+          "label": "Punto 3"
+        },
+        {
+          "type": "text",
+          "id": "bullet_4",
+          "label": "Punto 4"
+        },
+        {
+          "type": "header",
+          "content": "Call to Action"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_cta",
+          "label": "Abilita CTA",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Testo CTA"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "Link CTA"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Processo Lavorazione",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "process_step",
+          "settings": {
+            "step_title": "Design a Roma",
+            "step_description": "Progettazione creativa nel cuore dell'Italia"
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "step_title": "Produzione in India",
+            "step_description": "Realizzazione artigianale con tecniche tradizionali"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

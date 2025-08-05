@@ -1,0 +1,86 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:sections.header-group.name",
+  "sections": {
+    "announcement": {
+      "type": "announcement",
+      "blocks": {
+        "announcement-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "SPEDIZIONE GRATUITA PER ORDINI OLTRE € 100",
+            "link_text": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-0"
+      ],
+      "settings": {
+        "background_color": "#c33a32",
+        "text_color": "#fefefe",
+        "border_color": "#a4b8c4",
+        "border_width": 0,
+        "enable_hover": true,
+        "bg_hover": "#a4b8c4",
+        "text_hover": "#fefefe",
+        "border_hover": "#3e3e3e",
+        "font_weight": "600",
+        "font_desktop": 14,
+        "font_mobile": 12,
+        "text_shadow": true,
+        "shadow_level": "strong",
+        "padding_y": 10,
+        "hide_mobile": false,
+        "hide_desktop": false,
+        "hide_pages": ""
+      }
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "header-0": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/logo-fabindiaroma.oriz1.svg",
+            "logo-inverted": "shopify://shop_images/download.svg",
+            "desktop_logo_width": 240,
+            "mobile_logo_width": 200
+          }
+        }
+      },
+      "block_order": [
+        "header-0"
+      ],
+      "custom_css": [],
+      "settings": {
+        "main_menu_link_list": "sidebar-collezione",
+        "hover_menu": true,
+        "mega_menu_images": true,
+        "main_menu_alignment": "left",
+        "header_style": "sticky",
+        "sticky_index": false,
+        "sticky_collection": false,
+        "toolbar_menu": "",
+        "toolbar_social": false,
+        "show_locale_selector": false,
+        "show_currency_selector": false,
+        "show_currency_flags": false
+      }
+    }
+  },
+  "order": [
+    "announcement",
+    "header"
+  ]
+}

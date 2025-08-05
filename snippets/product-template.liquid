@@ -1,0 +1,5418 @@
+{% comment %}
+  Parameters
+  context - used to determine whether on the featured product or main product template
+  mobile_layout
+{% endcomment %}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+
+  unless thumbnail_position
+    assign thumbnail_position = 'beside'
+  endunless
+
+  assign product_zoom_size = '1800x1800'
+  assign product_image_size = '620x'
+
+  case image_container_width
+    when 'small'
+      assign product_image_width = 'medium-up--two-fifths'
+      assign product_description_width = 'medium-up--three-fifths'
+      assign product_image_size = '480x'
+    when 'medium'
+      assign product_image_width = 'medium-up--one-half'
+      assign product_description_width = 'medium-up--one-half'
+      assign product_image_size = '620x'
+    when 'large'
+      assign product_image_width = 'medium-up--three-fifths'
+      assign product_description_width = 'medium-up--two-fifths'
+      assign product_image_size = '740x'
+  endcase
+
+  assign product_img_structure = product.featured_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.'
+-%}
+
+{%- liquid
+  assign connect_to_sizechart = false
+
+  for block in section.blocks
+    if block.type == 'size_chart'
+      assign sizechart_index = forloop.index0
+      assign next_block_index = sizechart_index | plus: 1
+      assign variant_block = section.blocks[next_block_index]
+
+      if variant_block.type == 'variant_picker' and variant_block.settings.picker_type == 'button' and product.has_only_default_variant == false
+        for option in product.options_with_values
+          assign size_trigger = 'products.general.size_trigger' | t | downcase
+          assign downcased_option = option.name | downcase
+
+          if downcased_option contains size_trigger
+            assign connect_to_sizechart = true
+          endif
+        endfor
+      endif
+
+    endif
+  endfor
+-%}
+
+<div id="ProductSection-{{ section_id }}-{{ product.id }}"
+  class="product-section"
+  data-section-id="{{ section_id }}"
+  data-product-id="{{ product.id }}"
+  data-section-type="product"
+  data-product-handle="{{ product.handle }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-url="{{ product.url | within: collection }}"
+  data-aspect-ratio="{{ 100 | divided_by: product.featured_media.aspect_ratio }}"
+  data-img-url="{{ product_img_structure }}"
+  {% unless isModal %}
+    data-history="true"
+  {% endunless %}
+  data-modal="{{ isModal }}">
+
+  {%- render 'product-template-variables', product: product, current_variant: current_variant -%}
+
+  <div class="page-content page-content--product">
+    <div class="page-width">
+
+      <div class="grid{% unless image_position == 'left' %} grid--product-images-right{% endunless %}{% if mobile_layout == 'partial' %} grid--product-images--partial{% endif %}">
+        {%- if image_position == 'left' -%}
+          <div class="grid__item {{ product_image_width }} product-single__sticky">
+            {%- render 'product-images',
+              section_id: section_id,
+              product: product,
+              isModal: isModal,
+              image_position: image_position,
+              product_zoom_enable: product_zoom_enable,
+              product_zoom_size: product_zoom_size,
+              product_image_size: product_image_size,
+              thumbnail_arrows: thumbnail_arrows,
+              thumbnail_height: thumbnail_height,
+              thumbnail_position: thumbnail_position,
+              video_looping: video_looping,
+              video_style: video_style,
+              context: context,
+              sizes: sizes,
+              sizeVariable: product_image_width,
+              fallback: fallback,
+              mobile_layout: mobile_layout,
+            -%}
+          </div>
+        {%- endif -%}
+
+        <div class="grid__item {{ product_description_width }}">
+
+          <div class="product-single__meta">
+            <div class="product-block product-block--header">
+              {%- if settings.show_breadcrumbs and isModal != true -%}
+                {%- render 'breadcrumbs' -%}
+              {%- endif -%}
+
+              {%- if settings.vendor_enable -%}
+                <div class="product-single__vendor">
+                  {%- assign vendor_handle = product.vendor | handleize -%}
+                  {%- if collections[vendor_handle] != empty -%}
+                    <a href="{{ routes.collections_url }}/{{ collections[vendor_handle].handle }}">
+                      {{ collections[vendor_handle].title }}
+                    </a>
+                  {%- else -%}
+                    {{ product.vendor | link_to_vendor }}
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if isModal -%}
+                <p class="h2 product-single__title">
+                  {{ product.title }}
+                </p>
+              {%- else -%}
+                <h1 class="h2 product-single__title">
+                  {%- unless product.empty? -%}
+                    {{ product.title }}
+                  {%- else -%}
+                    {{ 'home_page.onboarding.product_title' | t }}
+                  {%- endunless -%}
+                </h1>
+              {%- endif -%}
+
+              {%- if sku_enable -%}
+                <p data-sku class="product-single__sku">
+                  {%- if current_variant.sku -%}
+                    {{ current_variant.sku }}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+            </div>
+
+            <div data-product-blocks>
+              {%- capture form_id -%}AddToCartForm-{{ section_id }}-{{ product.id }}{%- endcapture -%}
+              {%- for block in blocks -%}
+                {%- case block.type -%}
+                  {%- when '@app' -%}
+                    {% render block %}
+                  {%- when 'separator' -%}
+  <div class="product-block product-block--separator" 
+    {% if block.settings.enable_custom_spacing %}
+      style="
+        {% if block.settings.margin_top_desktop != 0 %}margin-top: {{ block.settings.margin_top_desktop }}px;{% endif %}
+        {% if block.settings.margin_bottom_desktop != 0 %}margin-bottom: {{ block.settings.margin_bottom_desktop }}px;{% endif %}
+        {% if block.settings.padding_top_desktop != 0 %}padding-top: {{ block.settings.padding_top_desktop }}px;{% endif %}
+        {% if block.settings.padding_bottom_desktop != 0 %}padding-bottom: {{ block.settings.padding_bottom_desktop }}px;{% endif %}
+      "
+    {% endif %}
+    {{ block.shopify_attributes }}>
+    
+    <style>
+      {% if block.settings.enable_custom_spacing %}
+        @media screen and (max-width: 749px) {
+          #shopify-section-{{ section.id }} .product-block--separator {
+            {% if block.settings.margin_top_mobile != 0 %}margin-top: {{ block.settings.margin_top_mobile }}px !important;{% endif %}
+            {% if block.settings.margin_bottom_mobile != 0 %}margin-bottom: {{ block.settings.margin_bottom_mobile }}px !important;{% endif %}
+            {% if block.settings.padding_top_mobile != 0 %}padding-top: {{ block.settings.padding_top_mobile }}px !important;{% endif %}
+            {% if block.settings.padding_bottom_mobile != 0 %}padding-bottom: {{ block.settings.padding_bottom_mobile }}px !important;{% endif %}
+          }
+        }
+      {% endif %}
+    </style>
+    
+    <hr>
+  </div>
+                  {%- when 'text' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {{ block.settings.text }}
+                    </div>
+                  {%- when 'tab' -%}
+                    {% assign tab_id = block.id | append: product.id %}
+                    {% capture tab_content %}
+                      {{ block.settings.content }}
+                      {{ block.settings.page.content }}
+                    {% endcapture %}
+                    {% unless tab_content == blank and block.settings.title == blank %}
+                      <div class="product-block product-block--tab" {{ block.shopify_attributes }}>
+                        {%- render 'tab', id: tab_id, title: block.settings.title, content: tab_content -%}
+                      </div>
+                    {% endunless %}
+
+              
+                  {%- when 'contact' -%}
+                    <div class="product-block product-block--tab" {{ block.shopify_attributes }}>
+                      {% assign tab_id = block.id | append: product.id %}
+                      {%- render 'tab-contact', id: tab_id, block: block -%}
+                    </div>
+
+              
+                  {%- when 'description' -%}
+                    <div class="product-block{% if block.settings.is_tab %} product-block--tab{% endif %}" {{ block.shopify_attributes }}>
+                      {%- assign id = block.id | append: product.id -%}
+                      {%- render 'product-description', id: id, product: product, is_tab: block.settings.is_tab -%}
+                    </div>
+
+
+
+{%- when 'payment_icons' -%}
+  <div class="product-block fabindia-payment-icons" {{ block.shopify_attributes }}>
+    <style>
+      .fabindia-payment-icons {
+        padding-top: {{ block.settings.padding_top_desktop }}px;
+        padding-bottom: {{ block.settings.padding_bottom_desktop }}px;
+        margin-top: {{ block.settings.margin_top_desktop }}px;
+        margin-bottom: {{ block.settings.margin_bottom_desktop }}px;
+        position: relative;
+      }
+
+      .fabindia-payment-icons__container {
+        display: flex;
+        gap: {{ block.settings.icons_gap }}px;
+        justify-content: {{ block.settings.alignment }};
+        align-items: center;
+        position: relative;
+      }
+
+      /* Forza riga singola Desktop */
+      {%- if block.settings.force_single_row_desktop -%}
+        @media only screen and (min-width: 769px) {
+          .fabindia-payment-icons__container {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #E5DDD5 transparent;
+            padding-bottom: 10px;
+          }
+          
+          .fabindia-payment-icons__container::-webkit-scrollbar {
+            height: 6px;
+          }
+          
+          .fabindia-payment-icons__container::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          
+          .fabindia-payment-icons__container::-webkit-scrollbar-thumb {
+            background: #E5DDD5;
+            border-radius: 3px;
+          }
+          
+          .fabindia-payment-icons__container::-webkit-scrollbar-thumb:hover {
+            background: #B5A397;
+          }
+        }
+      {%- else -%}
+        @media only screen and (min-width: 769px) {
+          .fabindia-payment-icons__container {
+            flex-wrap: wrap;
+          }
+        }
+      {%- endif -%}
+
+      /* Forza riga singola Mobile */
+      {%- if block.settings.force_single_row_mobile -%}
+        @media only screen and (max-width: 768px) {
+          .fabindia-payment-icons__container {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          
+          .fabindia-payment-icons__container::-webkit-scrollbar {
+            display: none;
+          }
+        }
+      {%- else -%}
+        @media only screen and (max-width: 768px) {
+          .fabindia-payment-icons__container {
+            flex-wrap: wrap;
+          }
+        }
+      {%- endif -%}
+
+      .fabindia-payment-icon {
+        position: relative;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      .fabindia-payment-icon__image {
+        width: {{ block.settings.icon_size }}px;
+        height: auto;
+        display: block;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      .fabindia-payment-icon:hover .fabindia-payment-icon__image {
+        transform: scale(1.1);
+      }
+
+      /* Pulsazione animazione */
+      {%- if block.settings.enable_pulse -%}
+        @keyframes fabindia-pulse {
+          0% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale({{ block.settings.pulse_scale }});
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        .fabindia-payment-icon__image {
+          animation: fabindia-pulse {{ block.settings.pulse_duration }}s ease-in-out infinite;
+        }
+
+        .fabindia-payment-icon:hover .fabindia-payment-icon__image {
+          animation: none;
+          transform: scale(1.1);
+        }
+      {%- endif -%}
+
+      /* Tooltip styles */
+      .fabindia-payment-icon__tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
+        background-color: {{ block.settings.tooltip_bg_color }};
+        color: {{ block.settings.tooltip_text_color }};
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        line-height: 1.3;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        z-index: 999;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        font-weight: 500;
+      }
+
+      /* Freccia del tooltip */
+      .fabindia-payment-icon__tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 6px 6px 0 6px;
+        border-color: {{ block.settings.tooltip_bg_color }} transparent transparent transparent;
+      }
+
+      /* Desktop hover tooltip */
+      @media (hover: hover) and (pointer: fine) {
+        .fabindia-payment-icon:hover .fabindia-payment-icon__tooltip {
+          opacity: 1;
+          visibility: visible;
+          transform: translateX(-50%) translateY(-12px);
+        }
+      }
+
+      /* Mobile touch tooltip */
+      @media (hover: none) and (pointer: coarse) {
+        .fabindia-payment-icon__tooltip.is-active {
+          opacity: 1;
+          visibility: visible;
+          transform: translateX(-50%) translateY(-12px);
+        }
+      }
+
+      /* Tooltip sopra il primo livello */
+      .fabindia-payment-icon__tooltip {
+        z-index: 9999 !important;
+      }
+
+      /* Mobile responsive */
+      @media only screen and (max-width: 768px) {
+        .fabindia-payment-icons {
+          padding-top: {{ block.settings.padding_top_mobile }}px;
+          padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+          margin-top: {{ block.settings.margin_top_mobile }}px;
+          margin-bottom: {{ block.settings.margin_bottom_mobile }}px;
+        }
+
+        .fabindia-payment-icon__image {
+          width: {{ block.settings.icon_size_mobile }}px;
+        }
+
+        .fabindia-payment-icons__container {
+          gap: {{ block.settings.icons_gap_mobile }}px;
+        }
+        
+        .fabindia-payment-icon__tooltip {
+          font-size: 12px;
+          padding: 8px 12px;
+        }
+      }
+    </style>
+
+    <div class="fabindia-payment-icons__container">
+      {%- for i in (1..5) -%}
+        {%- assign icon_image = 'icon_' | append: i -%}
+        {%- assign icon_link = 'icon_link_' | append: i -%}
+        {%- assign icon_tooltip = 'icon_tooltip_' | append: i -%}
+        
+        {%- if block.settings[icon_image] != blank -%}
+          <div class="fabindia-payment-icon" data-icon-index="{{ i }}">
+            {%- if block.settings[icon_link] != blank -%}
+              <a href="{{ block.settings[icon_link] }}" 
+                 class="fabindia-payment-icon__link"
+                 {%- if block.settings.open_in_new_tab -%}
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                 {%- endif -%}>
+            {%- endif -%}
+            
+            {%- render 'image-element',
+              img: block.settings[icon_image],
+              widths: '60, 80, 100, 120',
+              classes: 'fabindia-payment-icon__image',
+            -%}
+            
+            {%- if block.settings[icon_link] != blank -%}
+              </a>
+            {%- endif -%}
+            
+            {%- if block.settings.enable_tooltip and block.settings[icon_tooltip] != blank -%}
+              <div class="fabindia-payment-icon__tooltip" role="tooltip">
+                {{ block.settings[icon_tooltip] }}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if block.settings.enable_tooltip -%}
+      <script>
+        (function() {
+          'use strict';
+          
+          // Aspetta che il DOM sia pronto
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTooltips);
+          } else {
+            initTooltips();
+          }
+          
+          function initTooltips() {
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (isTouchDevice) {
+              // Mobile: gestione click/tap
+              const icons = document.querySelectorAll('.fabindia-payment-icon');
+              
+              icons.forEach(icon => {
+                const tooltip = icon.querySelector('.fabindia-payment-icon__tooltip');
+                const link = icon.querySelector('a');
+                
+                if (tooltip) {
+                  icon.addEventListener('click', function(e) {
+                    // Se c'è un link e il tooltip è già attivo, lascia passare il click
+                    if (link && tooltip.classList.contains('is-active')) {
+                      return;
+                    }
+                    
+                    // Altrimenti previeni il default e mostra il tooltip
+                    if (link) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                    
+                    // Chiudi tutti gli altri tooltip
+                    document.querySelectorAll('.fabindia-payment-icon__tooltip.is-active').forEach(t => {
+                      if (t !== tooltip) {
+                        t.classList.remove('is-active');
+                      }
+                    });
+                    
+                    // Toggle questo tooltip
+                    tooltip.classList.toggle('is-active');
+                  });
+                }
+              });
+              
+              // Chiudi tooltip cliccando fuori
+              document.addEventListener('click', function(e) {
+                if (!e.target.closest('.fabindia-payment-icon')) {
+                  document.querySelectorAll('.fabindia-payment-icon__tooltip.is-active').forEach(t => {
+                    t.classList.remove('is-active');
+                  });
+                }
+              });
+            }
+          }
+        })();
+      </script>
+    {%- endif -%}
+  </div>
+
+
+
+{% comment %}
+=== BLOCCO ORDER TIMELINE 3 STEP OTTIMIZZATO PER FABINDIA ROMA ===
+Parte 1A: Codice Liquid/HTML/CSS/JS per product-template.liquid
+{% endcomment %}
+
+{% when 'fabindia_order_timeline' %}
+<div class="product-block fabindia-timeline-block" {{ block.shopify_attributes }}>
+  <div 
+    class="ft-timeline-container"
+    style="
+      margin: {{ block.settings.section_margin_top }}px 0 {{ block.settings.section_margin_bottom }}px;
+      padding: {{ block.settings.padding_top }}px {{ block.settings.padding_left_right }}px {{ block.settings.padding_bottom }}px;
+      background: {{ block.settings.bg_color }};
+      border-radius: {{ block.settings.border_radius }}px;
+      border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
+      font-family: {{ block.settings.font_family }};
+    "
+    data-block-id="{{ block.id }}"
+  >
+    
+    <!-- Header del blocco -->
+    {% if block.settings.show_title %}
+    <div class="ft-header">
+      <h3 class="ft-title" style="color: {{ block.settings.title_color }}; font-size: {{ block.settings.title_size }}px;">
+        {% if block.settings.title_icon %}
+          <span class="ft-title-icon">{{ block.settings.title_icon }}</span>
+        {% endif %}
+        {{ block.settings.timeline_title }}
+      </h3>
+      {% if block.settings.subtitle %}
+        <p class="ft-subtitle" style="color: {{ block.settings.text_color }};">{{ block.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Timeline principale - SOLO 3 STEP -->
+    <div class="ft-timeline {{ block.settings.mobile_layout }}" data-show-connectors="{{ block.settings.show_connectors }}">
+      
+      <!-- Step 1: Ordine Confermato + Lavorazione -->
+      {% if block.settings.show_order_step %}
+      <div class="ft-step ft-step-active" data-step="order">
+        <div class="ft-step-icon" style="background: {{ block.settings.icon_bg_color }}; color: {{ block.settings.icon_color }};">
+          {% if block.settings.icon_order %}
+            <img src="{{ block.settings.icon_order | img_url: '32x32' }}" alt="Ordine" class="ft-custom-icon">
+          {% else %}
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M7 4V2a1 1 0 0 1 2 0v2h6V2a1 1 0 0 1 2 0v2h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3zm0 2H5v4h14V6H7zm0 6H5v6h14v-6H7z"/>
+            </svg>
+          {% endif %}
+        </div>
+        <div class="ft-step-content">
+          <h4 class="ft-step-title" style="color: {{ block.settings.text_color }};">{{ block.settings.order_title }}</h4>
+          <p class="ft-step-date" id="order-date-{{ block.id }}" style="color: {{ block.settings.date_color }};">Oggi</p>
+        </div>
+        {% if block.settings.order_tooltip %}
+          <div class="ft-tooltip" style="background: {{ block.settings.tooltip_bg }}; color: {{ block.settings.tooltip_text }};">
+            <div class="ft-tooltip-content">{{ block.settings.order_tooltip }}</div>
+            <div class="ft-tooltip-arrow"></div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Connettore 1 -->
+      {% if block.settings.show_connectors %}
+        <div class="ft-connector" style="background: {{ block.settings.connector_color }};"></div>
+      {% endif %}
+      {% endif %}
+
+      <!-- Step 2: Spedizione -->
+      <div class="ft-step" data-step="shipping">
+        <div class="ft-step-icon" style="background: {{ block.settings.icon_bg_color }}; color: {{ block.settings.icon_color }};">
+          {% if block.settings.icon_shipping %}
+            <img src="{{ block.settings.icon_shipping | img_url: '32x32' }}" alt="Spedizione" class="ft-custom-icon">
+          {% else %}
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          {% endif %}
+        </div>
+        <div class="ft-step-content">
+          <h4 class="ft-step-title" style="color: {{ block.settings.text_color }};">{{ block.settings.shipping_title }}</h4>
+          <p class="ft-step-date" id="shipping-date-{{ block.id }}" style="color: {{ block.settings.date_color }};">2-3 giorni</p>
+        </div>
+        {% if block.settings.shipping_tooltip %}
+          <div class="ft-tooltip" style="background: {{ block.settings.tooltip_bg }}; color: {{ block.settings.tooltip_text }};">
+            <div class="ft-tooltip-content">{{ block.settings.shipping_tooltip }}</div>
+            <div class="ft-tooltip-arrow"></div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Connettore 2 -->
+      {% if block.settings.show_connectors %}
+        <div class="ft-connector" style="background: {{ block.settings.connector_color }};"></div>
+      {% endif %}
+
+      <!-- Step 3: Consegna -->
+      <div class="ft-step" data-step="delivery">
+        <div class="ft-step-icon" style="background: {{ block.settings.icon_bg_color }}; color: {{ block.settings.icon_color }};">
+          {% if block.settings.icon_delivery %}
+            <img src="{{ block.settings.icon_delivery | img_url: '32x32' }}" alt="Consegna" class="ft-custom-icon">
+          {% else %}
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+          {% endif %}
+        </div>
+        <div class="ft-step-content">
+          <h4 class="ft-step-title" style="color: {{ block.settings.text_color }};">{{ block.settings.delivery_title }}</h4>
+          <p class="ft-step-date" id="delivery-date-{{ block.id }}" style="color: {{ block.settings.date_color }};">1 giorno</p>
+        </div>
+        {% if block.settings.delivery_tooltip %}
+          <div class="ft-tooltip" style="background: {{ block.settings.tooltip_bg }}; color: {{ block.settings.tooltip_text }};">
+            <div class="ft-tooltip-content">{{ block.settings.delivery_tooltip }}</div>
+            <div class="ft-tooltip-arrow"></div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Messaggio rush order -->
+    {% if block.settings.show_rush_message %}
+    <div 
+      id="rush-message-{{ block.id }}" 
+      class="ft-rush-message"
+      style="
+        background: {{ block.settings.rush_bg_color }}; 
+        color: {{ block.settings.rush_text_color }};
+        border-color: {{ block.settings.border_color }};
+      "
+    >
+      <!-- Compilato da JavaScript -->
+    </div>
+    {% endif %}
+
+    <!-- Info aggiuntive con immagine custom -->
+    {% if block.settings.show_info_box %}
+    <div class="ft-info-box" style="background: {{ block.settings.info_bg_color }}; border-color: {{ block.settings.border_color }};">
+      <div class="ft-info-item">
+        <span class="ft-info-icon">
+          {% if block.settings.info_custom_image != blank %}
+            <img 
+              src="{{ block.settings.info_custom_image | img_url: 'master' }}" 
+              alt="Info" 
+              class="ft-info-custom-img"
+              style="width: {{ block.settings.info_image_size }}px; height: {{ block.settings.info_image_size }}px;"
+            >
+          {% elsif block.settings.info_custom_icon != blank %}
+            <span style="color: {{ block.settings.icon_color }}; font-size: {{ block.settings.info_image_size }}px;">{{ block.settings.info_custom_icon }}</span>
+          {% else %}
+            <span style="color: {{ block.settings.icon_color }}; font-size: {{ block.settings.info_image_size }}px;">🚚</span>
+          {% endif %}
+        </span>
+        <div>
+          <strong style="color: {{ block.settings.text_color }};">{{ block.settings.shipping_method }}</strong>
+          <p style="color: {{ block.settings.date_color }};">{{ block.settings.shipping_desc }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- CSS Ottimizzato per 3 Step -->
+  <style>
+    .fabindia-timeline-block {
+      width: 100%;
+      max-width: none;
+    }
+
+    .ft-timeline-container {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .ft-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .ft-title {
+      margin: 0 0 8px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ft-title-icon {
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    .ft-subtitle {
+      margin: 0;
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    /* Timeline 3 Step Layout */
+    .ft-timeline {
+      display: flex;
+      align-items: center;
+      position: relative;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .ft-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      flex: 1;
+      min-width: 100px;
+      opacity: 1;
+      transition: transform 0.4s ease;
+      cursor: pointer;
+    }
+
+    .ft-step:hover {
+      transform: translateY(-6px);
+    }
+
+    .ft-step-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+    }
+
+    .ft-step-active .ft-step-icon {
+      animation: glow 2s infinite alternate;
+      box-shadow: 0 4px 20px rgba(195, 58, 50, 0.25);
+    }
+
+    .ft-custom-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .ft-step-content {
+      min-height: 65px;
+    }
+
+    .ft-step-title {
+      margin: 0 0 6px;
+      font-size: {{ block.settings.step_title_size_desktop }}px;
+      font-weight: 600!important;
+      line-height: 1.3;
+    }
+
+    .ft-step-date {
+      margin: 0;
+      font-size: {{ block.settings.step_date_size_desktop }}px;
+      font-weight: 500;
+    }
+
+    /* Connettori Dinamici Avanzati */
+    .ft-connector {
+      height: 4px;
+      flex: 1;
+      max-width: 80px;
+      margin: 0 20px -30px;
+      border-radius: 3px;
+      opacity: 0.9;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .ft-connector::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        {{ block.settings.icon_bg_color }}, 
+        transparent
+      );
+      animation: connectorFlow 4s ease-in-out infinite;
+      border-radius: inherit;
+    }
+
+    @keyframes connectorFlow {
+      0% { left: -100%; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { left: 100%; opacity: 0; }
+    }
+
+    /* Timeline senza connettori */
+    .ft-timeline[data-show-connectors="false"] .ft-connector {
+      display: none;
+    }
+
+    /* Tooltip Ultra-Funzionali - Opachi e Solidi */
+    .ft-tooltip {
+      position: absolute;
+      top: calc(100% + 18px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .ft-tooltip-content {
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 300px;
+      width: max-content;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+      position: relative;
+      font-weight: 500;
+      /* Background completamente opaco - NO trasparenza */
+      background: inherit !important;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+
+    .ft-tooltip-arrow {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 14px;
+      height: 14px;
+      background: inherit !important;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-bottom: none;
+      border-right: none;
+      z-index: 1;
+    }
+
+    .ft-step:hover .ft-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(8px);
+    }
+
+    .ft-rush-message {
+      padding: 14px 18px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      border: 2px solid;
+      display: none;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .ft-info-box {
+      margin-top: 10px;
+      padding: 18px;
+      border-radius: 10px;
+      border: 1px solid;
+    }
+
+    .ft-info-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .ft-info-item strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .ft-info-item p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .ft-info-icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ft-info-custom-img {
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    /* Animazioni */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
+      to { box-shadow: 0 6px 24px rgba(195, 58, 50, 0.35); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Layout Mobile Perfetto per 3 Step */
+    @media (max-width: 768px) {
+      .ft-timeline {
+        padding: 0 15px;
+      }
+
+      /* Layout 2+1 per 3 step */
+      .ft-timeline:not(.ft-mobile-single-row) {
+        flex-wrap: wrap;
+        gap: 25px 15px;
+        justify-content: center;
+      }
+
+      .ft-timeline:not(.ft-mobile-single-row) .ft-step:nth-child(1),
+      .ft-timeline:not(.ft-mobile-single-row) .ft-step:nth-child(3) {
+        flex: 0 0 calc(50% - 15px);
+        max-width: 140px;
+      }
+
+      .ft-timeline:not(.ft-mobile-single-row) .ft-step:nth-child(5) {
+        flex: 0 0 100%;
+        max-width: 140px;
+      }
+
+      .ft-timeline:not(.ft-mobile-single-row) .ft-connector {
+        display: none;
+      }
+
+      /* Layout singola riga */
+      .ft-timeline.ft-mobile-single-row .ft-step {
+        min-width: 85px;
+      }
+
+      .ft-timeline.ft-mobile-single-row .ft-connector {
+        max-width: 45px;
+        margin: 0 10px -25px;
+      }
+
+      .ft-step-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      .ft-step-title {
+        font-size: {{ block.settings.step_title_size_mobile }}px;
+      }
+
+      .ft-step-date {
+        font-size: {{ block.settings.step_date_size_mobile }}px;
+      }
+
+      .ft-tooltip {
+        display: none !important;
+      }
+
+      .ft-rush-message {
+        font-size: 13px;
+        padding: 12px 15px;
+      }
+
+      .ft-title {
+        font-size: 19px;
+      }
+
+      .ft-subtitle {
+        font-size: 14px;
+      }
+    }
+
+/* MOBILE VISTA */
+@media only screen and (max-width: 589px) {
+    .ft-title{
+      font-size: {{ block.settings.title_size_mobile }}px!important;
+    }
+  </style>
+
+  <!-- JavaScript per 3 Step Ottimizzato -->
+  <script>
+    (function() {
+      const blockId = '{{ block.id }}';
+      const settings = {
+        // 3 step: order+processing → shipping → delivery
+        orderProcessingDays: {{ block.settings.order_processing_days | default: 2 }},
+        shippingMin: {{ block.settings.shipping_min | default: 1 }},
+        shippingMax: {{ block.settings.shipping_max | default: 3 }},
+        deliveryMin: {{ block.settings.delivery_min | default: 1 }},
+        deliveryMax: {{ block.settings.delivery_max | default: 1 }},
+        cutoffHour: {{ block.settings.cutoff_hour | default: 14 }},
+        showRush: {{ block.settings.show_rush_message | default: false }},
+        showOrderStep: {{ block.settings.show_order_step | default: true }}
+      };
+
+      const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+      
+      function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      }
+
+      function addWorkingDays(date, days) {
+        const result = new Date(date);
+        let daysAdded = 0;
+        
+        while (daysAdded < days) {
+          result.setDate(result.getDate() + 1);
+          if (result.getDay() !== 0 && result.getDay() !== 6) {
+            daysAdded++;
+          }
+        }
+        return result;
+      }
+
+      function formatDate(date) {
+        return `${date.getDate()} ${months[date.getMonth()]}`;
+      }
+
+      function formatDateRange(start, end) {
+        if (start.getTime() === end.getTime()) {
+          return formatDate(start);
+        }
+        if (start.getMonth() === end.getMonth()) {
+          return `${start.getDate()}-${end.getDate()} ${months[start.getMonth()]}`;
+        }
+        return `${formatDate(start)} - ${formatDate(end)}`;
+      }
+
+      function updateTimeline() {
+        const now = new Date();
+        const hour = now.getHours();
+        const isWorkingDay = now.getDay() >= 1 && now.getDay() <= 5;
+        const beforeCutoff = hour < settings.cutoffHour;
+
+        // Punto di partenza
+        let currentDate = new Date();
+        if (!isWorkingDay || !beforeCutoff) {
+          do {
+            currentDate.setDate(currentDate.getDate() + 1);
+          } while (currentDate.getDay() === 0 || currentDate.getDay() === 6);
+        }
+
+        // Step 1: Ordine + Lavorazione (combinati)
+        let orderCompletionDate = addWorkingDays(currentDate, settings.orderProcessingDays);
+
+        // Step 2: Spedizione
+        let shippingStart, shippingEnd;
+        if (settings.shippingMin === 0) {
+          shippingStart = orderCompletionDate;
+        } else {
+          shippingStart = addWorkingDays(orderCompletionDate, settings.shippingMin);
+        }
+        shippingEnd = addWorkingDays(orderCompletionDate, Math.max(settings.shippingMax, settings.shippingMin));
+
+        // Step 3: Consegna
+        let deliveryStart, deliveryEnd;
+        if (settings.deliveryMin === 0) {
+          deliveryStart = shippingEnd;
+        } else {
+          deliveryStart = addWorkingDays(shippingEnd, settings.deliveryMin);
+        }
+        deliveryEnd = addWorkingDays(shippingEnd, Math.max(settings.deliveryMax, settings.deliveryMin));
+
+        // Aggiorna interfaccia
+        const shippingEl = document.getElementById(`shipping-date-${blockId}`);
+        const deliveryEl = document.getElementById(`delivery-date-${blockId}`);
+
+        if (shippingEl) {
+          if (settings.shippingMin === 0 && settings.shippingMax === 0) {
+            shippingEl.textContent = 'Oggi';
+          } else {
+            shippingEl.textContent = formatDateRange(shippingStart, shippingEnd);
+          }
+        }
+        
+        if (deliveryEl) {
+          if (settings.deliveryMin === 0 && settings.deliveryMax === 0) {
+            deliveryEl.textContent = 'Oggi';
+          } else {
+            deliveryEl.textContent = formatDateRange(deliveryStart, deliveryEnd);
+          }
+        }
+
+        // Messaggio rush
+        if (settings.showRush) {
+          const rushEl = document.getElementById(`rush-message-${blockId}`);
+          if (rushEl && isWorkingDay && beforeCutoff) {
+            const deadline = new Date(now.getFullYear(), now.getMonth(), now.getDate(), settings.cutoffHour, 0, 0);
+            const timeLeft = deadline - now;
+            const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+            if (hoursLeft >= 0 && minutesLeft >= 0) {
+              const rushTemplate = '{{ block.settings.rush_message | default: "Ordina entro TIME_HOURS h TIME_MINUTES m per spedizione rapida!" }}';
+              rushEl.textContent = rushTemplate
+                .replace('TIME_HOURS', hoursLeft)
+                .replace('TIME_MINUTES', minutesLeft.toString().padStart(2, '0'));
+              rushEl.style.display = 'block';
+            } else {
+              rushEl.style.display = 'none';
+            }
+          } else if (rushEl) {
+            rushEl.style.display = 'none';
+          }
+        }
+      }
+
+      function init() {
+        updateTimeline();
+        setInterval(updateTimeline, 60000);
+        
+        // Animazione step
+        const steps = document.querySelectorAll(`[data-block-id="${blockId}"] .ft-step`);
+        steps.forEach((step, index) => {
+          step.style.opacity = '0';
+          step.style.transform = 'translateY(25px)';
+          setTimeout(() => {
+            step.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            step.style.opacity = '1';
+            step.style.transform = 'translateY(0)';
+          }, index * 200 + 300);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</div>
+                  
+
+
+
+
+                  
+
+
+
+{%- when 'fabindia_info_points' -%}
+  {%- liquid
+    assign show_block = false
+    for i in (1..6)
+      assign label_key = 'label_' | append: i
+      assign content_key = 'content_' | append: i
+      assign auto_hide_key = 'auto_hide_' | append: i
+      
+      assign label = block.settings[label_key]
+      assign content = block.settings[content_key]
+      assign auto_hide = block.settings[auto_hide_key]
+      
+      if auto_hide and content == blank
+        continue
+      endif
+      
+      if label != blank
+        assign show_block = true
+        break
+      endif
+    endfor
+  -%}
+
+  {%- if show_block -%}
+    <div class="product-block fabindia-info-points fabindia-info-points-{{ block.id }} fi-layout-{{ block.settings.layout_type }}" {{ block.shopify_attributes }}>
+      <style>
+        .fabindia-info-points-{{ block.id }} {
+          --fi-bg-color: {{ block.settings.background_color }};
+          --fi-text-color: {{ block.settings.text_color }};
+          --fi-label-color: {{ block.settings.label_color }};
+          --fi-icon-color: {{ block.settings.icon_color }};
+          --fi-border-color: {{ block.settings.border_color }};
+          --fi-border-width: {{ block.settings.border_width }}px;
+          --fi-border-radius: {{ block.settings.border_radius }}px;
+          --fi-padding-desktop: {{ block.settings.padding_desktop }}px;
+          --fi-padding-mobile: {{ block.settings.padding_mobile }}px;
+          --fi-margin-top-desktop: {{ block.settings.margin_top_desktop }}px;
+          --fi-margin-bottom-desktop: {{ block.settings.margin_bottom_desktop }}px;
+          --fi-margin-top-mobile: {{ block.settings.margin_top_mobile }}px;
+          --fi-margin-bottom-mobile: {{ block.settings.margin_bottom_mobile }}px;
+          --fi-gap-desktop: {{ block.settings.gap_desktop }}px;
+          --fi-gap-mobile: {{ block.settings.gap_mobile }}px;
+          --fi-label-size-desktop: {{ block.settings.label_size_desktop }}px;
+          --fi-label-size-mobile: {{ block.settings.label_size_mobile }}px;
+          --fi-content-size-desktop: {{ block.settings.content_size_desktop }}px;
+          --fi-content-size-mobile: {{ block.settings.content_size_mobile }}px;
+          --fi-icon-size: {{ block.settings.icon_size }}px;
+          --fi-tooltip-bg: {{ block.settings.tooltip_bg_color }};
+          --fi-tooltip-text: {{ block.settings.tooltip_text_color }};
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-points-container {
+          background-color: var(--fi-bg-color);
+          border: var(--fi-border-width) solid var(--fi-border-color);
+          border-radius: var(--fi-border-radius);
+          padding: 0px var(--fi-padding-desktop);
+          margin-top: var(--fi-margin-top-desktop);
+          margin-bottom: var(--fi-margin-bottom-desktop);
+          text-align: {{ block.settings.text_align }};
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-points-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--fi-gap-desktop);
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+
+        .fabindia-info-points-{{ block.id }}.fi-layout-grid .fi-points-list {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .fabindia-info-points-{{ block.id }}.fi-layout-inline .fi-points-list {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-point-item {
+          display: flex;
+          align-items: {% if block.settings.vertical_inline %}center{% else %}flex-start{% endif %};
+          gap: 8px;
+          margin: 0;
+          position: relative;
+          max-width: 100%;
+          {% if block.settings.enable_animations %}
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          {% endif %}
+        }
+
+        {% if block.settings.enable_animations %}
+        .fabindia-info-points-{{ block.id }} .fi-point-item:hover {
+          transform: translateX(5px);
+        }
+
+        .fabindia-info-points-{{ block.id }}.fi-layout-grid .fi-point-item:hover,
+        .fabindia-info-points-{{ block.id }}.fi-layout-inline .fi-point-item:hover {
+          transform: translateY(-2px);
+        }
+        {% endif %}
+
+        .fabindia-info-points-{{ block.id }} .fi-point-icon {
+          flex-shrink: 0;
+          width: var(--fi-icon-size);
+          height: var(--fi-icon-size);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--fi-icon-color);
+          {% if block.settings.enable_animations %}
+          transition: transform 0.3s ease;
+          {% endif %}
+        }
+
+        {% if block.settings.enable_animations %}
+        .fabindia-info-points-{{ block.id }} .fi-point-item:hover .fi-point-icon {
+          transform: rotate(10deg) scale(1.1);
+        }
+        {% endif %}
+
+        .fabindia-info-points-{{ block.id }} .fi-point-icon svg {
+          width: 100%;
+          height: 100%;
+          fill: currentColor;
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-point-icon img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-point-content {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: {% if block.settings.vertical_inline %}row{% else %}column{% endif %};
+          gap: {% if block.settings.vertical_inline %}8px{% else %}2px{% endif %};
+          align-items: {% if block.settings.vertical_inline %}center{% else %}flex-start{% endif %};
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-point-label {
+          font-size: var(--fi-label-size-desktop);
+          color: var(--fi-label-color);
+          font-weight: {{ block.settings.label_weight }};
+          text-transform: {{ block.settings.label_transform }};
+          letter-spacing: 0.03em;
+          line-height: 1.2;
+          word-wrap: break-word;
+          word-break: break-word;
+          {% if block.settings.vertical_inline %}
+          flex-shrink: 0;
+          margin-right: 8px;
+          {% endif %}
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-point-value {
+          font-size: var(--fi-content-size-desktop);
+          color: var(--fi-text-color);
+          line-height: 1.4;
+          word-wrap: break-word;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          {% if block.settings.vertical_inline %}
+          flex: 1;
+          min-width: 0;
+          {% endif %}
+        }
+
+        /* Tooltip Styles */
+        .fabindia-info-points-{{ block.id }} .fi-tooltip {
+          position: absolute;
+          bottom: calc(100% + 10px);
+          left: 50%;
+          transform: translateX(-50%) scale(0.9);
+          background-color: var(--fi-tooltip-bg);
+          color: var(--fi-tooltip-text);
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 13px;
+          white-space: normal;
+          max-width: 250px;
+          word-wrap: break-word;
+          opacity: 0;
+          pointer-events: none;
+          transition: all 0.3s ease;
+          z-index: 10;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-tooltip::after {
+          content: '';
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          border: 5px solid transparent;
+          border-top-color: var(--fi-tooltip-bg);
+        }
+
+        .fabindia-info-points-{{ block.id }} .fi-point-item:hover .fi-tooltip {
+          opacity: 1;
+          transform: translateX(-50%) scale(1);
+        }
+
+        /* Custom icon sizes */
+        {%- for i in (1..6) -%}
+          {%- assign icon_size_key = 'custom_icon_size_' | append: i -%}
+          {%- if block.settings[icon_size_key] -%}
+            .fabindia-info-points-{{ block.id }} .fi-point-item:nth-child({{ i }}) .fi-point-icon {
+              width: {{ block.settings[icon_size_key] }}px;
+              height: {{ block.settings[icon_size_key] }}px;
+            }
+          {%- endif -%}
+        {%- endfor -%}
+
+        /* Mobile Styles */
+        @media only screen and (max-width: 589px) {
+          .fabindia-info-points-{{ block.id }} .fi-points-container {
+            padding: 0px var(--fi-padding-mobile);
+            margin-top: var(--fi-margin-top-mobile);
+            margin-bottom: var(--fi-margin-bottom-mobile);
+          }
+
+          .fabindia-info-points-{{ block.id }} .fi-points-list {
+            gap: var(--fi-gap-mobile);
+          }
+
+          .fabindia-info-points-{{ block.id }}.fi-layout-grid .fi-points-list {
+            grid-template-columns: 1fr;
+          }
+
+          .fabindia-info-points-{{ block.id }}.fi-layout-inline .fi-points-list {
+            flex-direction: column;
+          }
+
+          .fabindia-info-points-{{ block.id }} .fi-point-label {
+            font-size: var(--fi-label-size-mobile);
+          }
+
+          .fabindia-info-points-{{ block.id }} .fi-point-value {
+            font-size: var(--fi-content-size-mobile);
+          }
+
+          /* Mobile tooltip */
+          .fabindia-info-points-{{ block.id }} .fi-tooltip {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: normal;
+            max-width: 90vw;
+            text-align: center;
+            word-wrap: break-word;
+          }
+
+          .fabindia-info-points-{{ block.id }} .fi-tooltip::after {
+            display: none;
+          }
+
+          .fabindia-info-points-{{ block.id }} .fi-point-item.fi-tooltip-active .fi-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+          }
+        }
+      </style>
+
+      <div class="fi-points-container">
+        <ul class="fi-points-list">
+          {%- for i in (1..6) -%}
+            {%- liquid
+              assign label_key = 'label_' | append: i
+              assign content_key = 'content_' | append: i
+              assign icon_key = 'icon_type_' | append: i
+              assign custom_icon_key = 'custom_icon_' | append: i
+              assign tooltip_key = 'tooltip_' | append: i
+              assign auto_hide_key = 'auto_hide_' | append: i
+              
+              assign label = block.settings[label_key]
+              assign content = block.settings[content_key]
+              assign icon_type = block.settings[icon_key]
+              assign custom_icon = block.settings[custom_icon_key]
+              assign tooltip = block.settings[tooltip_key]
+              assign auto_hide = block.settings[auto_hide_key]
+              
+              if auto_hide and content == blank
+                continue
+              endif
+            -%}
+
+            {%- if label != blank -%}
+              <li class="fi-point-item" {% if tooltip != blank %}data-tooltip="{{ i }}"{% endif %}>
+                <div class="fi-point-icon">
+                  {%- case icon_type -%}
+                    {%- when 'check' -%}
+                      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l2 2 5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {%- when 'dot' -%}
+                      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="3" fill="currentColor"/>
+                      </svg>
+                    {%- when 'arrow' -%}
+                      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 10h8m0 0l-3-3m3 3l-3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    {%- when 'star' -%}
+                      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2l2.39 4.84L18 7.62l-4 3.9.94 5.48L10 14.2 5.06 17l.94-5.48-4-3.9 5.61-.78L10 2z" fill="currentColor"/>
+                      </svg>
+                    {%- when 'custom' -%}
+                      {%- if custom_icon != blank -%}
+                        {{ custom_icon | image_url: width: 100 | image_tag }}
+                      {%- else -%}
+                        <span>•</span>
+                      {%- endif -%}
+                    {%- else -%}
+                      <span>•</span>
+                  {%- endcase -%}
+                </div>
+                <div class="fi-point-content">
+                  <span class="fi-point-label">{{ label }}</span>
+                  {%- if content != blank -%}
+                    <span class="fi-point-value">{{ content }}</span>
+                  {%- endif -%}
+                </div>
+                {%- if tooltip != blank -%}
+                  <div class="fi-tooltip">{{ tooltip }}</div>
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      {%- if block.settings.enable_animations -%}
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const points = document.querySelectorAll('.fabindia-info-points-{{ block.id }} .fi-point-item[data-tooltip]');
+            
+            points.forEach(point => {
+              let touchTimer;
+              
+              point.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                this.classList.add('fi-tooltip-active');
+                
+                touchTimer = setTimeout(() => {
+                  this.classList.remove('fi-tooltip-active');
+                }, 2000);
+              });
+              
+              point.addEventListener('touchend', function() {
+                clearTimeout(touchTimer);
+                setTimeout(() => {
+                  this.classList.remove('fi-tooltip-active');
+                }, 2000);
+              });
+            });
+          });
+        </script>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+
+
+
+
+
+
+                  
+
+
+            {%- when 'ultimate_product_details' -%}
+{%- comment -%}
+  Fabindia Roma - Ultimate Product Details Block v5.0
+  VERSIONE ULTRA OTTIMIZZATA - Mobile & Desktop Perfect
+  Supporto completo per immagini e massima flessibilità
+{%- endcomment -%}
+
+{%- liquid
+  # Il blocco si mostra se ALMENO UN campo è compilato
+  assign show_block = false
+  
+  if block.settings.descrizione_breve != blank
+    assign show_block = true
+  elsif block.settings.descrizione_completa != blank
+    assign show_block = true
+  elsif block.settings.materiali_composizione != blank
+    assign show_block = true
+  elsif block.settings.caratteristiche != blank
+    assign show_block = true
+  elsif block.settings.istruzioni_lavaggio != blank
+    assign show_block = true
+  elsif block.settings.tabella_taglie_html != blank
+    assign show_block = true
+  elsif block.settings.tecniche_produzione != blank
+    assign show_block = true
+  elsif block.settings.utilizzi_prodotto != blank
+    assign show_block = true
+  elsif block.settings.consigli_stile != blank
+    assign show_block = true
+  elsif block.settings.storia_prodotto != blank
+    assign show_block = true
+  elsif block.settings.quick_badges != blank
+    assign show_block = true
+  elsif block.settings.certificazioni != blank
+    assign show_block = true
+  elsif block.settings.nota_artigianale != blank
+    assign show_block = true
+  endif
+  
+  # Forza visualizzazione se attivato
+  if block.settings.force_show == true
+    assign show_block = true
+  endif
+-%}
+
+{%- if show_block -%}
+<div class="fabindia-ultra-details" {{ block.shopify_attributes }}>
+  <style>
+    /* Reset e Variabili Base */
+    .fabindia-ultra-details * {
+      box-sizing: border-box;
+    }
+
+    .fabindia-ultra-details {
+      --fab-primary: {{ block.settings.colore_primario }};
+      --fab-secondary: {{ block.settings.colore_secondario }};
+      --fab-accent: {{ block.settings.colore_accento }};
+      --fab-text: {{ block.settings.colore_testo }};
+      --fab-bg: {{ block.settings.colore_sfondo }};
+      --fab-border: {{ block.settings.colore_bordi }};
+      --fab-success: #27AE60;
+      --fab-radius: 12px;
+      --fab-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --fab-transition: all 0.25s ease;
+    }
+
+    /* Container Principale Ottimizzato */
+    .fabindia-ultra-details {
+      background: var(--fab-bg);
+      border-radius: var(--fab-radius);
+      overflow: hidden;
+      margin: 1.5rem 0;
+      box-shadow: var(--fab-shadow);
+      position: relative;
+    }
+
+    /* Header Compatto */
+    .fabindia-header-compact {
+      background: linear-gradient(135deg, var(--fab-primary) 0%, var(--fab-secondary) 100%);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-header-compact::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      top: -50%;
+      right: -50%;
+      animation: softFloat 15s ease-in-out infinite;
+    }
+
+    @keyframes softFloat {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-10px, -10px) rotate(180deg); }
+    }
+
+    .fabindia-header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+    }
+
+    .fabindia-header-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .fabindia-header-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      margin-top: 0.25rem;
+    }
+
+    /* Badge Row Ottimizzato */
+    .fabindia-badges-wrap {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 1rem;
+      background: rgba(var(--fab-accent), 0.05);
+      border-bottom: 1px solid var(--fab-border);
+    }
+
+    .fabindia-badge-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.875rem;
+      background: white;
+      border: 1px solid var(--fab-border);
+      border-radius: 20px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-badge-mini:hover {
+      border-color: var(--fab-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Navigation System Ultra Ottimizzato */
+    .fabindia-nav-wrapper {
+      background: white;
+      border-bottom: 1px solid var(--fab-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    /* Desktop: Tab Multi-riga */
+    @media (min-width: 769px) {
+      .fabindia-nav-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0.75rem;
+      }
+
+      .fabindia-tab {
+        flex: 0 0 auto;
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--fab-text);
+        transition: var(--fab-transition);
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        opacity: 0.7;
+      }
+
+      .fabindia-tab:hover {
+        opacity: 1;
+        background: rgba(var(--fab-primary), 0.05);
+        border-color: var(--fab-primary);
+      }
+
+      .fabindia-tab.active {
+        opacity: 1;
+        background: var(--fab-primary);
+        color: white;
+        border-color: var(--fab-primary);
+      }
+    }
+
+    /* Mobile: Tab Scrollabile Orizzontale */
+    @media (max-width: 768px) {
+      .fabindia-nav-tabs {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .fabindia-nav-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .fabindia-tab {
+        flex: 0 0 auto;
+        padding: 0.5rem 0.875rem;
+        background: rgba(var(--fab-accent), 0.1);
+        border: 1px solid var(--fab-border);
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--fab-text);
+        transition: var(--fab-transition);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+      }
+
+      .fabindia-tab.active {
+        background: var(--fab-primary);
+        color: white;
+        border-color: var(--fab-primary);
+      }
+
+      /* Indicatore scroll mobile */
+      .fabindia-nav-wrapper::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 20px;
+        background: linear-gradient(to right, transparent, white);
+        pointer-events: none;
+      }
+    }
+
+    .fabindia-tab-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* Content Area Ottimizzato */
+    .fabindia-content-wrap {
+      padding: 1.5rem;
+    }
+
+    .fabindia-panel {
+      display: none;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .fabindia-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    /* Descrizione Ottimizzata */
+    .fabindia-desc-intro {
+      font-size: 1.0625rem;
+      font-weight: 500;
+      color: var(--fab-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .fabindia-desc-body {
+      line-height: 1.6;
+      color: var(--fab-text);
+      margin-bottom: 1rem;
+    }
+
+    .fabindia-highlight-box {
+      background: linear-gradient(135deg, rgba(var(--fab-primary), 0.05) 0%, rgba(var(--fab-secondary), 0.03) 100%);
+      border-left: 3px solid var(--fab-primary);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .fabindia-highlight-box h4 {
+      color: var(--fab-secondary);
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9375rem;
+    }
+
+    .fabindia-highlight-box p {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* Materiali con Immagini */
+    .fabindia-materials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .fabindia-material-card {
+      background: white;
+      border: 1px solid var(--fab-border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      transition: var(--fab-transition);
+      cursor: pointer;
+    }
+
+    .fabindia-material-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--fab-primary);
+    }
+
+    .fabindia-material-image {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(var(--fab-accent), 0.1);
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .fabindia-material-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fabindia-material-icon {
+      font-size: 1.75rem;
+    }
+
+    .fabindia-material-name {
+      font-weight: 600;
+      color: var(--fab-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .fabindia-material-value {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--fab-primary);
+    }
+
+    .fabindia-material-desc {
+      font-size: 0.75rem;
+      color: var(--fab-text);
+      margin-top: 0.25rem;
+      opacity: 0.8;
+    }
+
+    /* Features Compatte */
+    .fabindia-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.875rem;
+      margin: 1rem 0;
+    }
+
+    .fabindia-feature-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.875rem;
+      background: rgba(var(--fab-accent), 0.05);
+      border-radius: 8px;
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-feature-item:hover {
+      background: rgba(var(--fab-accent), 0.1);
+      transform: translateX(2px);
+    }
+
+    .fabindia-feature-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--fab-primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .fabindia-feature-content h4 {
+      margin: 0 0 0.125rem 0;
+      color: var(--fab-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .fabindia-feature-content p {
+      margin: 0;
+      font-size: 0.8125rem;
+      color: var(--fab-text);
+      line-height: 1.4;
+    }
+
+    /* Care Instructions con Immagini */
+    .fabindia-care-container {
+      background: rgba(var(--fab-accent), 0.03);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .fabindia-care-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .fabindia-care-item {
+      background: white;
+      border: 1px solid var(--fab-border);
+      border-radius: 8px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      transition: var(--fab-transition);
+      cursor: pointer;
+    }
+
+    .fabindia-care-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .fabindia-care-item.active {
+      background: var(--fab-primary);
+      color: white;
+      border-color: var(--fab-primary);
+    }
+
+    .fabindia-care-image {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fabindia-care-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .fabindia-care-symbol {
+      font-size: 1.5rem;
+    }
+
+    .fabindia-care-label {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .fabindia-care-text {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* Taglie Ottimizzate */
+    .fabindia-sizes-container {
+      margin: 1rem 0;
+    }
+
+    .fabindia-sizes-selector {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .fabindia-size-option {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--fab-border);
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-size-option:hover {
+      border-color: var(--fab-primary);
+      color: var(--fab-primary);
+    }
+
+    .fabindia-size-option.selected {
+      background: var(--fab-primary);
+      color: white;
+      border-color: var(--fab-primary);
+    }
+
+    .fabindia-table-container {
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .fabindia-table-container table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .fabindia-table-container th,
+    .fabindia-table-container td {
+      padding: 0.625rem;
+      text-align: center;
+      border: 1px solid var(--fab-border);
+    }
+
+    .fabindia-table-container th {
+      background: rgba(var(--fab-primary), 0.1);
+      font-weight: 600;
+      color: var(--fab-secondary);
+    }
+
+    .fabindia-table-container tr:hover {
+      background: rgba(var(--fab-accent), 0.05);
+    }
+
+    /* Timeline Produzione Compatto */
+    .fabindia-timeline-compact {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .fabindia-timeline-line {
+      position: absolute;
+      left: 0.75rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 2px;
+      background: var(--fab-border);
+    }
+
+    .fabindia-timeline-step {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .fabindia-timeline-dot {
+      position: absolute;
+      left: -1.625rem;
+      top: 0.125rem;
+      width: 36px;
+      height: 36px;
+      background: var(--fab-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .fabindia-timeline-content h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--fab-secondary);
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .fabindia-timeline-content p {
+      margin: 0;
+      color: var(--fab-text);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    /* Utilizzi Carousel Ottimizzato */
+    .fabindia-uses-carousel {
+      display: flex;
+      gap: 0.875rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--fab-primary) var(--fab-border);
+    }
+
+    .fabindia-use-slide {
+      flex: 0 0 180px;
+      background: white;
+      border: 1px solid var(--fab-border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-use-slide:hover {
+      border-color: var(--fab-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .fabindia-use-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .fabindia-use-title {
+      font-weight: 600;
+      color: var(--fab-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .fabindia-use-desc {
+      font-size: 0.75rem;
+      color: var(--fab-text);
+      line-height: 1.3;
+    }
+
+    /* Style Tips Compatti */
+    .fabindia-style-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .fabindia-style-tip {
+      background: linear-gradient(135deg, rgba(var(--fab-primary), 0.03) 0%, transparent 100%);
+      border-radius: 8px;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-style-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .fabindia-style-icon-wrap {
+      width: 40px;
+      height: 40px;
+      background: var(--fab-primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+    }
+
+    .fabindia-style-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--fab-secondary);
+    }
+
+    .fabindia-style-text {
+      font-size: 0.8125rem;
+      color: var(--fab-text);
+      line-height: 1.5;
+    }
+
+    /* Heritage Compatto */
+    .fabindia-heritage-box {
+      background: linear-gradient(135deg, var(--fab-secondary) 0%, var(--fab-primary) 100%);
+      color: white;
+      border-radius: 10px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-heritage-pattern {
+      position: absolute;
+      top: -30%;
+      right: -30%;
+      width: 160%;
+      height: 160%;
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+      animation: gentleRotate 20s linear infinite;
+    }
+
+    @keyframes gentleRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .fabindia-heritage-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .fabindia-heritage-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .fabindia-heritage-text {
+      line-height: 1.6;
+      opacity: 0.95;
+      font-size: 0.875rem;
+    }
+
+    /* Certificazioni e Note */
+    .fabindia-certs-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(var(--fab-accent), 0.05);
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    .fabindia-cert-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      background: white;
+      padding: 0.375rem 0.875rem;
+      border-radius: 20px;
+      border: 1px solid var(--fab-border);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-cert-badge:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .fabindia-cert-icon {
+      color: var(--fab-success);
+      font-size: 1rem;
+    }
+
+    .fabindia-artisan-note {
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(var(--fab-accent), 0.08) 0%, rgba(var(--fab-primary), 0.05) 100%);
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    .fabindia-artisan-quote {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--fab-secondary);
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .fabindia-artisan-signature {
+      font-weight: 600;
+      color: var(--fab-primary);
+      font-size: 0.875rem;
+    }
+
+    /* Utilities */
+    .fabindia-section-title {
+      text-align: center;
+      color: var(--fab-secondary);
+      margin-bottom: 1.25rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    /* Animazioni Ottimizzate */
+    .fabindia-fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .fabindia-fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Mobile Specific */
+    @media (max-width: 480px) {
+      .fabindia-materials-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+
+      .fabindia-features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .fabindia-care-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .fabindia-style-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Print Optimization */
+    @media print {
+      .fabindia-nav-wrapper {
+        display: none;
+      }
+
+      .fabindia-panel {
+        display: block !important;
+        page-break-inside: avoid;
+      }
+
+      .fabindia-fade-in {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+
+  <!-- Header Compatto -->
+  {%- if block.settings.show_header -%}
+    <div class="fabindia-header-compact">
+      <div class="fabindia-header-content">
+        <h2 class="fabindia-header-title">{{ block.settings.header_title | default: 'Dettagli Prodotto' }}</h2>
+        {%- if block.settings.header_subtitle != blank -%}
+          <p class="fabindia-header-subtitle">{{ block.settings.header_subtitle }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- Badge Informativi Compatti -->
+  {%- if block.settings.quick_badges != blank -%}
+    <div class="fabindia-badges-wrap">
+      {%- assign badges = block.settings.quick_badges | split: '|' -%}
+      {%- for badge in badges -%}
+        {%- assign badge_parts = badge | split: ':' -%}
+        <div class="fabindia-badge-mini">
+          <span>{{ badge_parts[0] }}</span>
+          <span>{{ badge_parts[1] }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Navigation Ultra Ottimizzata -->
+  <div class="fabindia-nav-wrapper">
+    <div class="fabindia-nav-tabs">
+      {%- if block.settings.descrizione_completa != blank or block.settings.descrizione_breve != blank -%}
+        <button class="fabindia-tab active" data-tab="descrizione">
+          <span class="fabindia-tab-icon">📝</span>
+          <span>{{ block.settings.tab_descrizione | default: 'Descrizione' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.materiali_composizione != blank -%}
+        <button class="fabindia-tab" data-tab="materiali">
+          <span class="fabindia-tab-icon">🧵</span>
+          <span>{{ block.settings.tab_materiali | default: 'Materiali' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.caratteristiche != blank -%}
+        <button class="fabindia-tab" data-tab="caratteristiche">
+          <span class="fabindia-tab-icon">✨</span>
+          <span>{{ block.settings.tab_caratteristiche | default: 'Caratteristiche' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.istruzioni_lavaggio != blank -%}
+        <button class="fabindia-tab" data-tab="cura">
+          <span class="fabindia-tab-icon">🧺</span>
+          <span>{{ block.settings.tab_cura | default: 'Cura' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.tabella_taglie_html != blank -%}
+        <button class="fabindia-tab" data-tab="taglie">
+          <span class="fabindia-tab-icon">📏</span>
+          <span>{{ block.settings.tab_taglie | default: 'Taglie' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.tecniche_produzione != blank -%}
+        <button class="fabindia-tab" data-tab="produzione">
+          <span class="fabindia-tab-icon">🎨</span>
+          <span>{{ block.settings.tab_produzione | default: 'Produzione' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.utilizzi_prodotto != blank -%}
+        <button class="fabindia-tab" data-tab="utilizzi">
+          <span class="fabindia-tab-icon">💡</span>
+          <span>{{ block.settings.tab_utilizzi | default: 'Utilizzi' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.consigli_stile != blank -%}
+        <button class="fabindia-tab" data-tab="stile">
+          <span class="fabindia-tab-icon">👗</span>
+          <span>{{ block.settings.tab_stile | default: 'Stile' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.storia_prodotto != blank -%}
+        <button class="fabindia-tab" data-tab="heritage">
+          <span class="fabindia-tab-icon">🏛️</span>
+          <span>{{ block.settings.tab_heritage | default: 'Heritage' }}</span>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="fabindia-content-wrap">
+    
+    <!-- Panel Descrizione -->
+    {%- if block.settings.descrizione_completa != blank or block.settings.descrizione_breve != blank -%}
+      <div class="fabindia-panel active" data-panel="descrizione">
+        {%- if block.settings.descrizione_breve != blank -%}
+          <div class="fabindia-desc-intro fabindia-fade-in">
+            {{ block.settings.descrizione_breve }}
+          </div>
+        {%- endif -%}
+
+        {%- if block.settings.descrizione_completa != blank -%}
+          <div class="fabindia-desc-body fabindia-fade-in">
+            {{ block.settings.descrizione_completa | newline_to_br }}
+          </div>
+        {%- endif -%}
+
+        {%- if block.settings.dettagli_unici != blank -%}
+          <div class="fabindia-highlight-box fabindia-fade-in">
+            <h4>{{ block.settings.titolo_dettagli_unici | default: 'Cosa Rende Unico Questo Prodotto' }}</h4>
+            <p>{{ block.settings.dettagli_unici }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Materiali con Immagini -->
+    {%- if block.settings.materiali_composizione != blank -%}
+      <div class="fabindia-panel" data-panel="materiali">
+        <h3 class="fabindia-section-title">
+          {{ block.settings.titolo_materiali | default: 'Composizione & Materiali' }}
+        </h3>
+
+        <div class="fabindia-materials-grid">
+          {%- assign materiali = block.settings.materiali_composizione | split: '|' -%}
+          {%- for materiale in materiali -%}
+            {%- assign mat_parts = materiale | split: ':' -%}
+            <div class="fabindia-material-card fabindia-fade-in">
+              <div class="fabindia-material-image">
+                {%- if mat_parts[3] != blank -%}
+                  <img src="{{ mat_parts[3] }}" alt="{{ mat_parts[0] }}" loading="lazy">
+                {%- else -%}
+                  <span class="fabindia-material-icon">{{ mat_parts[2] | default: '🧵' }}</span>
+                {%- endif -%}
+              </div>
+              <div class="fabindia-material-name">{{ mat_parts[0] }}</div>
+              <div class="fabindia-material-value">{{ mat_parts[1] }}</div>
+              {%- if mat_parts[4] != blank -%}
+                <div class="fabindia-material-desc">{{ mat_parts[4] }}</div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if block.settings.proprieta_materiali != blank -%}
+          <div class="fabindia-highlight-box fabindia-fade-in">
+            <h4>{{ block.settings.titolo_proprieta | default: 'Proprietà dei Materiali' }}</h4>
+            <p>{{ block.settings.proprieta_materiali }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Caratteristiche -->
+    {%- if block.settings.caratteristiche != blank -%}
+      <div class="fabindia-panel" data-panel="caratteristiche">
+        <h3 class="fabindia-section-title">
+          {{ block.settings.titolo_caratteristiche | default: 'Caratteristiche Principali' }}
+        </h3>
+
+        <div class="fabindia-features-grid">
+          {%- assign features = block.settings.caratteristiche | split: '|' -%}
+          {%- for feature in features -%}
+            {%- assign feat_parts = feature | split: ':' -%}
+            <div class="fabindia-feature-item fabindia-fade-in">
+              <div class="fabindia-feature-icon">
+                {{ feat_parts[2] | default: '✦' }}
+              </div>
+              <div class="fabindia-feature-content">
+                <h4>{{ feat_parts[0] }}</h4>
+                <p>{{ feat_parts[1] }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Cura con Immagini -->
+    {%- if block.settings.istruzioni_lavaggio != blank -%}
+      <div class="fabindia-panel" data-panel="cura">
+        <div class="fabindia-care-container">
+          <h3 class="fabindia-section-title">
+            {{ block.settings.titolo_cura | default: 'Come Prendersi Cura' }}
+          </h3>
+
+          <div class="fabindia-care-grid">
+            {%- if block.settings.care_icon_cold != blank or block.settings.istruzioni_lavaggio contains 'freddo' -%}
+              <div class="fabindia-care-item active">
+                <div class="fabindia-care-image">
+                  {%- if block.settings.care_icon_cold != blank -%}
+                    <img src="{{ block.settings.care_icon_cold | img_url: '80x80' }}" alt="Acqua fredda">
+                  {%- else -%}
+                    <span class="fabindia-care-symbol">❄️</span>
+                  {%- endif -%}
+                </div>
+                <div class="fabindia-care-label">Acqua Fredda</div>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.care_icon_hand != blank or block.settings.istruzioni_lavaggio contains 'mano' -%}
+              <div class="fabindia-care-item">
+                <div class="fabindia-care-image">
+                  {%- if block.settings.care_icon_hand != blank -%}
+                    <img src="{{ block.settings.care_icon_hand | img_url: '80x80' }}" alt="Lavaggio a mano">
+                  {%- else -%}
+                    <span class="fabindia-care-symbol">🤲</span>
+                  {%- endif -%}
+                </div>
+                <div class="fabindia-care-label">A Mano</div>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.care_icon_dry != blank or block.settings.istruzioni_lavaggio contains 'secco' -%}
+              <div class="fabindia-care-item">
+                <div class="fabindia-care-image">
+                  {%- if block.settings.care_icon_dry != blank -%}
+                    <img src="{{ block.settings.care_icon_dry | img_url: '80x80' }}" alt="Lavaggio a secco">
+                  {%- else -%}
+                    <span class="fabindia-care-symbol">🌀</span>
+                  {%- endif -%}
+                </div>
+                <div class="fabindia-care-label">A Secco</div>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.care_icon_gentle != blank or block.settings.istruzioni_lavaggio contains 'delicato' -%}
+              <div class="fabindia-care-item">
+                <div class="fabindia-care-image">
+                  {%- if block.settings.care_icon_gentle != blank -%}
+                    <img src="{{ block.settings.care_icon_gentle | img_url: '80x80' }}" alt="Lavaggio delicato">
+                  {%- else -%}
+                    <span class="fabindia-care-symbol">🌸</span>
+                  {%- endif -%}
+                </div>
+                <div class="fabindia-care-label">Delicato</div>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.no_stiro -%}
+              <div class="fabindia-care-item">
+                <div class="fabindia-care-image">
+                  {%- if block.settings.care_icon_no_iron != blank -%}
+                    <img src="{{ block.settings.care_icon_no_iron | img_url: '80x80' }}" alt="Non stirare">
+                  {%- else -%}
+                    <span class="fabindia-care-symbol">🚫</span>
+                  {%- endif -%}
+                </div>
+                <div class="fabindia-care-label">No Stiro</div>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.no_candeggina -%}
+              <div class="fabindia-care-item">
+                <div class="fabindia-care-image">
+                  {%- if block.settings.care_icon_no_bleach != blank -%}
+                    <img src="{{ block.settings.care_icon_no_bleach | img_url: '80x80' }}" alt="Non candeggiare">
+                  {%- else -%}
+                    <span class="fabindia-care-symbol">⚠️</span>
+                  {%- endif -%}
+                </div>
+                <div class="fabindia-care-label">No Candeggina</div>
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div class="fabindia-care-text">
+            {{ block.settings.istruzioni_lavaggio }}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Taglie -->
+    {%- if block.settings.tabella_taglie_html != blank -%}
+      <div class="fabindia-panel" data-panel="taglie">
+        <div class="fabindia-sizes-container">
+          <h3 class="fabindia-section-title">
+            {{ block.settings.titolo_taglie | default: 'Guida alle Taglie' }}
+          </h3>
+
+          {%- if block.settings.taglie_disponibili != blank -%}
+            <div class="fabindia-sizes-selector">
+              {%- assign taglie = block.settings.taglie_disponibili | split: ',' -%}
+              {%- for taglia in taglie -%}
+                <button class="fabindia-size-option">{{ taglia | strip }}</button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="fabindia-table-container">
+            {{ block.settings.tabella_taglie_html }}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Produzione -->
+    {%- if block.settings.tecniche_produzione != blank -%}
+      <div class="fabindia-panel" data-panel="produzione">
+        <h3 class="fabindia-section-title">
+          {{ block.settings.titolo_produzione | default: 'Come Nasce il Prodotto' }}
+        </h3>
+
+        <div class="fabindia-timeline-compact">
+          <div class="fabindia-timeline-line"></div>
+          {%- assign steps = block.settings.tecniche_produzione | split: '|' -%}
+          {%- for step in steps -%}
+            {%- assign step_parts = step | split: ':' -%}
+            <div class="fabindia-timeline-step fabindia-fade-in">
+              <div class="fabindia-timeline-dot">{{ forloop.index }}</div>
+              <div class="fabindia-timeline-content">
+                <h4>{{ step_parts[0] }}</h4>
+                <p>{{ step_parts[1] }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Utilizzi -->
+    {%- if block.settings.utilizzi_prodotto != blank -%}
+      <div class="fabindia-panel" data-panel="utilizzi">
+        <h3 class="fabindia-section-title">
+          {{ block.settings.titolo_utilizzi | default: 'Mille Modi per Usarlo' }}
+        </h3>
+
+        <div class="fabindia-uses-carousel">
+          {%- assign uses = block.settings.utilizzi_prodotto | split: '|' -%}
+          {%- for use in uses -%}
+            {%- assign use_parts = use | split: ':' -%}
+            <div class="fabindia-use-slide">
+              <span class="fabindia-use-icon">{{ use_parts[2] | default: '✨' }}</span>
+              <div class="fabindia-use-title">{{ use_parts[0] }}</div>
+              <div class="fabindia-use-desc">{{ use_parts[1] }}</div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Stile -->
+    {%- if block.settings.consigli_stile != blank -%}
+      <div class="fabindia-panel" data-panel="stile">
+        <h3 class="fabindia-section-title">
+          {{ block.settings.titolo_stile | default: 'Consigli di Stile' }}
+        </h3>
+
+        <div class="fabindia-style-grid">
+          {%- assign stili = block.settings.consigli_stile | split: '|' -%}
+          {%- for stile in stili -%}
+            {%- assign stile_parts = stile | split: ':' -%}
+            <div class="fabindia-style-tip fabindia-fade-in">
+              <div class="fabindia-style-header">
+                <div class="fabindia-style-icon-wrap">{{ stile_parts[2] | default: '💫' }}</div>
+                <h4 class="fabindia-style-title">{{ stile_parts[0] }}</h4>
+              </div>
+              <div class="fabindia-style-text">
+                {{ stile_parts[1] }}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Panel Heritage -->
+    {%- if block.settings.storia_prodotto != blank -%}
+      <div class="fabindia-panel" data-panel="heritage">
+        <div class="fabindia-heritage-box">
+          <div class="fabindia-heritage-pattern"></div>
+          <div class="fabindia-heritage-content">
+            <h3 class="fabindia-heritage-title">
+              {{ block.settings.titolo_heritage | default: 'Storia e Tradizione' }}
+            </h3>
+            <div class="fabindia-heritage-text">
+              {{ block.settings.storia_prodotto | newline_to_br }}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Certificazioni (sempre visibili se presenti) -->
+    {%- if block.settings.certificazioni != blank -%}
+      <div class="fabindia-certs-row">
+        {%- assign certs = block.settings.certificazioni | split: '|' -%}
+        {%- for cert in certs -%}
+          {%- assign cert_parts = cert | split: ':' -%}
+          <div class="fabindia-cert-badge">
+            <span class="fabindia-cert-icon">{{ cert_parts[1] | default: '✓' }}</span>
+            <span>{{ cert_parts[0] }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Nota Artigianale (sempre visibile se presente) -->
+    {%- if block.settings.nota_artigianale != blank -%}
+      <div class="fabindia-artisan-note">
+        <div class="fabindia-artisan-quote">
+          "{{ block.settings.nota_artigianale }}"
+        </div>
+        {%- if block.settings.firma_artigiano != blank -%}
+          <div class="fabindia-artisan-signature">
+            — {{ block.settings.firma_artigiano }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      const detailsBlock = document.querySelector('.fabindia-ultra-details');
+      if (!detailsBlock) return;
+
+      // Tab System Ottimizzato
+      const tabs = detailsBlock.querySelectorAll('.fabindia-tab');
+      const panels = detailsBlock.querySelectorAll('.fabindia-panel');
+
+      function switchTab(targetTab) {
+        tabs.forEach(tab => {
+          tab.classList.toggle('active', tab.dataset.tab === targetTab);
+        });
+
+        panels.forEach(panel => {
+          panel.classList.toggle('active', panel.dataset.panel === targetTab);
+        });
+
+        // Salva tab attivo
+        if (window.localStorage) {
+          try {
+            localStorage.setItem('fabindia_active_tab', targetTab);
+          } catch(e) {}
+        }
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          switchTab(tab.dataset.tab);
+        });
+      });
+
+      // Ripristina ultimo tab visitato
+      if (window.localStorage) {
+        try {
+          const savedTab = localStorage.getItem('fabindia_active_tab');
+          if (savedTab) {
+            const savedTabBtn = detailsBlock.querySelector(`[data-tab="${savedTab}"]`);
+            if (savedTabBtn) {
+              switchTab(savedTab);
+            }
+          }
+        } catch(e) {}
+      }
+
+      // Se non c'è nessun tab attivo, attiva il primo
+      const activeTab = detailsBlock.querySelector('.fabindia-tab.active');
+      if (!activeTab && tabs.length > 0) {
+        tabs[0].classList.add('active');
+        const firstTabName = tabs[0].dataset.tab;
+        const firstPanel = detailsBlock.querySelector(`[data-panel="${firstTabName}"]`);
+        if (firstPanel) firstPanel.classList.add('active');
+      }
+
+      // Size selector
+      const sizeButtons = detailsBlock.querySelectorAll('.fabindia-size-option');
+      sizeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          sizeButtons.forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+
+      // Care icons
+      const careItems = detailsBlock.querySelectorAll('.fabindia-care-item');
+      careItems.forEach(item => {
+        item.addEventListener('click', function() {
+          this.classList.toggle('active');
+        });
+      });
+
+      // Scroll reveal ottimizzato
+      const fadeElements = detailsBlock.querySelectorAll('.fabindia-fade-in');
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            fadeObserver.unobserve(entry.target);
+          }
+        });
+      }, { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      fadeElements.forEach(el => fadeObserver.observe(el));
+
+      // Touch swipe migliorato per mobile
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchEndX = 0;
+      let touchEndY = 0;
+
+      detailsBlock.addEventListener('touchstart', e => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      detailsBlock.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].clientX;
+        touchEndY = e.changedTouches[0].clientY;
+        
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+
+        // Solo swipe orizzontali
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          const activeTab = detailsBlock.querySelector('.fabindia-tab.active');
+          const allTabs = Array.from(tabs);
+          const currentIndex = allTabs.indexOf(activeTab);
+
+          if (diffX > 0 && currentIndex < allTabs.length - 1) {
+            allTabs[currentIndex + 1].click();
+          } else if (diffX < 0 && currentIndex > 0) {
+            allTabs[currentIndex - 1].click();
+          }
+        }
+      }, { passive: true });
+
+      // Smooth scroll per carousel mobile
+      const carousels = detailsBlock.querySelectorAll('.fabindia-uses-carousel');
+      carousels.forEach(carousel => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        carousel.addEventListener('mousedown', (e) => {
+          isDown = true;
+          startX = e.pageX - carousel.offsetLeft;
+          scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+          isDown = false;
+        });
+
+        carousel.addEventListener('mouseup', () => {
+          isDown = false;
+        });
+
+        carousel.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - carousel.offsetLeft;
+          const walk = (x - startX) * 2;
+          carousel.scrollLeft = scrollLeft - walk;
+        });
+      });
+
+    })();
+  </script>
+</div>
+{%- else -%}
+  <!-- Messaggio quando nessun campo è compilato -->
+  <div style="padding: 20px; text-align: center; color: #999;">
+    <p>Compila almeno un campo nelle impostazioni del blocco per visualizzare i dettagli del prodotto.</p>
+  </div>
+{%- endif -%}
+
+              
+
+
+
+
+
+                
+
+              
+                  {%- when 'price' -%}
+  <div class="product-block product-block--price" 
+    {% if block.settings.enable_custom_spacing %}
+      style="
+        {% if block.settings.margin_top_desktop != 0 %}margin-top: {{ block.settings.margin_top_desktop }}px;{% endif %}
+        {% if block.settings.margin_bottom_desktop != 0 %}margin-bottom: {{ block.settings.margin_bottom_desktop }}px;{% endif %}
+        {% if block.settings.padding_top_desktop != 0 %}padding-top: {{ block.settings.padding_top_desktop }}px;{% endif %}
+        {% if block.settings.padding_bottom_desktop != 0 %}padding-bottom: {{ block.settings.padding_bottom_desktop }}px;{% endif %}
+      "
+    {% endif %}
+    {{ block.shopify_attributes }}>
+    
+    <style>
+      {% if block.settings.enable_custom_spacing %}
+        @media screen and (max-width: 749px) {
+          #shopify-section-{{ section.id }} .product-block--price {
+            {% if block.settings.margin_top_mobile != 0 %}margin-top: {{ block.settings.margin_top_mobile }}px !important;{% endif %}
+            {% if block.settings.margin_bottom_mobile != 0 %}margin-bottom: {{ block.settings.margin_bottom_mobile }}px !important;{% endif %}
+            {% if block.settings.padding_top_mobile != 0 %}padding-top: {{ block.settings.padding_top_mobile }}px !important;{% endif %}
+            {% if block.settings.padding_bottom_mobile != 0 %}padding-bottom: {{ block.settings.padding_bottom_mobile }}px !important;{% endif %}
+          }
+        }
+      {% endif %}
+      
+      {% if block.settings.custom_price_color != blank %}
+        #shopify-section-{{ section.id }} .product__price {
+          color: {{ block.settings.custom_price_color }} !important;
+        }
+      {% endif %}
+      
+      {% if block.settings.custom_compare_color != blank %}
+        #shopify-section-{{ section.id }} .product__price--compare {
+          color: {{ block.settings.custom_compare_color }} !important;
+        }
+      {% endif %}
+      
+      {% if block.settings.custom_save_color != blank %}
+        #shopify-section-{{ section.id }} .product__price-savings {
+          color: {{ block.settings.custom_save_color }} !important;
+        }
+      {% endif %}
+      
+      {% if block.settings.price_font_size_desktop != 0 %}
+        #shopify-section-{{ section.id }} .product__price:not(.product__price--compare) {
+          font-size: {{ block.settings.price_font_size_desktop }}px;
+        }
+      {% endif %}
+      
+      @media screen and (max-width: 749px) {
+        {% if block.settings.price_font_size_mobile != 0 %}
+          #shopify-section-{{ section.id }} .product__price:not(.product__price--compare) {
+            font-size: {{ block.settings.price_font_size_mobile }}px;
+          }
+        {% endif %}
+      }
+      
+      {% if block.settings.price_alignment != 'default' %}
+        #shopify-section-{{ section.id }} .product-block--price {
+          text-align: {{ block.settings.price_alignment }};
+        }
+      {% endif %}
+    </style>
+    
+    {%- assign hide_sale_price = true -%}
+    {%- if product.compare_at_price_max > product.price -%}
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+        {%- assign hide_sale_price = false -%}
+      {%- endif -%}
+      {%- unless block.settings.hide_compare_price -%}
+        <span
+          data-a11y-price
+          class="visually-hidden"
+          aria-hidden="{{ hide_sale_price }}">
+            {{ 'products.general.regular_price' | t }}
+        </span>
+        <span data-product-price-wrap class="{% if hide_sale_price %} hide{% endif %}">
+          <span data-compare-price class="product__price product__price--compare">
+            {%- if current_variant.compare_at_price > current_variant.price -%}
+              {{ current_variant.compare_at_price | money }}
+            {%- endif -%}
+          </span>
+        </span>
+        <span data-compare-price-a11y class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+      {%- endunless -%}
+    {%- else -%}
+      <span data-a11y-price class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+    {%- endif -%}
+
+    <span data-product-price
+      class="product__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}">
+      {%- unless product.empty? -%}
+        {{ current_variant.price | money }}
+      {%- else -%}
+        {{ 1999 | money }}
+      {%- endunless -%}
+    </span>
+
+    {%- if settings.product_save_amount and block.settings.show_savings -%}
+      {%- if settings.product_save_type == 'dollar' -%}
+        {%- capture saved_amount -%}{{ current_variant.compare_at_price | minus: current_variant.price | money }}{%- endcapture -%}
+      {%- else -%}
+        {%- capture saved_amount -%}{{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round }}%{%- endcapture -%}
+      {%- endif -%}
+      <span data-save-price class="product__price-savings{% if hide_sale_price %} hide{% endif %}">
+        {%- unless hide_sale_price -%}
+          {{ 'products.general.save_html' | t: saved_amount: saved_amount }}
+        {%- endunless -%}
+      </span>
+    {%- endif -%}
+
+    {%- unless block.settings.hide_unit_price -%}
+      <div
+        data-unit-price-wrapper
+        class="product__unit-price product__unit-price--spacing {% unless current_variant.unit_price_measurement %} hide{% endunless %}">
+        {%- capture unit_price_base_unit -%}
+          <span data-unit-base>
+            {%- if current_variant.unit_price_measurement -%}
+              {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                {{ current_variant.unit_price_measurement.reference_value }}
+              {%- endif -%}
+              {{ current_variant.unit_price_measurement.reference_unit }}
+            {%- endif -%}
+          </span>
+        {%- endcapture -%}
+
+        <span data-unit-price>{{ current_variant.unit_price | money }}</span>/{{ unit_price_base_unit }}
+      </div>
+    {%- endunless -%}
+
+    {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+      {%- unless block.settings.hide_policies -%}
+        <div class="product__policies rte small--text-center">
+          {%- if shop.taxes_included -%}
+            {{ 'products.product.include_taxes' | t }}
+          {%- endif -%}
+          {%- if shop.shipping_policy.body != blank -%}
+            {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+          {%- endif -%}
+        </div>
+      {%- endunless -%}
+    {%- endif -%}
+  </div>
+
+
+              
+                  {%- when 'quantity_selector' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      <div class="product__quantity">
+                        {% assign qty_id = section_id | append: product.id %}
+                        <label for="Quantity-{{ qty_id }}">{{ 'products.product.quantity' | t }}</label>
+                        {%- render 'quantity-input', form_id: form_id, id: qty_id, qty: 1, min: 1 -%}
+                      </div>
+                    </div>
+
+                  {%- when 'size_guide' -%}
+  <div class="product-block product-block--size-guide" {{ block.shopify_attributes }}>
+    <style>
+      .size-guide-trigger {
+        background-color: {{ block.settings.button_bg_color | default: '#C33A32' }};
+        color: {{ block.settings.button_text_color | default: '#FFFFFF' }};
+        border: 2px solid {{ block.settings.button_border_color | default: '#C33A32' }};
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        margin: {{ block.settings.button_margin }}px 0;
+      }
+      
+      .size-guide-trigger:hover {
+        background-color: {{ block.settings.button_hover_bg | default: '#FEFEFE' }};
+        color: {{ block.settings.button_hover_text | default: '#C33A32' }};
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(195, 58, 50, 0.2);
+      }
+      
+      .size-guide-trigger svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+      
+      .size-guide-modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(62, 62, 62, 0.8);
+        overflow: auto;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      .size-guide-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .size-guide-content {
+        background-color: {{ block.settings.modal_bg_color | default: '#FEFEFE' }};
+        color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+        margin: 20px;
+        padding: 0;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 900px;
+        max-height: 90vh;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideUp 0.4s ease;
+      }
+      
+      .size-guide-header {
+        background-color: {{ block.settings.header_bg_color | default: '#F0E6E0' }};
+        color: {{ block.settings.header_text_color | default: '#3E3E3E' }};
+        padding: 20px 30px;
+        border-bottom: 1px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .size-guide-header h3 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      
+      .size-guide-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: {{ block.settings.header_text_color | default: '#3E3E3E' }};
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+      
+      .size-guide-close:hover {
+        background-color: {{ block.settings.button_bg_color | default: '#C33A32' }};
+        color: #FFFFFF;
+        transform: rotate(90deg);
+      }
+      
+      .size-guide-body {
+        overflow-y: auto;
+        max-height: calc(90vh - 80px);
+        padding: 30px;
+      }
+      
+      .size-guide-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+        padding-bottom: 0;
+      }
+      
+      .size-guide-tab {
+        background: none;
+        border: none;
+        padding: 12px 24px;
+        cursor: pointer;
+        font-weight: 500;
+        color: {{ block.settings.tab_inactive_color | default: '#B5A397' }};
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        margin-bottom: -2px;
+      }
+      
+      .size-guide-tab.active {
+        color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+        border-bottom-color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+      }
+      
+      .size-guide-tab:hover:not(.active) {
+        color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+      }
+      
+      .size-guide-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      .size-guide-panel.active {
+        display: block;
+      }
+      
+      .size-table-wrapper {
+        overflow-x: auto;
+        margin-bottom: 20px;
+      }
+      
+      .size-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 500px;
+      }
+      
+      .size-table th,
+      .size-table td {
+        padding: 12px 15px;
+        text-align: center;
+        border: 1px solid {{ block.settings.table_border_color | default: '#E5DDD5' }};
+      }
+      
+      .size-table th {
+        background-color: {{ block.settings.table_header_bg | default: '#F0E6E0' }};
+        font-weight: 600;
+        color: {{ block.settings.table_header_text | default: '#3E3E3E' }};
+      }
+      
+      .size-table tr:nth-child(even) {
+        background-color: {{ block.settings.table_alt_bg | default: '#FAFAFA' }};
+      }
+      
+      .measurement-image {
+        text-align: center;
+        margin: 20px 0;
+      }
+      
+      .measurement-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+      
+      .info-section {
+        background-color: {{ block.settings.info_bg_color | default: '#F0E6E0' }};
+        padding: 20px;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+      
+      .info-section h4 {
+        margin-top: 0;
+        color: {{ block.settings.info_title_color | default: '#C33A32' }};
+      }
+      
+      .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .info-list li {
+        padding: 8px 0;
+        padding-left: 24px;
+        position: relative;
+      }
+      
+      .info-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: {{ block.settings.info_icon_color | default: '#C33A32' }};
+        font-weight: bold;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .size-guide-content {
+          width: 95%;
+          margin: 10px;
+        }
+        
+        .size-guide-header {
+          padding: 15px 20px;
+        }
+        
+        .size-guide-header h3 {
+          font-size: 20px;
+        }
+        
+        .size-guide-body {
+          padding: 20px;
+        }
+        
+        .size-guide-tabs {
+          flex-wrap: wrap;
+        }
+        
+        .size-guide-tab {
+          font-size: 14px;
+          padding: 10px 16px;
+        }
+        
+        .size-table {
+          font-size: 14px;
+        }
+        
+        .size-table th,
+        .size-table td {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+    
+    <button type="button" class="size-guide-trigger" data-size-guide-trigger>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z"/>
+      </svg>
+      {{ block.settings.button_text | default: 'Guida alle taglie' }}
+    </button>
+    
+    <div class="size-guide-modal" data-size-guide-modal>
+      <div class="size-guide-content">
+        <div class="size-guide-header">
+          <h3>{{ block.settings.modal_title | default: 'Guida alle taglie e misure' }}</h3>
+          <button class="size-guide-close" data-size-guide-close>&times;</button>
+        </div>
+        
+        <div class="size-guide-body">
+          <div class="size-guide-tabs">
+            <button class="size-guide-tab active" data-tab="sizes">
+              {{ block.settings.tab1_title | default: 'Tabella taglie' }}
+            </button>
+            <button class="size-guide-tab" data-tab="measurements">
+              {{ block.settings.tab2_title | default: 'Come prendere le misure' }}
+            </button>
+            <button class="size-guide-tab" data-tab="info">
+              {{ block.settings.tab3_title | default: 'Informazioni utili' }}
+            </button>
+          </div>
+          
+          <div class="size-guide-panel active" data-panel="sizes">
+            <div class="size-table-wrapper">
+              <table class="size-table">
+                <thead>
+                  <tr>
+                    <th>{{ block.settings.size_label | default: 'Taglia' }}</th>
+                    <th>{{ block.settings.bust_label | default: 'Busto (cm)' }}</th>
+                    <th>{{ block.settings.waist_label | default: 'Vita (cm)' }}</th>
+                    <th>{{ block.settings.hips_label | default: 'Fianchi (cm)' }}</th>
+                    <th>{{ block.settings.length_label | default: 'Lunghezza (cm)' }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for i in (1..6) -%}
+                    {%- assign size_key = 'size_' | append: i -%}
+                    {%- assign bust_key = 'bust_' | append: i -%}
+                    {%- assign waist_key = 'waist_' | append: i -%}
+                    {%- assign hips_key = 'hips_' | append: i -%}
+                    {%- assign length_key = 'length_' | append: i -%}
+                    
+                    {%- if block.settings[size_key] != blank -%}
+                      <tr>
+                        <td><strong>{{ block.settings[size_key] }}</strong></td>
+                        <td>{{ block.settings[bust_key] }}</td>
+                        <td>{{ block.settings[waist_key] }}</td>
+                        <td>{{ block.settings[hips_key] }}</td>
+                        <td>{{ block.settings[length_key] }}</td>
+                      </tr>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+            
+            {%- if block.settings.size_note != blank -%}
+              <div class="info-section">
+                <p>{{ block.settings.size_note }}</p>
+              </div>
+            {%- endif -%}
+          </div>
+          
+          <div class="size-guide-panel" data-panel="measurements">
+            {%- if block.settings.measurement_image != blank -%}
+              <div class="measurement-image">
+                {%- render 'image-element',
+                  img: block.settings.measurement_image,
+                  widths: '360, 540, 720, 900',
+                  sizeVariable: '900px',
+                -%}
+              </div>
+            {%- endif -%}
+            
+            <div class="info-section">
+              <h4>{{ block.settings.measurement_title | default: 'Come prendere correttamente le misure' }}</h4>
+              <ul class="info-list">
+                <li>{{ block.settings.measurement_tip_1 | default: 'Utilizza un metro da sarta morbido' }}</li>
+                <li>{{ block.settings.measurement_tip_2 | default: 'Prendi le misure sopra la biancheria intima' }}</li>
+                <li>{{ block.settings.measurement_tip_3 | default: 'Mantieni il metro parallelo al pavimento' }}</li>
+                <li>{{ block.settings.measurement_tip_4 | default: 'Non stringere troppo il metro' }}</li>
+                <li>{{ block.settings.measurement_tip_5 | default: 'Fatti aiutare da qualcuno per maggiore precisione' }}</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="size-guide-panel" data-panel="info">
+            <div class="info-section">
+              <h4>{{ block.settings.info_title_1 | default: 'Vestibilità dei prodotti Fabindia' }}</h4>
+              <p>{{ block.settings.info_content_1 | default: 'I nostri capi sono realizzati con tessuti naturali che potrebbero avere una leggera variazione nelle misure.' }}</p>
+            </div>
+            
+            <div class="info-section">
+              <h4>{{ block.settings.info_title_2 | default: 'Consigli per la scelta' }}</h4>
+              <p>{{ block.settings.info_content_2 | default: 'Se sei indeciso tra due taglie, consigliamo di scegliere quella più grande per una vestibilità comoda.' }}</p>
+            </div>
+            
+            {%- if block.settings.care_instructions != blank -%}
+              <div class="info-section">
+                <h4>{{ block.settings.care_title | default: 'Istruzioni di lavaggio' }}</h4>
+                <p>{{ block.settings.care_instructions }}</p>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const trigger = document.querySelector('[data-size-guide-trigger]');
+        const modal = document.querySelector('[data-size-guide-modal]');
+        const closeBtn = document.querySelector('[data-size-guide-close]');
+        const tabs = document.querySelectorAll('.size-guide-tab');
+        const panels = document.querySelectorAll('.size-guide-panel');
+        
+        // Apri modal
+        trigger.addEventListener('click', function() {
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+        
+        // Chiudi modal
+        function closeModal() {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+        
+        closeBtn.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+        
+        // Gestione tabs
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const targetPanel = this.getAttribute('data-tab');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            this.classList.add('active');
+            document.querySelector(`[data-panel="${targetPanel}"]`).classList.add('active');
+          });
+        });
+        
+        // Chiudi con ESC
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+          }
+        });
+      });
+    </script>
+  </div>
+          
+                  {%- when 'size_chart' -%}
+                    {% if connect_to_sizechart == false %}
+                      {%- capture size_chart_title -%}
+                        {{ 'products.general.size_chart' | t }}<svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-size-chart" viewBox="0 0 64 64"><path d="M22.39 33.53c-7.46 0-13.5-3.9-13.5-8.72s6-8.72 13.5-8.72 13.5 3.9 13.5 8.72a12 12 0 0 1-.22 1.73"/><ellipse cx="22.39" cy="24.81" rx="3.28" ry="2.12"/><path d="M8.89 24.81V38.5c0 7.9 6.4 9.41 14.3 9.41h31.92V33.53H22.39m24.39 0v7.44m-8.13-7.44v7.44m-8.13-7.44v7.44m-8.13-7.44v7.44"/></svg>
+                      {%- endcapture -%}
+
+                      <div class="size-chart__standalone" {{ block.shopify_attributes }}>
+                        {%- render
+                          'tool-tip-trigger',
+                          title: size_chart_title,
+                          content: block.settings.size_chart.content,
+                          context: 'size-chart'
+                        -%}
+                        {% style %}
+                          tool-tip-trigger {
+                            text-transform: uppercase;
+                          }
+                        {% endstyle %}
+                      </div>
+                    {% endif %}
+
+
+
+{%- when 'variant_picker' -%}
+  {%- render 'block-variant-picker',
+    block: block,
+    product: product,
+    current_variant: current_variant,
+    form_id: form_id,
+    section_id: section_id,
+    connect_to_sizechart: connect_to_sizechart,
+    sizechart_index: sizechart_index
+  -%}
+
+                          
+
+
+                  
+{%- when 'buy_buttons' -%}
+<div class="product-block" {{ block.shopify_attributes }}>
+  {%- unless product.empty? -%}
+    <div class="product-block">
+      {%- render 'product-form',
+        form_id: form_id,
+        product: product,
+        show_dynamic_checkout: block.settings.show_dynamic_checkout,
+        current_variant: current_variant,
+        block: block
+      -%}
+    </div>
+  {%- endunless -%}
+  {%- if block.settings.surface_pickup_enable -%}
+    <div data-store-availability-holder
+      data-product-name="{{ product.title | escape }}"
+      data-base-url="{{ shop.url }}{{ routes.root_url }}"
+      ></div>
+  {%- endif -%}
+</div>
+
+                          
+                  
+              
+
+
+
+
+
+                  {%- comment -%}
+  Fabindia Roma - Ultimate Product Details Block v3.0
+  Sistema completo con campi editabili dal tema + supporto metafield opzionale
+{%- endcomment -%}
+
+{%- liquid
+  # Determina se mostrare il blocco
+  assign has_content = false
+  
+  if block.settings.show_block == true
+    assign has_content = true
+  elsif block.settings.descrizione_breve != blank
+    assign has_content = true
+  elsif block.settings.descrizione_completa != blank
+    assign has_content = true
+  elsif block.settings.materiali_composizione != blank
+    assign has_content = true
+  elsif block.settings.caratteristiche != blank
+    assign has_content = true
+  elsif block.settings.istruzioni_lavaggio != blank
+    assign has_content = true
+  elsif block.settings.tabella_taglie_html != blank
+    assign has_content = true
+  elsif block.settings.tecniche_produzione != blank
+    assign has_content = true
+  elsif block.settings.utilizzi_prodotto != blank
+    assign has_content = true
+  elsif block.settings.consigli_stile != blank
+    assign has_content = true
+  elsif block.settings.storia_prodotto != blank
+    assign has_content = true
+  endif
+-%}
+
+{%- if has_content -%}
+<div class="fabindia-details-ultimate" {{ block.shopify_attributes }}>
+  <style>
+    /* Variabili CSS per personalizzazione */
+    .fabindia-details-ultimate {
+      --fab-primary: {{ block.settings.colore_primario }};
+      --fab-secondary: {{ block.settings.colore_secondario }};
+      --fab-accent: {{ block.settings.colore_accento }};
+      --fab-text: {{ block.settings.colore_testo }};
+      --fab-bg: {{ block.settings.colore_sfondo }};
+      --fab-border: {{ block.settings.colore_bordi }};
+      --fab-success: #27AE60;
+      --fab-warning: #F39C12;
+      --fab-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --fab-radius: {{ block.settings.border_radius }}px;
+      --fab-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Container principale */
+    .fabindia-details-ultimate {
+      background: var(--fab-bg);
+      border-radius: var(--fab-radius);
+      overflow: hidden;
+      margin: 2rem 0;
+      box-shadow: var(--fab-shadow);
+      position: relative;
+      animation: fabindiaFadeIn 0.6s ease-out;
+    }
+
+    @keyframes fabindiaFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Header visivo con pattern */
+    .fabindia-visual-header {
+      height: 120px;
+      background: linear-gradient(135deg, var(--fab-primary) 0%, var(--fab-secondary) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-visual-header::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      animation: patternMove 20s ease-in-out infinite;
+    }
+
+    @keyframes patternMove {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-10px, -10px) rotate(180deg); }
+    }
+
+    /* Titolo prodotto nel header */
+    .fabindia-header-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+    }
+
+    .fabindia-header-title {
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .fabindia-header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Sistema di navigazione migliorato */
+    .fabindia-nav-system {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-nav-wrapper {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-behavior: smooth;
+    }
+
+    .fabindia-nav-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Tab di navigazione migliorati */
+    .fabindia-nav-tab {
+      flex: 0 0 auto;
+      padding: 1.2rem 2rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--fab-text);
+      position: relative;
+      transition: var(--fab-transition);
+      white-space: nowrap;
+      opacity: 0.7;
+    }
+
+    .fabindia-nav-tab:hover {
+      opacity: 1;
+      color: var(--fab-primary);
+    }
+
+    .fabindia-nav-tab.active {
+      opacity: 1;
+      color: var(--fab-primary);
+    }
+
+    .fabindia-nav-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 3px;
+      background: var(--fab-primary);
+      transition: var(--fab-transition);
+      transform: translateX(-50%);
+    }
+
+    .fabindia-nav-tab.active::after {
+      width: 80%;
+    }
+
+    /* Icone nei tab */
+    .fabindia-tab-icon {
+      display: inline-block;
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+      vertical-align: middle;
+    }
+
+    /* Area contenuto principale */
+    .fabindia-content-wrapper {
+      padding: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .fabindia-content-wrapper {
+        padding: 3rem;
+      }
+    }
+
+    /* Pannelli contenuto */
+    .fabindia-panel {
+      display: none;
+      animation: panelSlideIn 0.5s ease-out;
+    }
+
+    .fabindia-panel.active {
+      display: block;
+    }
+
+    @keyframes panelSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Stili per descrizione */
+    .fabindia-description-section {
+      line-height: 1.8;
+      color: var(--fab-text);
+    }
+
+    .fabindia-description-highlight {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--fab-secondary);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--fab-border);
+    }
+
+    .fabindia-description-text {
+      margin-bottom: 1.5rem;
+    }
+
+    .fabindia-description-text p {
+      margin-bottom: 1rem;
+    }
+
+    /* Box evidenziato per info speciali */
+    .fabindia-highlight-box {
+      background: linear-gradient(135deg, 
+        rgba(var(--fab-primary-rgb, 214, 170, 118), 0.1) 0%, 
+        rgba(var(--fab-secondary-rgb, 139, 69, 19), 0.05) 100%);
+      border-left: 4px solid var(--fab-accent);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 var(--fab-radius) var(--fab-radius) 0;
+    }
+
+    .fabindia-highlight-box h4 {
+      color: var(--fab-secondary);
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    /* Grid materiali ultra-stilizzato */
+    .fabindia-materials-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .fabindia-material-card {
+      background: white;
+      border: 2px solid var(--fab-border);
+      border-radius: var(--fab-radius);
+      padding: 2rem;
+      text-align: center;
+      transition: var(--fab-transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-material-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--fab-primary), var(--fab-secondary));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .fabindia-material-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .fabindia-material-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .fabindia-material-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+      color: var(--fab-primary);
+    }
+
+    .fabindia-material-name {
+      font-weight: 700;
+      color: var(--fab-secondary);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .fabindia-material-percentage {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--fab-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .fabindia-material-properties {
+      font-size: 0.85rem;
+      color: var(--fab-text);
+      opacity: 0.8;
+    }
+
+    /* Lista caratteristiche avanzata */
+    .fabindia-features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .fabindia-feature-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      padding: 1.5rem;
+      background: rgba(var(--fab-accent-rgb, 244, 229, 211), 0.3);
+      border-radius: var(--fab-radius);
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-feature-card:hover {
+      background: rgba(var(--fab-accent-rgb, 244, 229, 211), 0.5);
+      transform: translateX(10px);
+    }
+
+    .fabindia-feature-icon-wrapper {
+      flex-shrink: 0;
+      width: 50px;
+      height: 50px;
+      background: var(--fab-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 5px 15px rgba(var(--fab-primary-rgb, 214, 170, 118), 0.3);
+    }
+
+    .fabindia-feature-content h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--fab-secondary);
+      font-size: 1.1rem;
+    }
+
+    .fabindia-feature-content p {
+      margin: 0;
+      color: var(--fab-text);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Sezione cura del prodotto */
+    .fabindia-care-container {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: var(--fab-radius);
+      padding: 2.5rem;
+      margin: 2rem 0;
+    }
+
+    .fabindia-care-icons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .fabindia-care-icon-box {
+      background: white;
+      border-radius: var(--fab-radius);
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      transition: var(--fab-transition);
+      cursor: pointer;
+    }
+
+    .fabindia-care-icon-box:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .fabindia-care-icon-box.active {
+      background: var(--fab-primary);
+      color: white;
+    }
+
+    .fabindia-care-symbol {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .fabindia-care-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Tabella taglie moderna */
+    .fabindia-sizes-section {
+      margin: 2rem 0;
+    }
+
+    .fabindia-size-selector-modern {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .fabindia-size-button {
+      padding: 0.75rem 2rem;
+      border: 2px solid var(--fab-border);
+      background: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--fab-transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-size-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: var(--fab-primary);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .fabindia-size-button:hover {
+      border-color: var(--fab-primary);
+      color: var(--fab-primary);
+    }
+
+    .fabindia-size-button.selected {
+      background: var(--fab-primary);
+      color: white;
+      border-color: var(--fab-primary);
+    }
+
+    .fabindia-size-table-container {
+      overflow-x: auto;
+      border-radius: var(--fab-radius);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .fabindia-size-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    .fabindia-size-table th {
+      background: var(--fab-primary);
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .fabindia-size-table td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--fab-border);
+    }
+
+    .fabindia-size-table tr:hover td {
+      background: rgba(var(--fab-primary-rgb, 214, 170, 118), 0.1);
+    }
+
+    /* Timeline produzione */
+    .fabindia-production-timeline {
+      position: relative;
+      padding: 2rem 0;
+    }
+
+    .fabindia-timeline-line {
+      position: absolute;
+      left: 30px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--fab-border);
+    }
+
+    .fabindia-timeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .fabindia-timeline-marker {
+      flex-shrink: 0;
+      width: 60px;
+      height: 60px;
+      background: var(--fab-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 5px 15px rgba(var(--fab-primary-rgb, 214, 170, 118), 0.4);
+    }
+
+    .fabindia-timeline-content {
+      flex: 1;
+      padding-top: 0.5rem;
+    }
+
+    .fabindia-timeline-content h4 {
+      margin: 0 0 0.75rem 0;
+      color: var(--fab-secondary);
+      font-size: 1.2rem;
+    }
+
+    .fabindia-timeline-content p {
+      margin: 0;
+      color: var(--fab-text);
+      line-height: 1.6;
+    }
+
+    /* Carousel utilizzi */
+    .fabindia-uses-carousel {
+      position: relative;
+      overflow: hidden;
+      margin: 2rem -1rem;
+    }
+
+    .fabindia-uses-track {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1rem;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--fab-primary) var(--fab-border);
+    }
+
+    .fabindia-use-card {
+      flex: 0 0 250px;
+      background: white;
+      border: 2px solid var(--fab-border);
+      border-radius: var(--fab-radius);
+      padding: 2rem;
+      text-align: center;
+      transition: var(--fab-transition);
+      cursor: pointer;
+    }
+
+    .fabindia-use-card:hover {
+      border-color: var(--fab-primary);
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .fabindia-use-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      color: var(--fab-primary);
+      display: block;
+    }
+
+    .fabindia-use-title {
+      font-weight: 700;
+      color: var(--fab-secondary);
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+    }
+
+    .fabindia-use-description {
+      color: var(--fab-text);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Consigli di stile */
+    .fabindia-style-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .fabindia-style-card {
+      background: linear-gradient(135deg, 
+        rgba(var(--fab-primary-rgb, 214, 170, 118), 0.1) 0%, 
+        rgba(var(--fab-secondary-rgb, 139, 69, 19), 0.05) 100%);
+      border-radius: var(--fab-radius);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fabindia-style-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      transform: rotate(45deg);
+    }
+
+    .fabindia-style-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fabindia-style-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--fab-primary);
+      color: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      transform: rotate(-5deg);
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-style-card:hover .fabindia-style-icon {
+      transform: rotate(5deg) scale(1.1);
+    }
+
+    .fabindia-style-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--fab-secondary);
+    }
+
+    .fabindia-style-content {
+      position: relative;
+      z-index: 1;
+      color: var(--fab-text);
+      line-height: 1.6;
+    }
+
+    /* Heritage section */
+    .fabindia-heritage-container {
+      background: linear-gradient(135deg, var(--fab-secondary) 0%, var(--fab-primary) 100%);
+      color: white;
+      border-radius: var(--fab-radius);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+
+    .fabindia-heritage-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 255, 255, 0.05) 35px, rgba(255, 255, 255, 0.05) 70px);
+      pointer-events: none;
+    }
+
+    .fabindia-heritage-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .fabindia-heritage-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .fabindia-heritage-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      opacity: 0.95;
+    }
+
+    /* Certificazioni */
+    .fabindia-certifications-bar {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 2rem;
+      background: rgba(var(--fab-accent-rgb, 244, 229, 211), 0.3);
+      border-radius: var(--fab-radius);
+      margin: 2rem 0;
+    }
+
+    .fabindia-cert-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 25px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-cert-badge:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .fabindia-cert-icon {
+      font-size: 1.5rem;
+      color: var(--fab-success);
+    }
+
+    .fabindia-cert-text {
+      font-weight: 600;
+      color: var(--fab-secondary);
+    }
+
+    /* Firma artigianale */
+    .fabindia-signature-section {
+      text-align: center;
+      padding: 3rem;
+      background: linear-gradient(135deg, 
+        rgba(var(--fab-accent-rgb, 244, 229, 211), 0.5) 0%, 
+        rgba(var(--fab-primary-rgb, 214, 170, 118), 0.2) 100%);
+      border-radius: var(--fab-radius);
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .fabindia-signature-quote {
+      font-size: 1.5rem;
+      font-style: italic;
+      color: var(--fab-secondary);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .fabindia-signature-quote::before,
+    .fabindia-signature-quote::after {
+      content: '"';
+      font-size: 4rem;
+      position: absolute;
+      opacity: 0.2;
+      font-family: Georgia, serif;
+      color: var(--fab-primary);
+    }
+
+    .fabindia-signature-quote::before {
+      top: -20px;
+      left: -40px;
+    }
+
+    .fabindia-signature-quote::after {
+      bottom: -40px;
+      right: -40px;
+    }
+
+    .fabindia-signature-author {
+      font-weight: 700;
+      color: var(--fab-primary);
+      font-size: 1.2rem;
+    }
+
+    /* Quick info badges */
+    .fabindia-quick-badges {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .fabindia-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--fab-primary), var(--fab-secondary));
+      color: white;
+      padding: 0.5rem 1.25rem;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Responsive ottimizzato */
+    @media (max-width: 768px) {
+      .fabindia-visual-header {
+        height: 80px;
+      }
+
+      .fabindia-header-title {
+        font-size: 1.3rem;
+      }
+
+      .fabindia-nav-tab {
+        padding: 1rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .fabindia-content-wrapper {
+        padding: 1.5rem;
+      }
+
+      .fabindia-materials-showcase {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .fabindia-features-list {
+        grid-template-columns: 1fr;
+      }
+
+      .fabindia-style-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .fabindia-timeline-step {
+        gap: 1.5rem;
+      }
+
+      .fabindia-timeline-marker {
+        width: 50px;
+        height: 50px;
+      }
+
+      .fabindia-use-card {
+        flex: 0 0 220px;
+      }
+
+      .fabindia-heritage-container {
+        padding: 2rem;
+      }
+
+      .fabindia-heritage-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Animazioni scroll */
+    .fabindia-scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fabindia-scroll-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stati hover globali */
+    .fabindia-hoverable {
+      transition: var(--fab-transition);
+    }
+
+    .fabindia-hoverable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Loading skeleton */
+    .fabindia-skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Print styles */
+    @media print {
+      .fabindia-nav-system {
+        display: none;
+      }
+
+      .fabindia-panel {
+        display: block !important;
+        page-break-inside: avoid;
+      }
+
+      .fabindia-visual-header {
+        height: auto;
+        background: none;
+        border-bottom: 2px solid var(--fab-primary);
+      }
+    }
+  </style>
+
+  <!-- Header visivo -->
+  {%- if block.settings.show_visual_header -%}
+    <div class="fabindia-visual-header">
+      <div class="fabindia-header-content">
+        <h2 class="fabindia-header-title">{{ block.settings.header_title | default: product.title }}</h2>
+        {%- if block.settings.header_subtitle != blank -%}
+          <p class="fabindia-header-subtitle">{{ block.settings.header_subtitle }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- Quick Info Badges -->
+  {%- if block.settings.quick_badges != blank -%}
+    <div class="fabindia-quick-badges">
+      {%- assign badges = block.settings.quick_badges | split: '|' -%}
+      {%- for badge in badges -%}
+        {%- assign badge_parts = badge | split: ':' -%}
+        <span class="fabindia-badge">
+          <span>{{ badge_parts[0] }}</span>
+          <span>{{ badge_parts[1] }}</span>
+        </span>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Sistema di navigazione -->
+  <nav class="fabindia-nav-system" role="navigation" aria-label="Dettagli prodotto">
+    <div class="fabindia-nav-wrapper">
+      {%- if block.settings.descrizione_completa != blank or block.settings.descrizione_breve != blank -%}
+        <button class="fabindia-nav-tab active" data-panel="descrizione" aria-selected="true">
+          <span class="fabindia-tab-icon">📖</span>
+          <span>{{ block.settings.tab_descrizione | default: 'Descrizione' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.materiali_composizione != blank -%}
+        <button class="fabindia-nav-tab" data-panel="materiali" aria-selected="false">
+          <span class="fabindia-tab-icon">🧵</span>
+          <span>{{ block.settings.tab_materiali | default: 'Materiali' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.caratteristiche != blank -%}
+        <button class="fabindia-nav-tab" data-panel="caratteristiche" aria-selected="false">
+          <span class="fabindia-tab-icon">✨</span>
+          <span>{{ block.settings.tab_caratteristiche | default: 'Caratteristiche' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.istruzioni_lavaggio != blank -%}
+        <button class="fabindia-nav-tab" data-panel="cura" aria-selected="false">
+          <span class="fabindia-tab-icon">🧺</span>
+          <span>{{ block.settings.tab_cura | default: 'Cura' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.tabella_taglie_html != blank -%}
+        <button class="fabindia-nav-tab" data-panel="taglie" aria-selected="false">
+          <span class="fabindia-tab-icon">📏</span>
+          <span>{{ block.settings.tab_taglie | default: 'Taglie' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.tecniche_produzione != blank -%}
+        <button class="fabindia-nav-tab" data-panel="produzione" aria-selected="false">
+          <span class="fabindia-tab-icon">🎨</span>
+          <span>{{ block.settings.tab_produzione | default: 'Produzione' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.utilizzi_prodotto != blank -%}
+        <button class="fabindia-nav-tab" data-panel="utilizzi" aria-selected="false">
+          <span class="fabindia-tab-icon">💡</span>
+          <span>{{ block.settings.tab_utilizzi | default: 'Utilizzi' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.consigli_stile != blank -%}
+        <button class="fabindia-nav-tab" data-panel="stile" aria-selected="false">
+          <span class="fabindia-tab-icon">👗</span>
+          <span>{{ block.settings.tab_stile | default: 'Stile' }}</span>
+        </button>
+      {%- endif -%}
+
+      {%- if block.settings.storia_prodotto != blank -%}
+        <button class="fabindia-nav-tab" data-panel="heritage" aria-selected="false">
+          <span class="fabindia-tab-icon">🏛️</span>
+          <span>{{ block.settings.tab_heritage | default: 'Heritage' }}</span>
+        </button>
+      {%- endif -%}
+    </div>
+  </nav>
+
+  <!-- Area contenuto principale -->
+  <div class="fabindia-content-wrapper">
+    
+    <!-- Pannello Descrizione -->
+    {%- if block.settings.descrizione_completa != blank or block.settings.descrizione_breve != blank -%}
+      <div class="fabindia-panel active" data-panel-content="descrizione">
+        <div class="fabindia-description-section">
+          {%- if block.settings.descrizione_breve != blank -%}
+            <div class="fabindia-description-highlight">
+              {{ block.settings.descrizione_breve }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.descrizione_completa != blank -%}
+            <div class="fabindia-description-text">
+              {{ block.settings.descrizione_completa | newline_to_br }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.dettagli_unici != blank -%}
+            <div class="fabindia-highlight-box fabindia-scroll-reveal">
+              <h4>{{ block.settings.titolo_dettagli_unici | default: 'Cosa Rende Unico Questo Prodotto' }}</h4>
+              <p>{{ block.settings.dettagli_unici }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Materiali -->
+    {%- if block.settings.materiali_composizione != blank -%}
+      <div class="fabindia-panel" data-panel-content="materiali">
+        <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+          {{ block.settings.titolo_materiali | default: 'Composizione & Materiali' }}
+        </h3>
+
+        <div class="fabindia-materials-showcase">
+          {%- assign materiali = block.settings.materiali_composizione | split: '|' -%}
+          {%- for materiale in materiali -%}
+            {%- assign mat_parts = materiale | split: ':' -%}
+            <div class="fabindia-material-card fabindia-scroll-reveal">
+              <span class="fabindia-material-icon">{{ mat_parts[2] | default: '🧵' }}</span>
+              <div class="fabindia-material-name">{{ mat_parts[0] }}</div>
+              <div class="fabindia-material-percentage">{{ mat_parts[1] }}</div>
+              {%- if mat_parts[3] != blank -%}
+                <div class="fabindia-material-properties">{{ mat_parts[3] }}</div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if block.settings.proprieta_materiali != blank -%}
+          <div class="fabindia-highlight-box" style="margin-top: 2rem;">
+            <h4>{{ block.settings.titolo_proprieta | default: 'Proprietà dei Materiali' }}</h4>
+            <p>{{ block.settings.proprieta_materiali }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Caratteristiche -->
+    {%- if block.settings.caratteristiche != blank -%}
+      <div class="fabindia-panel" data-panel-content="caratteristiche">
+        <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+          {{ block.settings.titolo_caratteristiche | default: 'Caratteristiche Principali' }}
+        </h3>
+
+        <div class="fabindia-features-list">
+          {%- assign features = block.settings.caratteristiche | split: '|' -%}
+          {%- for feature in features -%}
+            {%- assign feat_parts = feature | split: ':' -%}
+            <div class="fabindia-feature-card fabindia-scroll-reveal">
+              <div class="fabindia-feature-icon-wrapper">
+                {{ feat_parts[2] | default: '✦' }}
+              </div>
+              <div class="fabindia-feature-content">
+                <h4>{{ feat_parts[0] }}</h4>
+                <p>{{ feat_parts[1] }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if block.settings.caratteristiche_speciali != blank -%}
+          <div style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, var(--fab-primary), var(--fab-secondary)); color: white; border-radius: var(--fab-radius); text-align: center;">
+            <h4 style="margin-bottom: 1rem;">{{ block.settings.titolo_speciali | default: 'Il Tocco Speciale' }}</h4>
+            <p style="font-size: 1.1rem;">{{ block.settings.caratteristiche_speciali }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Cura -->
+    {%- if block.settings.istruzioni_lavaggio != blank -%}
+      <div class="fabindia-panel" data-panel-content="cura">
+        <div class="fabindia-care-container">
+          <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+            {{ block.settings.titolo_cura | default: 'Come Prendersi Cura' }}
+          </h3>
+
+          <div class="fabindia-care-icons-grid">
+            {%- if block.settings.istruzioni_lavaggio contains 'freddo' or block.settings.istruzioni_lavaggio contains 'cold' -%}
+              <div class="fabindia-care-icon-box active">
+                <span class="fabindia-care-symbol">❄️</span>
+                <span class="fabindia-care-label">Acqua Fredda</span>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.istruzioni_lavaggio contains 'mano' or block.settings.istruzioni_lavaggio contains 'hand' -%}
+              <div class="fabindia-care-icon-box">
+                <span class="fabindia-care-symbol">🤲</span>
+                <span class="fabindia-care-label">Lavaggio a Mano</span>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.istruzioni_lavaggio contains 'secco' or block.settings.istruzioni_lavaggio contains 'dry' -%}
+              <div class="fabindia-care-icon-box">
+                <span class="fabindia-care-symbol">🌀</span>
+                <span class="fabindia-care-label">Lavaggio a Secco</span>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.istruzioni_lavaggio contains 'delicato' or block.settings.istruzioni_lavaggio contains 'gentle' -%}
+              <div class="fabindia-care-icon-box">
+                <span class="fabindia-care-symbol">🌸</span>
+                <span class="fabindia-care-label">Ciclo Delicato</span>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.no_stiro -%}
+              <div class="fabindia-care-icon-box">
+                <span class="fabindia-care-symbol">🚫</span>
+                <span class="fabindia-care-label">Non Stirare</span>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.no_candeggina -%}
+              <div class="fabindia-care-icon-box">
+                <span class="fabindia-care-symbol">⚠️</span>
+                <span class="fabindia-care-label">No Candeggina</span>
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div style="background: white; border-radius: var(--fab-radius); padding: 1.5rem; margin-top: 1.5rem; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+            <p style="text-align: center; color: var(--fab-text); line-height: 1.6;">
+              {{ block.settings.istruzioni_lavaggio }}
+            </p>
+
+            {%- if block.settings.nota_cura_extra != blank -%}
+              <div style="margin-top: 1rem; padding: 1rem; background: rgba(var(--fab-warning-rgb, 243, 156, 18), 0.1); border-radius: 8px; border-left: 4px solid var(--fab-warning);">
+                <strong>Nota Importante:</strong> {{ block.settings.nota_cura_extra }}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Taglie -->
+    {%- if block.settings.tabella_taglie_html != blank -%}
+      <div class="fabindia-panel" data-panel-content="taglie">
+        <div class="fabindia-sizes-section">
+          <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+            {{ block.settings.titolo_taglie | default: 'Guida alle Taglie' }}
+          </h3>
+
+          {%- if block.settings.taglie_disponibili != blank -%}
+            <div class="fabindia-size-selector-modern">
+              {%- assign taglie = block.settings.taglie_disponibili | split: ',' -%}
+              {%- for taglia in taglie -%}
+                <button class="fabindia-size-button" data-size="{{ taglia | strip }}">
+                  {{ taglia | strip }}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="fabindia-size-table-container">
+            {{ block.settings.tabella_taglie_html }}
+          </div>
+
+          {%- if block.settings.consigli_taglia != blank -%}
+            <div class="fabindia-highlight-box" style="margin-top: 2rem;">
+              <h4>{{ block.settings.titolo_consigli_taglia | default: 'Come Scegliere la Tua Taglia' }}</h4>
+              <p>{{ block.settings.consigli_taglia }}</p>
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.vestibilita != blank -%}
+            <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(var(--fab-accent-rgb, 244, 229, 211), 0.5); border-radius: var(--fab-radius);">
+              <h4 style="color: var(--fab-secondary); margin-bottom: 0.5rem;">Vestibilità</h4>
+              <p style="font-size: 1.1rem; color: var(--fab-text);">{{ block.settings.vestibilita }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Produzione -->
+    {%- if block.settings.tecniche_produzione != blank -%}
+      <div class="fabindia-panel" data-panel-content="produzione">
+        <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+          {{ block.settings.titolo_produzione | default: 'Come Nasce il Prodotto' }}
+        </h3>
+
+        {%- if block.settings.intro_produzione != blank -%}
+          <div style="text-align: center; font-size: 1.2rem; color: var(--fab-primary); margin-bottom: 3rem;">
+            {{ block.settings.intro_produzione }}
+          </div>
+        {%- endif -%}
+
+        <div class="fabindia-production-timeline">
+          <div class="fabindia-timeline-line"></div>
+          {%- assign steps = block.settings.tecniche_produzione | split: '|' -%}
+          {%- for step in steps -%}
+            {%- assign step_parts = step | split: ':' -%}
+            <div class="fabindia-timeline-step fabindia-scroll-reveal">
+              <div class="fabindia-timeline-marker">{{ forloop.index }}</div>
+              <div class="fabindia-timeline-content">
+                <h4>{{ step_parts[0] }}</h4>
+                <p>{{ step_parts[1] }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if block.settings.tempo_produzione != blank -%}
+          <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(var(--fab-primary-rgb, 214, 170, 118), 0.15); border-radius: var(--fab-radius);">
+            <h4 style="color: var(--fab-secondary); margin-bottom: 0.5rem;">Tempo di Produzione</h4>
+            <p style="font-size: 2rem; font-weight: 700; color: var(--fab-primary);">{{ block.settings.tempo_produzione }}</p>
+          </div>
+        {%- endif -%}
+
+        {%- if block.settings.info_artigiani != blank -%}
+          <div class="fabindia-highlight-box" style="margin-top: 2rem;">
+            <h4>{{ block.settings.titolo_artigiani | default: 'I Nostri Artigiani' }}</h4>
+            <p>{{ block.settings.info_artigiani }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Utilizzi -->
+    {%- if block.settings.utilizzi_prodotto != blank -%}
+      <div class="fabindia-panel" data-panel-content="utilizzi">
+        <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+          {{ block.settings.titolo_utilizzi | default: 'Mille Modi per Usarlo' }}
+        </h3>
+
+        <div class="fabindia-uses-carousel">
+          <div class="fabindia-uses-track">
+            {%- assign uses = block.settings.utilizzi_prodotto | split: '|' -%}
+            {%- for use in uses -%}
+              {%- assign use_parts = use | split: ':' -%}
+              <div class="fabindia-use-card">
+                <span class="fabindia-use-icon">{{ use_parts[2] | default: '✨' }}</span>
+                <div class="fabindia-use-title">{{ use_parts[0] }}</div>
+                <div class="fabindia-use-description">{{ use_parts[1] }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+
+        {%- if block.settings.nota_versatilita != blank -%}
+          <div style="text-align: center; margin-top: 2rem; font-style: italic; color: var(--fab-text); font-size: 1.1rem;">
+            "{{ block.settings.nota_versatilita }}"
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Stile -->
+    {%- if block.settings.consigli_stile != blank -%}
+      <div class="fabindia-panel" data-panel-content="stile">
+        <h3 style="text-align: center; color: var(--fab-secondary); margin-bottom: 2rem;">
+          {{ block.settings.titolo_stile | default: 'Consigli di Stile' }}
+        </h3>
+
+        <div class="fabindia-style-grid">
+          {%- assign stili = block.settings.consigli_stile | split: '|' -%}
+          {%- for stile in stili -%}
+            {%- assign stile_parts = stile | split: ':' -%}
+            <div class="fabindia-style-card fabindia-scroll-reveal">
+              <div class="fabindia-style-header">
+                <div class="fabindia-style-icon">{{ stile_parts[2] | default: '💫' }}</div>
+                <h4 class="fabindia-style-title">{{ stile_parts[0] }}</h4>
+              </div>
+              <div class="fabindia-style-content">
+                {{ stile_parts[1] }}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if block.settings.abbinamenti_consigliati != blank -%}
+          <div class="fabindia-highlight-box" style="margin-top: 2rem;">
+            <h4>{{ block.settings.titolo_abbinamenti | default: 'Abbinamenti Perfetti' }}</h4>
+            <p>{{ block.settings.abbinamenti_consigliati }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Pannello Heritage -->
+    {%- if block.settings.storia_prodotto != blank -%}
+      <div class="fabindia-panel" data-panel-content="heritage">
+        <div class="fabindia-heritage-container">
+          <div class="fabindia-heritage-pattern"></div>
+          <div class="fabindia-heritage-content">
+            <h3 class="fabindia-heritage-title">
+              {{ block.settings.titolo_heritage | default: 'Storia e Tradizione' }}
+            </h3>
+            <div class="fabindia-heritage-text">
+              {{ block.settings.storia_prodotto | newline_to_br }}
+            </div>
+
+            {%- if block.settings.tradizione_extra != blank -%}
+              <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.3);">
+                <h4 style="margin-bottom: 1rem;">{{ block.settings.titolo_tradizione | default: 'La Tradizione Continua' }}</h4>
+                {{ block.settings.tradizione_extra | newline_to_br }}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <!-- Certificazioni (sempre visibili se presenti) -->
+    {%- if block.settings.certificazioni != blank -%}
+      <div class="fabindia-certifications-bar">
+        {%- assign certs = block.settings.certificazioni | split: '|' -%}
+        {%- for cert in certs -%}
+          {%- assign cert_parts = cert | split: ':' -%}
+          <div class="fabindia-cert-badge">
+            <span class="fabindia-cert-icon">{{ cert_parts[1] | default: '✓' }}</span>
+            <span class="fabindia-cert-text">{{ cert_parts[0] }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <!-- Firma Artigianale (sempre visibile se presente) -->
+    {%- if block.settings.nota_artigianale != blank -%}
+      <div class="fabindia-signature-section">
+        <div class="fabindia-signature-quote">
+          {{ block.settings.nota_artigianale }}
+        </div>
+        {%- if block.settings.firma_artigiano != blank -%}
+          <div class="fabindia-signature-author">
+            — {{ block.settings.firma_artigiano }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      const container = document.querySelector('.fabindia-details-ultimate');
+      if (!container) return;
+
+      // Sistema di navigazione tab
+      const tabs = container.querySelectorAll('.fabindia-nav-tab');
+      const panels = container.querySelectorAll('.fabindia-panel');
+
+      function switchPanel(targetPanel) {
+        // Aggiorna tabs
+        tabs.forEach(tab => {
+          const isActive = tab.dataset.panel === targetPanel;
+          tab.classList.toggle('active', isActive);
+          tab.setAttribute('aria-selected', isActive);
+        });
+
+        // Aggiorna pannelli
+        panels.forEach(panel => {
+          const isActive = panel.dataset.panelContent === targetPanel;
+          panel.classList.toggle('active', isActive);
+        });
+
+        // Salva stato
+        if (window.sessionStorage) {
+          sessionStorage.setItem('fabindia-active-panel', targetPanel);
+        }
+
+        // Scroll to top del container
+        const navSystem = container.querySelector('.fabindia-nav-system');
+        if (navSystem) {
+          navSystem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      // Event listeners per tabs
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          switchPanel(tab.dataset.panel);
+        });
+      });
+
+      // Ripristina ultimo pannello
+      const savedPanel = window.sessionStorage ? sessionStorage.getItem('fabindia-active-panel') : null;
+      if (savedPanel && container.querySelector(`[data-panel="${savedPanel}"]`)) {
+        switchPanel(savedPanel);
+      }
+
+      // Size selector interattivo
+      const sizeButtons = container.querySelectorAll('.fabindia-size-button');
+      sizeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          sizeButtons.forEach(b => b.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          // Evidenzia riga nella tabella se presente
+          const size = this.dataset.size;
+          const table = container.querySelector('.fabindia-size-table');
+          if (table) {
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+              if (row.textContent.includes(size)) {
+                row.style.background = 'rgba(214, 170, 118, 0.2)';
+              } else {
+                row.style.background = '';
+              }
+            });
+          }
+        });
+      });
+
+      // Care icons interattivi
+      const careIcons = container.querySelectorAll('.fabindia-care-icon-box');
+      careIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+          this.classList.toggle('active');
+        });
+      });
+
+      // Scroll reveal animation
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            scrollObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Osserva elementi con scroll reveal
+      const scrollElements = container.querySelectorAll('.fabindia-scroll-reveal');
+      scrollElements.forEach(el => scrollObserver.observe(el));
+
+      // Smooth scroll per carousel utilizzi
+      const usesTrack = container.querySelector('.fabindia-uses-track');
+      if (usesTrack) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        usesTrack.addEventListener('mousedown', (e) => {
+          isDown = true;
+          startX = e.pageX - usesTrack.offsetLeft;
+          scrollLeft = usesTrack.scrollLeft;
+          usesTrack.style.cursor = 'grabbing';
+        });
+
+        usesTrack.addEventListener('mouseleave', () => {
+          isDown = false;
+          usesTrack.style.cursor = 'grab';
+        });
+
+        usesTrack.addEventListener('mouseup', () => {
+          isDown = false;
+          usesTrack.style.cursor = 'grab';
+        });
+
+        usesTrack.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - usesTrack.offsetLeft;
+          const walk = (x - startX) * 2;
+          usesTrack.scrollLeft = scrollLeft - walk;
+        });
+      }
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (!container.contains(document.activeElement)) return;
+
+        const activeTab = container.querySelector('.fabindia-nav-tab.active');
+        if (!activeTab) return;
+
+        const allTabs = Array.from(tabs);
+        const currentIndex = allTabs.indexOf(activeTab);
+
+        if (e.key === 'ArrowRight' && currentIndex < allTabs.length - 1) {
+          allTabs[currentIndex + 1].click();
+          allTabs[currentIndex + 1].focus();
+        } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+          allTabs[currentIndex - 1].click();
+          allTabs[currentIndex - 1].focus();
+        }
+      });
+
+      // Touch swipe per mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      container.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      container.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, { passive: true });
+
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+          const activeTab = container.querySelector('.fabindia-nav-tab.active');
+          const allTabs = Array.from(tabs);
+          const currentIndex = allTabs.indexOf(activeTab);
+
+          if (diff > 0 && currentIndex < allTabs.length - 1) {
+            // Swipe left - prossimo tab
+            allTabs[currentIndex + 1].click();
+          } else if (diff < 0 && currentIndex > 0) {
+            // Swipe right - tab precedente
+            allTabs[currentIndex - 1].click();
+          }
+        }
+      }
+
+      // Sticky navigation on scroll
+      const navSystem = container.querySelector('.fabindia-nav-system');
+      if (navSystem) {
+        const navTop = navSystem.offsetTop;
+        
+        window.addEventListener('scroll', () => {
+          if (window.pageYOffset >= navTop - 100) {
+            navSystem.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+          } else {
+            navSystem.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+          }
+        });
+      }
+
+      // Performance: lazy load images se presenti
+      if ('IntersectionObserver' in window) {
+        const images = container.querySelectorAll('img[data-src]');
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+              imageObserver.unobserve(img);
+            }
+          });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+      }
+
+      // Emit custom event quando caricato
+      container.dispatchEvent(new CustomEvent('fabindia:loaded', {
+        detail: { 
+          panelCount: panels.length,
+          activePanel: container.querySelector('.fabindia-panel.active')?.dataset.panelContent
+        }
+      }));
+
+    })();
+  </script>
+</div>
+{%- endif -%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          
+
+                  
+                  {%- when 'sales_point' -%}
+                    {%- unless block.settings.text == blank -%}
+                      <div class="product-block product-block--sales-point" {{ block.shopify_attributes }}>
+                        <ul class="sales-points">
+                          <li class="sales-point">
+                            <span class="icon-and-text">
+                              {% case block.settings.icon %}
+                                {% when 'checkmark' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-circle-checkmark" viewBox="0 0 64 64"><path d="M52.68 24.48A22 22 0 1 1 47 15.93"/><path d="m21 32 8.5 8.5L57 13"/></svg>
+                                {% when 'gift' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-gift" viewBox="0 0 64 64"><path d="M9 20.23h46v8.68H9zm4.34 8.68h36.89v24.3H13.34zm14.48-8.25v32.98m8.09-32.76v32.98M20.52 11.43a3.73 3.73 0 0 0-.74 2.87 4.57 4.57 0 0 0 .8 2.27C22 18.09 25.15 20 32 20.23a12 12 0 0 0-2.43-7 7.52 7.52 0 0 0-5.66-3.12 4 4 0 0 0-3.39 1.32Z"/><path d="M43.37 11.43a3.73 3.73 0 0 1 .74 2.87 4.48 4.48 0 0 1-.8 2.27c-1.42 1.52-4.57 3.41-11.42 3.66a12.08 12.08 0 0 1 2.43-7A7.56 7.56 0 0 1 40 10.14a4 4 0 0 1 3.37 1.29Z"/></svg>
+                                {% when 'globe' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-globe" viewBox="0 0 64 64"><circle cx="32" cy="32" r="22"/><path d="M13 21h38M10 32h44M13 43h38M32 10c-12 8-12 37 0 44m0-44c12 8 12 37 0 44"/></svg>
+                                {% when 'heart' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-heart" viewBox="0 0 64 64"><path d="M51.27 15.05a13 13 0 0 0-18.44 0l-.83.83-.83-.83a13 13 0 0 0-18.44 18.44l.83.83L32 52.77l18.44-18.45.83-.83a13 13 0 0 0 0-18.44Z"/></svg>
+                                {% when 'leaf' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-leaf" viewBox="0 0 64 64"><defs><style>.a{stroke-miterlimit:10}</style></defs><path class="a" d="M52 11 13 50m22-37v15h16"/><path class="a" d="M52 11c6 24-16.72 47.29-33 32C7 22 29 10 52 11Z"/></svg>
+                                {% when 'lock' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-lock" viewBox="0 0 64 64"><path d="M19.45 23.6v-3.2c0-7 5.89-11.75 12.55-11.75 7.21 0 12.55 5.49 12.55 11.75v3.2M10 23.6h44v31.75H10zm22 13.87v7.47"/><circle cx="32" cy="35.87" r="1.6"/></svg>
+                                {% when 'package' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-package" viewBox="0 0 64 64"><path d="M32 54.52 10 41.95v-19.9L32 9.48l22 12.57v19.9L32 54.52z"/><path d="M32 54.52v-19.9l22-12.57M32 34.62 10 22.05m31.7-7.03L21 28.33v8.38"/></svg>
+                                {% when 'phone' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-phone" viewBox="0 0 64 64"><path d="m18.4 9.65 10.2 10.2-6.32 6.32c2.1 7 6.89 12.46 15.55 15.55l6.32-6.32 10.2 10.2-8.75 8.75C25.71 50.3 13.83 38.21 9.65 18.4Z"/></svg>
+                                {% when 'ribbon' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-ribbon" viewBox="0 0 64 64"><path d="m28.57 42.31-8.36 13.07-2.6-7.17-7.61.65 8.35-13.07a17.05 17.05 0 0 0 8.12 5.94 17.3 17.3 0 0 0 1.74.5ZM54 48.86l-7.61-.65-2.61 7.17-8.36-13.07.37-.08a16.4 16.4 0 0 0 1.73-.5 17 17 0 0 0 8.12-5.93Z"/><path d="M49 25.64a16.79 16.79 0 0 1-3.14 9.85 3.55 3.55 0 0 1-.23.31 17 17 0 0 1-8.12 5.93 16.4 16.4 0 0 1-1.73.5l-.37.08a16.74 16.74 0 0 1-3.42.35 16.91 16.91 0 0 1-3.43-.35l-.36-.08a17.3 17.3 0 0 1-1.74-.5 17.05 17.05 0 0 1-8.12-5.94c-.07-.09-.15-.19-.22-.3A16.86 16.86 0 0 1 15 25.64a17 17 0 0 1 34 0Z"/><path d="m36.09 27.78.96 5.63L32 30.75l-5.05 2.66.96-5.63-4.09-3.98 5.65-.82L32 17.86l2.53 5.12 5.64.82-4.08 3.98z"/></svg>
+                                {% when 'shield' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-shield" viewBox="0 0 64 64"><path d="M21.18 31.69 28.54 39l15.91-15.88"/><path d="M53 12.54v15.24a31.41 31.41 0 0 1-3.7 14.95A25.46 25.46 0 0 1 32 56a25.46 25.46 0 0 1-17.3-13.27A31.41 31.41 0 0 1 11 27.78V12.54C24.88 13.67 32 8 32 8s7.12 5.67 21 4.54Z"/></svg>
+                                {% when 'tag' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-tag" viewBox="0 0 64 64"><path d="m46.69 10.34-10.55.07-25.8 25.8 17.45 17.45 25.8-25.8.07-10.55-6.97-6.97z"/><circle cx="43.95" cy="20.05" r="3.53"/><path d="M14.4 32.15 31.85 49.6"/></svg>
+                                {% when 'truck' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-truck" viewBox="0 0 64 64"><defs><style>.a{stroke-miterlimit:10}</style></defs><path class="a" d="M16.5 43.22H6.88V16.5h33.14v26.72H23.94m21.48 0h-5.4V30.4h17.1v12.82h-4.23m4.23-12.82-6.41-8.56H40.02"/><circle class="a" cx="20.24" cy="43.76" r="3.74"/><path class="a" d="M45.42 43.23a3.82 3.82 0 1 1 0 .37v-.37"/></svg>
+                              {% endcase %}
+                              <span>{{ block.settings.text }}</span>
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    {%- endunless -%}
+                  {%- when 'inventory_status' -%}
+                    {%- render 'product-inventory', product: product, current_variant: current_variant, block: block -%}
+                  {%- when 'share' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {%- render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product -%}
+                    </div>
+                  {%- when 'complementary_products' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {%- render 'product-complementary', block: block, product: product, type: 'block', image_style: block.settings.image_style -%}
+                    </div>
+                  {%- when 'trust_badge' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      <div class="aos-animate" style="max-width: {{ block.settings.trust_image.width }}px; margin: 0 auto;">
+                        <div class="image-wrap " style="height: 0; padding-bottom: {{ 100 | divided_by: block.settings.trust_image.aspect_ratio }}%;">
+                          {%- render 'image-element',
+                            img: block.settings.trust_image,
+                            widths: '360, 540, 700, 1024',
+                            sizeVariable: product_description_width,
+                          -%}
+                        </div>
+                      </div>
+                    </div>
+                  {%- when 'custom' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {{ block.settings.code }}
+                    </div>
+                {%- endcase -%}
+              {%- else -%}
+                <div data-blocks-holder
+                     data-url="{{ product.url | within: collection }}"
+                     data-template="{{ product.template_suffix }}">
+                  <div class="placeholder-content" style="min-height: 86px;"></div>
+                </div>
+              {%- endfor -%}
+            </div>
+
+            {%- unless product.empty? -%}
+              <textarea class="hide" aria-hidden="true" aria-label="Product JSON" data-variant-json>
+                {{ product.variants | json }}
+              </textarea>
+              {%- if product.options.size >= 1 -%}
+                <textarea class="hide" aria-hidden="true" aria-label="Variant JSON" data-current-variant-json>
+                  {{ current_variant | json }}
+                </textarea>
+              {%- endif -%}
+            {%- endunless -%}
+          </div>
+        </div>
+
+        {%- unless image_position == 'left' -%}
+          <div class="grid__item {{ product_image_width }} product-single__sticky">
+            {%- render 'product-images',
+              section_id: section_id,
+              product: product,
+              isModal: isModal,
+              image_position: image_position,
+              product_zoom_enable: product_zoom_enable,
+              product_zoom_size: product_zoom_size,
+              product_image_size: product_image_size,
+              thumbnail_arrows: thumbnail_arrows,
+              thumbnail_position: thumbnail_position,
+              video_looping: video_looping,
+              video_style: video_style,
+              context: context,
+              sizes: sizes,
+              sizeVariable: product_image_width,
+              fallback: fallback,
+              mobile_layout: mobile_layout,
+            -%}
+          </div>
+        {%- endunless -%}
+      </div>
+    </div>
+  </div>
+</div>

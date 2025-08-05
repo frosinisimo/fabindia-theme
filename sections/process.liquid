@@ -1,0 +1,1063 @@
+{% comment %}
+================================================================
+SEZIONE: IL NOSTRO PROCESSO - FABINDIA ROMA
+================================================================
+Questa sezione comunica il processo unico di Fabindia Roma:
+design italiano + artigianato indiano
+================================================================
+{% endcomment %}
+
+<style>
+  {%- comment -%} === UTILITY FUNCTIONS STYLES === {%- endcomment -%}
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      {%- unless section.settings.max_width == 'default' -%}
+        max-width: {{ section.settings.max_width }};
+        margin-left: auto;
+        margin-right: auto;
+      {%- endunless -%}
+      
+      {%- if section.settings.padding_top_desktop > 0 or section.settings.padding_bottom_desktop > 0 -%}
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.margin_top_desktop != 0 or section.settings.margin_bottom_desktop != 0 -%}
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.hide_on_desktop -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      {%- if section.settings.padding_top_mobile > 0 or section.settings.padding_bottom_mobile > 0 -%}
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.margin_top_mobile != 0 or section.settings.margin_bottom_mobile != 0 -%}
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      {%- endif -%}
+      
+      {%- if section.settings.hide_on_mobile -%}
+        display: none !important;
+      {%- endif -%}
+    }
+  }
+
+  {%- if section.settings.enable_smooth_transitions -%}
+    #shopify-section-{{ section.id }} {
+      transition: all 0.3s ease;
+    }
+  {%- endif -%}
+
+  {%- comment -%} === CUSTOM STYLES === {%- endcomment -%}
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.section_background_color }};
+    overflow: hidden;
+  }
+
+  .fabindia-process {
+    position: relative;
+  }
+
+  .fabindia-process__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .fabindia-process__intro {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .fabindia-process__overline {
+    color: {{ section.settings.overline_color }};
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .fabindia-process__title {
+    color: {{ section.settings.title_color }};
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+  }
+
+  .fabindia-process__description {
+    color: {{ section.settings.text_color }};
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 650px;
+    margin: 0 auto;
+    opacity: 0.9;
+  }
+
+  .fabindia-process__timeline {
+    position: relative;
+    padding: 40px 0;
+  }
+
+  .fabindia-process__timeline-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: {{ section.settings.timeline_line_color }};
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+
+  .fabindia-process__timeline-progress {
+    position: absolute;
+    height: 100%;
+    background: {{ section.settings.timeline_progress_color }};
+    top: 0;
+    left: 0;
+    width: 0;
+    transition: width 1.5s ease-out;
+  }
+
+  .fabindia-process__timeline.in-view .fabindia-process__timeline-progress {
+    width: 100%;
+  }
+
+  .fabindia-process__steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .fabindia-process__step {
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .fabindia-process__timeline.in-view .fabindia-process__step {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fabindia-process__step:nth-child(1) { transition-delay: 0.2s; }
+  .fabindia-process__step:nth-child(2) { transition-delay: 0.4s; }
+  .fabindia-process__step:nth-child(3) { transition-delay: 0.6s; }
+
+  .fabindia-process__step-dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: {{ section.settings.section_background_color }};
+    border: 3px solid {{ section.settings.timeline_line_color }};
+    border-radius: 50%;
+    top: -44px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.4s ease;
+    z-index: 2;
+  }
+
+  .fabindia-process__timeline.in-view .fabindia-process__step-dot {
+    background: {{ section.settings.timeline_progress_color }};
+    border-color: {{ section.settings.timeline_progress_color }};
+  }
+
+  .fabindia-process__step-content {
+    padding: 30px;
+    background: #FEFEFE;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .fabindia-process__step-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+  }
+
+  .fabindia-process__step-image {
+    width: calc(100% + 60px);
+    height: 200px;
+    margin: -30px -30px 20px -30px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .fabindia-process__step-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .fabindia-process__flag {
+    width: 28px;
+    height: 20px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .fabindia-process__flag--italy {
+    background: linear-gradient(90deg, #009246 33.33%, #ffffff 33.33% 66.66%, #ce2b37 66.66%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .fabindia-process__flag--india {
+    background: linear-gradient(180deg, #ff9933 33.33%, #ffffff 33.33% 66.66%, #138808 66.66%);
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .fabindia-process__flag--india::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #000080;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .fabindia-process__location {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .fabindia-process__step-number {
+    position: absolute;
+    top: -20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 18px;
+    z-index: 1;
+  }
+
+  .fabindia-process__step-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+  }
+
+  .fabindia-process__step-description {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    opacity: 0.85;
+    flex-grow: 1;
+  }
+
+  .fabindia-process__features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .fabindia-process__feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .fabindia-process__feature-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .fabindia-process__feature-icon svg {
+    width: 10px;
+    height: 10px;
+    stroke-width: 3;
+  }
+
+  /* Pulsante CTA usando le classi del tema */
+  .fabindia-process__cta {
+    margin-top: auto;
+  }
+
+  .fabindia-process__cta .btn {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .fabindia-process__why {
+    background: {{ section.settings.why_background_color }};
+    padding: 32px;
+    border-radius: 12px;
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .fabindia-process__why-title {
+    color: {{ section.settings.why_title_color }};
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+  }
+
+  .fabindia-process__why-text {
+    color: {{ section.settings.why_text_color }};
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 750px;
+    margin: 0 auto;
+    opacity: 0.9;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .fabindia-process__title {
+      font-size: 26px;
+    }
+
+    .fabindia-process__description {
+      font-size: 15px;
+    }
+
+    .fabindia-process__timeline {
+      padding: 20px 0;
+    }
+
+    .fabindia-process__timeline-line {
+      display: none;
+    }
+
+    .fabindia-process__steps {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .fabindia-process__step-dot {
+      display: none;
+    }
+
+    .fabindia-process__step-content {
+      padding: 20px;
+    }
+
+    .fabindia-process__step-image {
+      width: calc(100% + 40px);
+      margin: -20px -20px 16px -20px;
+      height: 180px;
+    }
+
+    .fabindia-process__step-title {
+      font-size: 20px;
+    }
+
+    .fabindia-process__why {
+      padding: 20px;
+    }
+
+    .fabindia-process__why-title {
+      font-size: 18px;
+    }
+  }
+
+  /* Animazione scroll observer */
+  .fabindia-process__timeline {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+  }
+
+  .fabindia-process__timeline.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<section class="fabindia-process">
+  <div class="fabindia-process__container">
+    {%- if section.settings.show_intro -%}
+      <div class="fabindia-process__intro">
+        {%- if section.settings.overline != blank -%}
+          <span class="fabindia-process__overline">{{ section.settings.overline }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="fabindia-process__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+          <p class="fabindia-process__description">{{ section.settings.description }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="fabindia-process__timeline" data-timeline>
+      {%- if section.settings.show_timeline_line -%}
+        <div class="fabindia-process__timeline-line">
+          <div class="fabindia-process__timeline-progress"></div>
+        </div>
+      {%- endif -%}
+      
+      <div class="fabindia-process__steps">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'process_step' -%}
+              <div class="fabindia-process__step" {{ block.shopify_attributes }}>
+                {%- if section.settings.show_timeline_dots -%}
+                  <div class="fabindia-process__step-dot"></div>
+                {%- endif -%}
+                {%- if block.settings.show_step_number -%}
+                  <div class="fabindia-process__step-number" style="background-color: {{ block.settings.number_background_color }}; color: {{ block.settings.number_text_color }};">{{ forloop.index }}</div>
+                {%- endif -%}
+                
+                <div class="fabindia-process__step-content" style="background-color: {{ block.settings.block_background_color }};">
+                  {%- if block.settings.image != blank -%}
+                    <img 
+                      src="{{ block.settings.image | image_url: width: 600 }}"
+                      alt="{{ block.settings.title | escape }}"
+                      class="fabindia-process__step-image"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                  
+                  <div class="fabindia-process__step-flag">
+                    {%- if block.settings.country == 'italy' -%}
+                      <span class="fabindia-process__flag fabindia-process__flag--italy"></span>
+                    {%- elsif block.settings.country == 'india' -%}
+                      <span class="fabindia-process__flag fabindia-process__flag--india"></span>
+                    {%- endif -%}
+                    <span class="fabindia-process__location" style="color: {{ block.settings.location_color }};">{{ block.settings.location }}</span>
+                  </div>
+                  
+                  <h3 class="fabindia-process__step-title" style="color: {{ block.settings.block_title_color }};">{{ block.settings.title }}</h3>
+                  <p class="fabindia-process__step-description" style="color: {{ block.settings.block_text_color }};">{{ block.settings.description }}</p>
+                  
+                  <div class="fabindia-process__features">
+                    {%- if block.settings.feature_1 != blank -%}
+                      <div class="fabindia-process__feature">
+                        <div class="fabindia-process__feature-icon" style="background-color: {{ block.settings.feature_icon_background }};">
+                          <svg fill="none" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7" stroke="{{ block.settings.feature_icon_color }}" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                        <span style="color: {{ block.settings.block_text_color }};">{{ block.settings.feature_1 }}</span>
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.feature_2 != blank -%}
+                      <div class="fabindia-process__feature">
+                        <div class="fabindia-process__feature-icon" style="background-color: {{ block.settings.feature_icon_background }};">
+                          <svg fill="none" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7" stroke="{{ block.settings.feature_icon_color }}" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                        <span style="color: {{ block.settings.block_text_color }};">{{ block.settings.feature_2 }}</span>
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.feature_3 != blank -%}
+                      <div class="fabindia-process__feature">
+                        <div class="fabindia-process__feature-icon" style="background-color: {{ block.settings.feature_icon_background }};">
+                          <svg fill="none" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4L19 7" stroke="{{ block.settings.feature_icon_color }}" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                        <span style="color: {{ block.settings.block_text_color }};">{{ block.settings.feature_3 }}</span>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  
+                  {%- if block.settings.cta_text != blank -%}
+                    <div class="fabindia-process__cta">
+                      <a href="{{ block.settings.cta_link }}" class="btn btn--{{ block.settings.cta_style }}">
+                        {{ block.settings.cta_text }}
+                      </a>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_why -%}
+      <div class="fabindia-process__why">
+        <h3 class="fabindia-process__why-title">{{ section.settings.why_title }}</h3>
+        <p class="fabindia-process__why-text">{{ section.settings.why_text }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const timeline = document.querySelector('[data-timeline]');
+    if (!timeline) return;
+    
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, observerOptions);
+    
+    observer.observe(timeline);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Il Nostro Processo",
+  "class": "section-fabindia-process",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Contenuto Principale"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_intro",
+      "label": "Mostra introduzione",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Testo sopra il titolo",
+      "default": "Il nostro processo"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo principale",
+      "default": "Design Italiano, Artigianato Indiano"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "Un connubio unico tra creatività italiana e maestria artigianale indiana che dà vita a pezzi esclusivi e irripetibili."
+    },
+    {
+      "type": "header",
+      "content": "⏱ Timeline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timeline_line",
+      "label": "Mostra linea timeline animata",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timeline_dots",
+      "label": "Mostra punti sulla timeline",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "❓ Sezione Perché"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_why",
+      "label": "Mostra sezione 'Perché'",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "why_title",
+      "label": "Titolo sezione perché",
+      "default": "Perché questa scelta?"
+    },
+    {
+      "type": "textarea",
+      "id": "why_text",
+      "label": "Testo spiegazione",
+      "default": "Le tecniche artigianali che utilizziamo - dal block print alla trapuntatura, dal ricamo all'impuntura - sono patrimonio culturale indiano, tramandate da secoli. Non appartengono alla nostra tradizione italiana, ma richiedono una maestria e una conoscenza che solo gli artigiani indiani possiedono. Questa collaborazione ci permette di offrire prodotti autentici, realizzati nel rispetto delle tradizioni, con un design contemporaneo che parla il linguaggio italiano dello stile."
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Sezione"
+    },
+    {
+      "type": "color",
+      "id": "section_background_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "overline_color",
+      "label": "Colore testo sopra titolo",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo descrizione",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Timeline"
+    },
+    {
+      "type": "color",
+      "id": "timeline_line_color",
+      "label": "Colore linea timeline",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "timeline_progress_color",
+      "label": "Colore progresso timeline",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori Sezione Perché"
+    },
+    {
+      "type": "color",
+      "id": "why_background_color",
+      "label": "Sfondo sezione perché",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "why_title_color",
+      "label": "Colore titolo perché",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "why_text_color",
+      "label": "Colore testo perché",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout & Spacing"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Larghezza Massima Desktop",
+      "info": "Limita la larghezza della sezione su schermi grandi",
+      "options": [
+        {
+          "value": "default",
+          "label": "Larghezza standard tema"
+        },
+        {
+          "value": "100%",
+          "label": "Schermo intero (100%)"
+        },
+        {
+          "value": "1400px",
+          "label": "Extra large (1400px)"
+        },
+        {
+          "value": "1200px",
+          "label": "Large (1200px)"
+        },
+        {
+          "value": "1100px",
+          "label": "Medium-large (1100px)"
+        },
+        {
+          "value": "1000px",
+          "label": "Medium (1000px)"
+        },
+        {
+          "value": "900px",
+          "label": "Compact (900px)"
+        },
+        {
+          "value": "800px",
+          "label": "Small (800px)"
+        },
+        {
+          "value": "700px",
+          "label": "Extra small (700px)"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "📱 Visibilità Responsive"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_mobile",
+      "label": "Nascondi su Mobile",
+      "info": "La sezione non sarà visibile su dispositivi mobili",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_desktop",
+      "label": "Nascondi su Desktop",
+      "info": "La sezione non sarà visibile su desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "📏 Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding superiore",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding inferiore",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margine superiore",
+      "info": "Usa valori negativi per sovrapporre sezioni",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margine inferiore",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "💻 Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding superiore",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding inferiore",
+      "default": 48,
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margine superiore",
+      "info": "Usa valori negativi per effetti di sovrapposizione",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margine inferiore",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "⚡ Opzioni Avanzate"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_smooth_transitions",
+      "label": "Abilita transizioni fluide",
+      "info": "Aggiunge animazioni smooth quando la sezione cambia dimensione",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "process_step",
+      "name": "Step del Processo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine del processo",
+          "info": "Dimensione consigliata: 600x400px"
+        },
+        {
+          "type": "select",
+          "id": "country",
+          "label": "Paese",
+          "options": [
+            {
+              "value": "italy",
+              "label": "Italia"
+            },
+            {
+              "value": "india",
+              "label": "India"
+            }
+          ],
+          "default": "italy"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Località",
+          "default": "Roma, Italia"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_step_number",
+          "label": "Mostra numero step",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Progettazione e Design"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descrizione",
+          "default": "Nel cuore di Roma, le nostre designer italiane creano ogni collezione ispirandosi alla bellezza senza tempo della nostra città."
+        },
+        {
+          "type": "text",
+          "id": "feature_1",
+          "label": "Caratteristica 1",
+          "default": "Design esclusivo firmato Fabindia Roma"
+        },
+        {
+          "type": "text",
+          "id": "feature_2",
+          "label": "Caratteristica 2",
+          "default": "Studio dei tagli e delle proporzioni italiane"
+        },
+        {
+          "type": "text",
+          "id": "feature_3",
+          "label": "Caratteristica 3",
+          "default": "Selezione accurata di colori e abbinamenti"
+        },
+        {
+          "type": "header",
+          "content": "🎨 Colori Blocco"
+        },
+        {
+          "type": "color",
+          "id": "block_background_color",
+          "label": "Sfondo blocco",
+          "default": "#FEFEFE"
+        },
+        {
+          "type": "color",
+          "id": "block_title_color",
+          "label": "Colore titolo",
+          "default": "#3E3E3E"
+        },
+        {
+          "type": "color",
+          "id": "block_text_color",
+          "label": "Colore testo",
+          "default": "#3E3E3E"
+        },
+        {
+          "type": "color",
+          "id": "location_color",
+          "label": "Colore località",
+          "default": "#B5A397"
+        },
+        {
+          "type": "color",
+          "id": "number_background_color",
+          "label": "Sfondo numero step",
+          "default": "#F0E6E0"
+        },
+        {
+          "type": "color",
+          "id": "number_text_color",
+          "label": "Colore numero step",
+          "default": "#C33A32"
+        },
+        {
+          "type": "color",
+          "id": "feature_icon_background",
+          "label": "Sfondo icone feature",
+          "default": "#F0E6E0"
+        },
+        {
+          "type": "color",
+          "id": "feature_icon_color",
+          "label": "Colore icone feature",
+          "default": "#C33A32"
+        },
+        {
+          "type": "header",
+          "content": "🔗 Pulsante CTA"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Testo pulsante",
+          "info": "Lascia vuoto per non mostrare il pulsante"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "Link pulsante"
+        },
+        {
+          "type": "select",
+          "id": "cta_style",
+          "label": "Stile pulsante",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primario"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondario"
+            },
+            {
+              "value": "outline",
+              "label": "Outline"
+            }
+          ],
+          "default": "primary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Il Nostro Processo",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "process_step",
+          "settings": {
+            "country": "italy",
+            "location": "Roma, Italia",
+            "title": "Progettazione e Design",
+            "description": "Nel cuore di Roma, le nostre designer italiane creano ogni collezione ispirandosi alla bellezza senza tempo della nostra città e alle tendenze contemporanee.",
+            "feature_1": "Design esclusivo firmato Fabindia Roma",
+            "feature_2": "Studio dei tagli e delle proporzioni italiane",
+            "feature_3": "Selezione accurata di colori e abbinamenti",
+            "cta_text": "Scopri le Collezioni",
+            "cta_link": "/collections/all",
+            "block_background_color": "#FEFEFE",
+            "block_title_color": "#3E3E3E",
+            "block_text_color": "#3E3E3E",
+            "location_color": "#B5A397",
+            "number_background_color": "#F0E6E0",
+            "number_text_color": "#C33A32",
+            "feature_icon_background": "#F0E6E0",
+            "feature_icon_color": "#C33A32"
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "country": "india",
+            "location": "India",
+            "title": "Realizzazione Artigianale",
+            "description": "I nostri artigiani indiani, custodi di tecniche millenarie, trasformano i nostri design in realtà utilizzando metodi tradizionali tramandati di generazione in generazione.",
+            "feature_1": "Tecniche di trapuntatura tradizionale indiana",
+            "feature_2": "Stampa block print realizzata a mano",
+            "feature_3": "Ricami e impunture eseguiti da maestri artigiani",
+            "cta_text": "Scopri le Tecniche",
+            "cta_link": "/pages/tecniche-artigianali",
+            "block_background_color": "#FEFEFE",
+            "block_title_color": "#3E3E3E",
+            "block_text_color": "#3E3E3E",
+            "location_color": "#B5A397",
+            "number_background_color": "#F0E6E0",
+            "number_text_color": "#C33A32",
+            "feature_icon_background": "#F0E6E0",
+            "feature_icon_color": "#C33A32"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

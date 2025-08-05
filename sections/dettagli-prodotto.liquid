@@ -1,0 +1,2106 @@
+{%- comment -%}
+  Fabindia Roma - Details Blocks Section v5.0
+  Sistema completo con tutti i blocchi e controllo visualizzazione
+{%- endcomment -%}
+
+{%- liquid
+  assign has_blocks = false
+  if section.blocks.size > 0
+    assign has_blocks = true
+  endif
+  
+  # Determina modalità di visualizzazione
+  assign show_tabs_desktop = false
+  assign show_tabs_mobile = false
+  
+  if section.settings.display_mode_desktop == 'tabs' and section.blocks.size > 1
+    assign show_tabs_desktop = true
+  endif
+  
+  if section.settings.display_mode_mobile == 'tabs' and section.blocks.size > 1
+    assign show_tabs_mobile = true
+  endif
+-%}
+
+{%- if has_blocks or section.settings.force_show -%}
+<section class="fabindia-details-v5 section-{{ section.id }}" data-section-id="{{ section.id }}">
+  <style>
+    /* Reset completo */
+    .fabindia-details-v5 * {
+      box-sizing: border-box;
+    }
+
+    /* Variabili principali */
+    .fabindia-details-v5 {
+      --primary: {{ section.settings.color_primary | default: '#C65D00' }};
+      --secondary: {{ section.settings.color_secondary | default: '#8B4513' }};
+      --accent: {{ section.settings.color_accent | default: '#F5E6D3' }};
+      --text: {{ section.settings.color_text | default: '#333333' }};
+      --bg: {{ section.settings.color_bg | default: '#FFF8E7' }};
+      --border: {{ section.settings.color_border | default: '#F5E6D3' }};
+      --success: {{ section.settings.color_success | default: '#708238' }};
+      
+      background: {{ section.settings.section_bg | default: '#FAFAFA' }};
+      padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    }
+
+    .fab-container {
+      max-width: {{ section.settings.max_width }}px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    .fab-header {
+      text-align: {{ section.settings.header_alignment }};
+      margin-bottom: 40px;
+    }
+
+    .fab-header h2 {
+      font-size: clamp(1.875rem, 4vw, 2.5rem);
+      color: var(--primary);
+      margin: 0 0 10px;
+    }
+
+    .fab-header p {
+      font-size: 1.125rem;
+      color: var(--text);
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    /* Navigation */
+    .fab-nav {
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .fab-nav::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .fab-nav::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .fab-nav-btn {
+      background: none;
+      border: none;
+      padding: 15px 20px;
+      font-size: 1rem;
+      color: var(--text);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fab-nav-btn:hover {
+      color: var(--primary);
+    }
+
+    .fab-nav-btn.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .fab-nav-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    /* Contenuto */
+    .fab-content-wrapper {
+      position: relative;
+    }
+
+    .fab-block {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .fab-block.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Card contenuto */
+    .fab-card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+
+    .fab-card h3 {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      margin: 0 0 20px;
+    }
+
+    /* Media */
+    .fab-media {
+      margin-bottom: 25px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .fab-media img,
+    .fab-media video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Testi */
+    .fab-lead {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .fab-text {
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .fab-text p {
+      margin-bottom: 15px;
+    }
+
+    .fab-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Highlight box */
+    .fab-highlight {
+      background: var(--accent);
+      border-left: 4px solid var(--primary);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .fab-highlight h4 {
+      color: var(--primary);
+      margin: 0 0 10px;
+      font-size: 1.125rem;
+    }
+
+    .fab-highlight p {
+      margin: 0;
+      color: var(--text);
+    }
+
+    /* Materiali grid */
+    .fab-materials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .fab-material {
+      text-align: center;
+      padding: 20px 10px;
+      background: var(--bg);
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .fab-material:hover {
+      transform: translateY(-5px);
+    }
+
+    .fab-material-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .fab-material-icon img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    .fab-material-name {
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 5px;
+    }
+
+    .fab-material-percent {
+      font-size: 0.875rem;
+      color: var(--primary);
+    }
+
+    .fab-material-desc {
+      font-size: 0.8125rem;
+      color: var(--text);
+      margin-top: 5px;
+      opacity: 0.8;
+    }
+
+    /* Features */
+    .fab-features {
+      display: grid;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .fab-feature {
+      display: flex;
+      gap: 15px;
+      padding: 20px;
+      background: var(--bg);
+      border-radius: 12px;
+    }
+
+    .fab-feature-icon {
+      flex-shrink: 0;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .fab-feature-icon img {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) invert(1);
+    }
+
+    .fab-feature-content h4 {
+      margin: 0 0 5px;
+      color: var(--secondary);
+    }
+
+    .fab-feature-content p {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.9375rem;
+    }
+
+    /* Care - Migliorato */
+    .fab-care-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .fab-care-item {
+      text-align: center;
+      padding: 20px 10px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .fab-care-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .fab-care-item.allowed {
+      border-color: var(--success);
+      background: #f0f7e8;
+    }
+
+    .fab-care-item.not-allowed {
+      border-color: #DC2626;
+      background: #fef2f2;
+    }
+
+    .fab-care-icon {
+      margin-bottom: 10px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fab-care-icon img {
+      max-width: 50px;
+      max-height: 50px;
+      object-fit: contain;
+    }
+
+    .fab-care-icon-emoji {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .fab-care-label {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 5px;
+    }
+
+    .fab-care-desc {
+      font-size: 0.8125rem;
+      color: var(--text);
+      opacity: 0.8;
+      line-height: 1.3;
+    }
+
+    /* Production Timeline */
+    .fab-timeline {
+      margin-top: 20px;
+    }
+
+    .fab-timeline-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .fab-timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 25px;
+      top: 60px;
+      bottom: -30px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .fab-timeline-marker {
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .fab-timeline-content {
+      flex: 1;
+      padding: 5px 0;
+    }
+
+    .fab-timeline-content h4 {
+      margin: 0 0 8px;
+      color: var(--secondary);
+    }
+
+    .fab-timeline-content p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Uses */
+    .fab-uses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .fab-use-card {
+      text-align: center;
+      padding: 25px 15px;
+      background: var(--bg);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .fab-use-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .fab-use-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+
+    .fab-use-icon img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    .fab-use-title {
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 8px;
+      font-size: 1.0625rem;
+    }
+
+    .fab-use-desc {
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Style */
+    .fab-style-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .fab-style-card {
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .fab-style-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .fab-style-header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .fab-style-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .fab-style-icon img {
+      width: 40px;
+      height: 40px;
+      filter: brightness(0) invert(1);
+    }
+
+    .fab-style-content {
+      padding: 20px;
+    }
+
+    .fab-style-content h4 {
+      margin: 0 0 10px;
+      color: var(--secondary);
+    }
+
+    .fab-style-content p {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Heritage */
+    .fab-heritage {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fab-heritage::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .fab-heritage-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2.5rem;
+    }
+
+    .fab-heritage-icon img {
+      width: 40px;
+      height: 40px;
+      filter: brightness(0) invert(1);
+    }
+
+    .fab-heritage h3 {
+      color: white;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fab-heritage p {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      opacity: 0.95;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Certifications */
+    .fab-certs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .fab-cert-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .fab-cert-badge:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .fab-cert-icon {
+      font-size: 1.5rem;
+      color: var(--success);
+    }
+
+    .fab-cert-icon img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .fab-cert-name {
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    /* Note */
+    .fab-note {
+      text-align: center;
+      padding: 40px;
+      background: var(--accent);
+      border-radius: 16px;
+      position: relative;
+    }
+
+    .fab-note::before,
+    .fab-note::after {
+      content: '"';
+      position: absolute;
+      font-size: 80px;
+      color: var(--primary);
+      opacity: 0.1;
+      font-family: Georgia, serif;
+    }
+
+    .fab-note::before {
+      top: 10px;
+      left: 20px;
+    }
+
+    .fab-note::after {
+      bottom: -20px;
+      right: 20px;
+      transform: rotate(180deg);
+    }
+
+    .fab-note-text {
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--secondary);
+      line-height: 1.7;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fab-note-author {
+      font-weight: 600;
+      color: var(--primary);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Display modes */
+    @media (min-width: 768px) {
+      {%- unless show_tabs_desktop -%}
+        .fab-nav {
+          display: none !important;
+        }
+        .fab-block {
+          display: block !important;
+          margin-bottom: 30px;
+        }
+      {%- endunless -%}
+
+      .fab-nav-btn {
+        padding: 12px 16px;
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      {%- unless show_tabs_mobile -%}
+        .fab-nav {
+          display: none !important;
+        }
+        .fab-block {
+          display: block !important;
+          margin-bottom: 20px;
+        }
+      {%- endunless -%}
+
+      .fab-card {
+        padding: 20px;
+      }
+
+      .fab-nav {
+        gap: 10px;
+      }
+
+      .fab-nav-btn {
+        padding: 10px 12px;
+        font-size: 0.875rem;
+      }
+
+      .fab-materials-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .fab-heritage {
+        padding: 25px;
+      }
+    }
+  </style>
+
+  <div class="fab-container">
+    {%- if section.settings.show_header -%}
+      <header class="fab-header">
+        {%- if section.settings.header_title != blank -%}
+          <h2>{{ section.settings.header_title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.header_subtitle != blank -%}
+          <p>{{ section.settings.header_subtitle }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- comment -%} Navigazione se richiesta {%- endcomment -%}
+    {%- if show_tabs_desktop or show_tabs_mobile -%}
+      <nav class="fab-nav" role="navigation">
+        {%- for block in section.blocks -%}
+          <button class="fab-nav-btn{% if forloop.first %} active{% endif %}" 
+                  data-target="{{ forloop.index0 }}"
+                  type="button">
+            {%- if block.settings.nav_icon != blank -%}
+              <span>{{ block.settings.nav_icon }}</span>
+            {%- endif -%}
+            <span>{{ block.settings.nav_label | default: block.settings.title | default: 'Tab' }}</span>
+          </button>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    <div class="fab-content-wrapper">
+      {%- for block in section.blocks -%}
+        <div class="fab-block{% if forloop.first %} active{% endif %}" 
+             data-block="{{ forloop.index0 }}"
+             {{ block.shopify_attributes }}>
+          
+          <div class="fab-card">
+            
+            {%- case block.type -%}
+              
+              {%- when 'description' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- elsif block.settings.media_video != blank -%}
+                  <div class="fab-media">
+                    {{ block.settings.media_video | video_tag: controls: true }}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+                
+                {%- if block.settings.lead_text != blank -%}
+                  <p class="fab-lead">{{ block.settings.lead_text }}</p>
+                {%- endif -%}
+                
+                {%- if block.settings.content != blank -%}
+                  <div class="fab-text">
+                    {{ block.settings.content }}
+                  </div>
+                {%- endif -%}
+                
+                {%- if block.settings.highlight_title != blank -%}
+                  <div class="fab-highlight">
+                    <h4>{{ block.settings.highlight_title }}</h4>
+                    {%- if block.settings.highlight_text != blank -%}
+                      <p>{{ block.settings.highlight_text }}</p>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'materials' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+                
+                {%- if block.settings.subtitle != blank -%}
+                  <p style="margin-top: -10px; opacity: 0.8;">{{ block.settings.subtitle }}</p>
+                {%- endif -%}
+
+                {%- if block.settings.materials_list != blank -%}
+                  <div class="fab-materials-grid">
+                    {%- assign materials = block.settings.materials_list | split: '|' -%}
+                    {%- for material in materials -%}
+                      {%- assign parts = material | split: ':' -%}
+                      <div class="fab-material">
+                        <div class="fab-material-icon">
+                          {%- assign mat_icon_field = "material_icon_" | append: forloop.index -%}
+                          {%- if block.settings[mat_icon_field] != blank -%}
+                            <img src="{{ block.settings[mat_icon_field] | img_url: '120x120' }}" alt="{{ parts[0] }}">
+                          {%- else -%}
+                            {{ parts[2] | default: '🧵' }}
+                          {%- endif -%}
+                        </div>
+                        <div class="fab-material-name">{{ parts[0] }}</div>
+                        {%- if parts[1] != blank -%}
+                          <div class="fab-material-percent">{{ parts[1] }}</div>
+                        {%- endif -%}
+                        {%- if parts[3] != blank -%}
+                          <div class="fab-material-desc">{{ parts[3] }}</div>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.properties_text != blank -%}
+                  <div class="fab-highlight" style="margin-top: 25px;">
+                    <h4>{{ block.settings.properties_title | default: 'Proprietà' }}</h4>
+                    <p>{{ block.settings.properties_text }}</p>
+                  </div>
+                {%- endif -%}
+
+              {%- when 'features' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.features_list != blank -%}
+                  <div class="fab-features">
+                    {%- assign features = block.settings.features_list | split: '|' -%}
+                    {%- for feature in features -%}
+                      {%- assign parts = feature | split: ':' -%}
+                      <div class="fab-feature">
+                        <div class="fab-feature-icon">
+                          {%- assign icon_field = "feature_icon_" | append: forloop.index -%}
+                          {%- if block.settings[icon_field] != blank -%}
+                            <img src="{{ block.settings[icon_field] | img_url: '48x48' }}" alt="">
+                          {%- else -%}
+                            {{ parts[2] | default: '✨' }}
+                          {%- endif -%}
+                        </div>
+                        <div class="fab-feature-content">
+                          <h4>{{ parts[0] }}</h4>
+                          <p>{{ parts[1] }}</p>
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'care' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+
+                <div class="fab-care-grid">
+                  {%- comment -%} Care items personalizzabili {%- endcomment -%}
+                  {%- for i in (1..6) -%}
+                    {%- assign care_enabled = "care_" | append: i | append: "_enabled" -%}
+                    {%- assign care_icon = "care_" | append: i | append: "_icon" -%}
+                    {%- assign care_emoji = "care_" | append: i | append: "_emoji" -%}
+                    {%- assign care_label = "care_" | append: i | append: "_label" -%}
+                    {%- assign care_desc = "care_" | append: i | append: "_desc" -%}
+                    {%- assign care_allowed = "care_" | append: i | append: "_allowed" -%}
+                    
+                    {%- if block.settings[care_enabled] -%}
+                      <div class="fab-care-item {% if block.settings[care_allowed] %}allowed{% else %}not-allowed{% endif %}">
+                        <div class="fab-care-icon">
+                          {%- if block.settings[care_icon] != blank -%}
+                            <img src="{{ block.settings[care_icon] | img_url: '100x100' }}" 
+                                 alt="{{ block.settings[care_label] }}">
+                          {%- elsif block.settings[care_emoji] != blank -%}
+                            <span class="fab-care-icon-emoji">{{ block.settings[care_emoji] }}</span>
+                          {%- endif -%}
+                        </div>
+                        {%- if block.settings[care_label] != blank -%}
+                          <div class="fab-care-label">{{ block.settings[care_label] }}</div>
+                        {%- endif -%}
+                        {%- if block.settings[care_desc] != blank -%}
+                          <div class="fab-care-desc">{{ block.settings[care_desc] }}</div>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+
+                {%- if block.settings.care_instructions != blank -%}
+                  <div class="fab-text" style="margin-top: 25px;">
+                    {{ block.settings.care_instructions }}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'production' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.steps_list != blank -%}
+                  <div class="fab-timeline">
+                    {%- assign steps = block.settings.steps_list | split: '|' -%}
+                    {%- for step in steps -%}
+                      {%- assign parts = step | split: ':' -%}
+                      <div class="fab-timeline-item">
+                        <div class="fab-timeline-marker">{{ forloop.index }}</div>
+                        <div class="fab-timeline-content">
+                          <h4>{{ parts[0] }}</h4>
+                          <p>{{ parts[1] }}</p>
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'uses' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.uses_list != blank -%}
+                  <div class="fab-uses-grid">
+                    {%- assign uses = block.settings.uses_list | split: '|' -%}
+                    {%- for use in uses -%}
+                      {%- assign parts = use | split: ':' -%}
+                      <div class="fab-use-card">
+                        <div class="fab-use-icon">
+                          {%- assign use_icon_field = "use_icon_" | append: forloop.index -%}
+                          {%- if block.settings[use_icon_field] != blank -%}
+                            <img src="{{ block.settings[use_icon_field] | img_url: '120x120' }}" 
+                                 alt="{{ parts[0] }}">
+                          {%- else -%}
+                            {{ parts[2] | default: '💡' }}
+                          {%- endif -%}
+                        </div>
+                        <h4 class="fab-use-title">{{ parts[0] }}</h4>
+                        <p class="fab-use-desc">{{ parts[1] }}</p>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'style' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3>{{ block.settings.title }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.styles_list != blank -%}
+                  <div class="fab-style-grid">
+                    {%- assign styles = block.settings.styles_list | split: '|' -%}
+                    {%- for style in styles -%}
+                      {%- assign parts = style | split: ':' -%}
+                      <div class="fab-style-card">
+                        <div class="fab-style-header">
+                          <div class="fab-style-icon">
+                            {%- assign style_icon_field = "style_icon_" | append: forloop.index -%}
+                            {%- if block.settings[style_icon_field] != blank -%}
+                              <img src="{{ block.settings[style_icon_field] | img_url: '80x80' }}" 
+                                   alt="">
+                            {%- else -%}
+                              {{ parts[2] | default: '👗' }}
+                            {%- endif -%}
+                          </div>
+                        </div>
+                        <div class="fab-style-content">
+                          <h4>{{ parts[0] }}</h4>
+                          <p>{{ parts[1] }}</p>
+                        </div>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'heritage' -%}
+                <div class="fab-heritage">
+                  {%- if block.settings.heritage_icon != blank or block.settings.heritage_icon_image != blank -%}
+                    <div class="fab-heritage-icon">
+                      {%- if block.settings.heritage_icon_image != blank -%}
+                        <img src="{{ block.settings.heritage_icon_image | img_url: '80x80' }}" 
+                             alt="">
+                      {%- else -%}
+                        {{ block.settings.heritage_icon | default: '🏛️' }}
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.title != blank -%}
+                    <h3>{{ block.settings.title }}</h3>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.content != blank -%}
+                    <p>{{ block.settings.content }}</p>
+                  {%- endif -%}
+                </div>
+
+              {%- when 'certifications' -%}
+                {%- if block.settings.media_image != blank -%}
+                  <div class="fab-media">
+                    <img src="{{ block.settings.media_image | img_url: 'master' }}" 
+                         alt="{{ block.settings.media_alt | escape }}"
+                         loading="lazy">
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.title != blank -%}
+                  <h3 style="text-align: center;">{{ block.settings.title }}</h3>
+                {%- endif -%}
+
+                {%- if block.settings.certifications_list != blank -%}
+                  <div class="fab-certs">
+                    {%- assign certs = block.settings.certifications_list | split: '|' -%}
+                    {%- for cert in certs -%}
+                      {%- assign parts = cert | split: ':' -%}
+                      <div class="fab-cert-badge">
+                        <div class="fab-cert-icon">
+                          {%- assign cert_icon_field = "cert_icon_" | append: forloop.index -%}
+                          {%- if block.settings[cert_icon_field] != blank -%}
+                            <img src="{{ block.settings[cert_icon_field] | img_url: '48x48' }}" 
+                                 alt="{{ parts[0] }}">
+                          {%- else -%}
+                            {{ parts[1] | default: '✓' }}
+                          {%- endif -%}
+                        </div>
+                        <span class="fab-cert-name">{{ parts[0] }}</span>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'note' -%}
+                <div class="fab-note">
+                  {%- if block.settings.note_text != blank -%}
+                    <p class="fab-note-text">{{ block.settings.note_text }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.note_author != blank -%}
+                    <p class="fab-note-author">— {{ block.settings.note_author }}</p>
+                  {%- endif -%}
+                </div>
+
+            {%- endcase -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const section = document.querySelector('.section-{{ section.id }}');
+      if (!section) return;
+
+      const navButtons = section.querySelectorAll('.fab-nav-btn');
+      const blocks = section.querySelectorAll('.fab-block');
+      
+      // Check display modes
+      const isMobile = window.innerWidth <= 767;
+      const showTabsDesktop = {{ show_tabs_desktop | json }};
+      const showTabsMobile = {{ show_tabs_mobile | json }};
+      const shouldUseTabs = isMobile ? showTabsMobile : showTabsDesktop;
+      
+      // Se non usiamo tabs, esci
+      if (!shouldUseTabs || navButtons.length === 0) {
+        console.log('Fabindia Details: Modalità stack attiva');
+        return;
+      }
+      
+      console.log('Fabindia Details: Modalità tabs attiva');
+
+      // Funzione per mostrare una tab
+      function showTab(index) {
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        blocks.forEach(block => block.classList.remove('active'));
+        
+        if (navButtons[index]) navButtons[index].classList.add('active');
+        if (blocks[index]) blocks[index].classList.add('active');
+        
+        console.log('Tab attiva:', index);
+      }
+
+      // Click handler
+      navButtons.forEach((btn, index) => {
+        btn.addEventListener('click', function() {
+          showTab(index);
+        });
+      });
+
+      // Inizializza
+      showTab(0);
+    })();
+  </script>
+</section>
+{%- else -%}
+  <section class="fabindia-details-v5 section-{{ section.id }}">
+    <div class="fab-container">
+      <div style="padding: 60px 20px; text-align: center; color: #666;">
+        <p style="font-size: 1.25rem; margin-bottom: 10px;">Nessun blocco configurato</p>
+        <p>Aggiungi blocchi per visualizzare i dettagli del prodotto</p>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Dettagli Prodotto v5",
+  "tag": "section",
+  "class": "fabindia-details",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Colori"
+    },
+    {
+      "type": "color",
+      "id": "color_primary",
+      "label": "Colore primario",
+      "default": "#C65D00"
+    },
+    {
+      "type": "color",
+      "id": "color_secondary",
+      "label": "Colore secondario",
+      "default": "#8B4513"
+    },
+    {
+      "type": "color",
+      "id": "color_accent",
+      "label": "Colore accento",
+      "default": "#F5E6D3"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Colore testo",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "label": "Colore sfondo elementi",
+      "default": "#FFF8E7"
+    },
+    {
+      "type": "color",
+      "id": "color_border",
+      "label": "Colore bordi",
+      "default": "#F5E6D3"
+    },
+    {
+      "type": "color",
+      "id": "color_success",
+      "label": "Colore successo",
+      "default": "#708238"
+    },
+    {
+      "type": "header",
+      "content": "📐 Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1400,
+      "step": 100,
+      "unit": "px",
+      "label": "Larghezza massima",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding superiore",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding inferiore",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Sfondo sezione",
+      "default": "#FAFAFA"
+    },
+    {
+      "type": "header",
+      "content": "📱 Modalità visualizzazione"
+    },
+    {
+      "type": "select",
+      "id": "display_mode_desktop",
+      "label": "Visualizzazione Desktop",
+      "options": [
+        {
+          "value": "tabs",
+          "label": "Tab"
+        },
+        {
+          "value": "stack",
+          "label": "Stack (uno sotto altro)"
+        }
+      ],
+      "default": "tabs"
+    },
+    {
+      "type": "select",
+      "id": "display_mode_mobile",
+      "label": "Visualizzazione Mobile",
+      "options": [
+        {
+          "value": "tabs",
+          "label": "Tab"
+        },
+        {
+          "value": "stack",
+          "label": "Stack (uno sotto altro)"
+        }
+      ],
+      "default": "stack"
+    },
+    {
+      "type": "header",
+      "content": "📝 Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Mostra header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "header_title",
+      "label": "Titolo",
+      "default": "Dettagli Prodotto"
+    },
+    {
+      "type": "text",
+      "id": "header_subtitle",
+      "label": "Sottotitolo"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Allineamento",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "force_show",
+      "label": "Mostra sempre sezione",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "description",
+      "name": "📝 Descrizione",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Descrizione"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Descrizione"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "📝"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "video",
+          "id": "media_video",
+          "label": "Video"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "text",
+          "id": "lead_text",
+          "label": "Testo introduttivo"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenuto"
+        },
+        {
+          "type": "text",
+          "id": "highlight_title",
+          "label": "Titolo evidenziato"
+        },
+        {
+          "type": "textarea",
+          "id": "highlight_text",
+          "label": "Testo evidenziato"
+        }
+      ]
+    },
+    {
+      "type": "materials",
+      "name": "🧵 Materiali",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Materiali"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Sottotitolo"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Materiali"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "🧵"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "textarea",
+          "id": "materials_list",
+          "label": "Lista materiali",
+          "info": "Nome:Percentuale:Icona:Descrizione",
+          "placeholder": "Cotone:100%:🌿:Naturale|Seta:20%:🦋:Lucente"
+        },
+        {
+          "type": "header",
+          "content": "Icone personalizzate"
+        },
+        {
+          "type": "image_picker",
+          "id": "material_icon_1",
+          "label": "Icona materiale 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "material_icon_2",
+          "label": "Icona materiale 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "material_icon_3",
+          "label": "Icona materiale 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "material_icon_4",
+          "label": "Icona materiale 4"
+        },
+        {
+          "type": "text",
+          "id": "properties_title",
+          "label": "Titolo proprietà",
+          "default": "Proprietà"
+        },
+        {
+          "type": "textarea",
+          "id": "properties_text",
+          "label": "Testo proprietà"
+        }
+      ]
+    },
+    {
+      "type": "features",
+      "name": "✨ Caratteristiche",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Caratteristiche"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Caratteristiche"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "✨"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "textarea",
+          "id": "features_list",
+          "label": "Lista caratteristiche",
+          "info": "Titolo:Descrizione:Icona",
+          "placeholder": "Reversibile:Due look in uno:🔄"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_1",
+          "label": "Icona custom 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_2",
+          "label": "Icona custom 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_3",
+          "label": "Icona custom 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "feature_icon_4",
+          "label": "Icona custom 4"
+        }
+      ]
+    },
+    {
+      "type": "care",
+      "name": "🧺 Cura e Lavaggio",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Cura del Prodotto"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Cura"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "🧺"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "header",
+          "content": "Istruzione 1"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_1_enabled",
+          "label": "Attiva istruzione 1",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "care_1_icon",
+          "label": "Icona istruzione 1"
+        },
+        {
+          "type": "text",
+          "id": "care_1_emoji",
+          "label": "Emoji (se no icona)",
+          "default": "❄️"
+        },
+        {
+          "type": "text",
+          "id": "care_1_label",
+          "label": "Etichetta",
+          "default": "Acqua Fredda"
+        },
+        {
+          "type": "text",
+          "id": "care_1_desc",
+          "label": "Descrizione breve",
+          "default": "Max 30°C"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_1_allowed",
+          "label": "È consentito?",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Istruzione 2"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_2_enabled",
+          "label": "Attiva istruzione 2",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "care_2_icon",
+          "label": "Icona istruzione 2"
+        },
+        {
+          "type": "text",
+          "id": "care_2_emoji",
+          "label": "Emoji (se no icona)",
+          "default": "🤲"
+        },
+        {
+          "type": "text",
+          "id": "care_2_label",
+          "label": "Etichetta",
+          "default": "Lavaggio a Mano"
+        },
+        {
+          "type": "text",
+          "id": "care_2_desc",
+          "label": "Descrizione breve"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_2_allowed",
+          "label": "È consentito?",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Istruzione 3"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_3_enabled",
+          "label": "Attiva istruzione 3",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "care_3_icon",
+          "label": "Icona istruzione 3"
+        },
+        {
+          "type": "text",
+          "id": "care_3_emoji",
+          "label": "Emoji (se no icona)",
+          "default": "🚫"
+        },
+        {
+          "type": "text",
+          "id": "care_3_label",
+          "label": "Etichetta",
+          "default": "Non Stirare"
+        },
+        {
+          "type": "text",
+          "id": "care_3_desc",
+          "label": "Descrizione breve"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_3_allowed",
+          "label": "È consentito?",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Istruzione 4"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_4_enabled",
+          "label": "Attiva istruzione 4",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "care_4_icon",
+          "label": "Icona istruzione 4"
+        },
+        {
+          "type": "text",
+          "id": "care_4_emoji",
+          "label": "Emoji (se no icona)"
+        },
+        {
+          "type": "text",
+          "id": "care_4_label",
+          "label": "Etichetta"
+        },
+        {
+          "type": "text",
+          "id": "care_4_desc",
+          "label": "Descrizione breve"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_4_allowed",
+          "label": "È consentito?",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Istruzione 5"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_5_enabled",
+          "label": "Attiva istruzione 5",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "care_5_icon",
+          "label": "Icona istruzione 5"
+        },
+        {
+          "type": "text",
+          "id": "care_5_emoji",
+          "label": "Emoji (se no icona)"
+        },
+        {
+          "type": "text",
+          "id": "care_5_label",
+          "label": "Etichetta"
+        },
+        {
+          "type": "text",
+          "id": "care_5_desc",
+          "label": "Descrizione breve"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_5_allowed",
+          "label": "È consentito?",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Istruzione 6"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_6_enabled",
+          "label": "Attiva istruzione 6",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "care_6_icon",
+          "label": "Icona istruzione 6"
+        },
+        {
+          "type": "text",
+          "id": "care_6_emoji",
+          "label": "Emoji (se no icona)"
+        },
+        {
+          "type": "text",
+          "id": "care_6_label",
+          "label": "Etichetta"
+        },
+        {
+          "type": "text",
+          "id": "care_6_desc",
+          "label": "Descrizione breve"
+        },
+        {
+          "type": "checkbox",
+          "id": "care_6_allowed",
+          "label": "È consentito?",
+          "default": true
+        },
+        {
+          "type": "textarea",
+          "id": "care_instructions",
+          "label": "Istruzioni aggiuntive"
+        }
+      ]
+    },
+    {
+      "type": "production",
+      "name": "🎨 Produzione",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Come Nasce"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Produzione"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "🎨"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "textarea",
+          "id": "steps_list",
+          "label": "Fasi produzione",
+          "info": "Fase:Descrizione",
+          "placeholder": "Design:Creazione del pattern|Tintura:Colori naturali"
+        }
+      ]
+    },
+    {
+      "type": "uses",
+      "name": "💡 Utilizzi",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Come Utilizzarlo"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Utilizzi"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "💡"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "textarea",
+          "id": "uses_list",
+          "label": "Lista utilizzi",
+          "info": "Uso:Descrizione:Icona",
+          "placeholder": "Tavola:Elegante tovaglia:🍽️"
+        },
+        {
+          "type": "image_picker",
+          "id": "use_icon_1",
+          "label": "Icona uso 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "use_icon_2",
+          "label": "Icona uso 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "use_icon_3",
+          "label": "Icona uso 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "use_icon_4",
+          "label": "Icona uso 4"
+        }
+      ]
+    },
+    {
+      "type": "style",
+      "name": "👗 Stile",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Consigli di Stile"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Stile"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "👗"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "textarea",
+          "id": "styles_list",
+          "label": "Lista stili",
+          "info": "Stile:Descrizione:Icona",
+          "placeholder": "Casual:Con jeans:👖|Elegante:Con gioielli:✨"
+        },
+        {
+          "type": "image_picker",
+          "id": "style_icon_1",
+          "label": "Icona stile 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "style_icon_2",
+          "label": "Icona stile 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "style_icon_3",
+          "label": "Icona stile 3"
+        }
+      ]
+    },
+    {
+      "type": "heritage",
+      "name": "🏛️ Heritage",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Storia e Tradizione"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Heritage"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "🏛️"
+        },
+        {
+          "type": "text",
+          "id": "heritage_icon",
+          "label": "Icona heritage",
+          "default": "🏛️"
+        },
+        {
+          "type": "image_picker",
+          "id": "heritage_icon_image",
+          "label": "Icona custom"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenuto"
+        }
+      ]
+    },
+    {
+      "type": "certifications",
+      "name": "🏅 Certificazioni",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Certificazioni"
+        },
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Certificazioni"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "🏅"
+        },
+        {
+          "type": "image_picker",
+          "id": "media_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "media_alt",
+          "label": "Testo alt media"
+        },
+        {
+          "type": "textarea",
+          "id": "certifications_list",
+          "label": "Lista certificazioni",
+          "info": "Nome:Icona",
+          "placeholder": "GOTS Certified:✓|Fair Trade:✓"
+        },
+        {
+          "type": "image_picker",
+          "id": "cert_icon_1",
+          "label": "Icona cert 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "cert_icon_2",
+          "label": "Icona cert 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "cert_icon_3",
+          "label": "Icona cert 3"
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "name": "📌 Nota",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nav_label",
+          "label": "Etichetta tab",
+          "default": "Nota"
+        },
+        {
+          "type": "text",
+          "id": "nav_icon",
+          "label": "Icona tab",
+          "default": "📌"
+        },
+        {
+          "type": "textarea",
+          "id": "note_text",
+          "label": "Testo nota"
+        },
+        {
+          "type": "text",
+          "id": "note_author",
+          "label": "Firma",
+          "default": "Team Fabindia Roma"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dettagli Prodotto v5",
+      "category": "Fabindia Custom",
+      "blocks": [
+        {
+          "type": "description"
+        },
+        {
+          "type": "materials"
+        },
+        {
+          "type": "features"
+        },
+        {
+          "type": "care"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

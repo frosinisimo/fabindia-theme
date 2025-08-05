@@ -1,0 +1,83 @@
+/* p, li, dt, dd, span, label, button, input, textarea, th, td, caption, strong, em, i, b, u, mark, small, del, ins, sub, sup {
+  letter-spacing: 0.035em!important;
+} */
+
+
+/* ===========================================================
+   EB Garamond – Title Spacing System (peso 400)
+   Solo letter-spacing, line-height e ottimizzazioni extra
+   =========================================================== */
+
+/* Reset comune a tutti i livelli */
+h1,h2,h3,h4,h5,h6{
+  /* font-weight:400 !important; */
+  font-feature-settings:"liga" 1,"kern" 1,"onum" 0 !important;
+  text-wrap:balance !important;
+  overflow-wrap:anywhere !important;
+  -webkit-font-smoothing:antialiased !important;
+  -moz-osx-font-smoothing:grayscale !important;
+}
+
+/* ---------- Mobile-first ---------- */
+h1{line-height:1.15 !important; letter-spacing:-0.005em !important;}
+h2{line-height:1.18 !important; letter-spacing:-0.003em !important;}
+h3{line-height:1.20 !important; letter-spacing:0em !important;}
+h4{line-height:1.22 !important; letter-spacing:0em !important;}
+h5{line-height:1.25 !important; letter-spacing:0.04em !important;}
+h6{line-height:1.28 !important; letter-spacing:0.08em !important; text-transform:uppercase !important;}
+
+/* ---------- Desktop override ≥1200px ---------- */
+@media (min-width:75rem){
+  h1{line-height:1.12 !important; letter-spacing:-0.01em !important;}
+  h2{line-height:1.15 !important; letter-spacing:-0.006em !important;}
+  h3{line-height:1.18 !important; letter-spacing:0em !important;}
+  h4{line-height:1.20 !important; letter-spacing:0em !important;}
+  h5{line-height:1.22 !important; letter-spacing:0.03em !important;}
+  h6{line-height:1.25 !important; letter-spacing:0.06em !important;}
+}
+
+/* ===========================================================
+   Inter – Body & UI Text System (peso 400)
+   Solo line-height, letter-spacing e ottimizzazioni extra
+   Senza modifiche a font-size
+   =========================================================== */
+
+/* Reset comune a tutti gli elementi */
+p, li, dt, dd, span, label,
+button, input, textarea,
+th, td, caption,
+strong, em, i, b, u, mark,
+small, del, ins, sub, sup {
+  font-family: "Inter", sans-serif !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.035em !important;
+  font-feature-settings: "liga" 1, "kern" 1 !important;
+  text-wrap: balance !important;
+  overflow-wrap: anywhere !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* ---------- Mobile-first (<1200px) ---------- */
+/* Nessuna modifica a font-size */
+
+/* letter-spacing 0em per testo misto;
+   +0.04em su uppercase (button, caption, small) migliora chiarezza */
+button, caption, small {
+  letter-spacing: 0.04em !important;
+}
+
+/* ---------- Desktop override ≥1200px ---------- */
+@media (min-width: 75rem) {
+  p, li, dt, dd, span, label,
+  button, input, textarea,
+  th, td, caption,
+  strong, em, i, b, u, mark,
+  small, del, ins, sub, sup {
+    line-height: 1.5 !important;
+    letter-spacing: 0.035em !important;
+  }
+  button, caption, small {
+    letter-spacing: 0.02em !important;
+  }
+}
