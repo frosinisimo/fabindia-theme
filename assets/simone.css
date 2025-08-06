@@ -97,13 +97,60 @@ button.size-guide-trigger {
 
 
 
+div#SidebarDrawer-2-filter-filtra-per-taglia{
 
+ul.no-bullets.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+}
 
+label  {
+    margin-bottom: 0px;
+}
+}
 
+div#SidebarDrawer-1-filter-filtra-per-colore{
 
+ul.no-bullets.tag-list {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
 
+label  {
+    margin-bottom: 0px;
+}
+}
 
+a.btn.btn--small.filter-btn {
+    font-family: 'EB Garamond';
+    text-transform: capitalize;
+    font-weight: 400;
+    font-size: 19px;
+    padding: 10px 20px !important;
+    border-radius: 0px !important;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    width: fit-content;
+}
 
+.tag--remove .icon {
+    color: #c33a32;
+    position: unset;
+    transform: translate(80%, -60%);
+}
+
+li.tag.tag--remove {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
 
 
 /* MOBILE VISTA */
@@ -209,6 +256,20 @@ button.js-drawer-open-collection-filters.btn.btn--tertiary {
 
 /* DESKTOP VISTA */
 @media only screen and (min-width: 590px) {
+
+  a.btn.btn--small.filter-btn {
+    margin-bottom: 7px;
+}
+
+  a.btn.btn--small.filter-btn {
+    font-size: 24px;
+  }
+
+ 
+
+  [data-button_style^=round] .btn:not(.btn--secondary):not(.btn--tertiary):not(.btn--inverse):not(.btn--body):not(.btn--static):hover{
+    background: #ffffff!important;
+}
 
   body#page-collection-abbigliamento{
 
