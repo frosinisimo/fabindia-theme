@@ -1,0 +1,702 @@
+{% comment %}
+  Sezione SEO-Optimized Collection Description
+  Fabindia Roma - Ultra performante per SEO e UX
+{% endcomment %}
+
+<div id="shopify-section-{{ section.id }}" class="fr-collection-description-section">
+  
+  <!-- Background handling -->
+  <div class="fr-background-wrapper" 
+       {% if section.settings.background_image %}
+         style="background-image: url('{{ section.settings.background_image | img_url: 'master' }}');"
+       {% endif %}>
+    
+    {% if section.settings.background_image and section.settings.overlay_opacity > 0 %}
+      <div class="fr-overlay" style="background-color: {{ section.settings.overlay_color }}; opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+    {% endif %}
+    
+    <div class="fr-content-wrapper">
+      <div class="fr-description-container">
+        
+        <!-- Titolo collezione H1 -->
+        {% if section.settings.collection_title != blank %}
+          <h1 class="fr-collection-title">{{ section.settings.collection_title }}</h1>
+        {% endif %}
+        
+        <!-- Contenitore testo unificato -->
+        <div class="fr-text-container">
+          <!-- Testo introduttivo sempre visibile -->
+          <span class="fr-intro-text">{{ section.settings.intro_text }}</span>
+          
+          <!-- Pulsante espandi inline -->
+          <button 
+            class="fr-expand-btn" 
+            aria-expanded="false"
+            aria-controls="fr-full-content-{{ section.id }}"
+            type="button">
+            <span class="fr-expand-text">{{ section.settings.expand_text }}</span>
+          </button>
+          
+          <!-- Contenuto completo - SEMPRE nel DOM per SEO -->
+          <span id="fr-full-content-{{ section.id }}" 
+                class="fr-full-content" 
+                aria-hidden="true">
+            <span class="fr-content-inner">{{ section.settings.full_content }}</span>
+          </span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Layout e spacing base */
+  #shopify-section-{{ section.id }} {
+    position: relative;
+    width: 100%;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-background-wrapper {
+    position: relative;
+    background-color: {{ section.settings.background_color }};
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-content-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: {{ section.settings.content_padding_mobile }}px;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-description-container {
+    max-width: 100%;
+    margin: 0 auto;
+    color: {{ section.settings.text_color }};
+    text-align: {{ section.settings.text_align_mobile }};
+  }
+  
+  /* Titolo H1 collezione */
+  #shopify-section-{{ section.id }} .fr-collection-title {
+    font-size: {{ section.settings.title_font_size_mobile }}px;
+    font-weight: {{ section.settings.title_font_weight }};
+    line-height: 1.2;
+    margin: 0 0 {{ section.settings.title_margin_bottom_mobile }}px 0;
+    color: {{ section.settings.title_color }};
+    text-align: {{ section.settings.text_align_mobile }};
+  }
+  
+  /* Contenitore testo unificato */
+  #shopify-section-{{ section.id }} .fr-text-container {
+    font-size: {{ section.settings.intro_font_size_mobile }}px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  
+  /* Testo introduttivo inline */
+  #shopify-section-{{ section.id }} .fr-intro-text {
+    display: inline;
+  }
+  
+  /* Pulsante espandi - ultra discreto e inline */
+  #shopify-section-{{ section.id }} .fr-expand-btn {
+    display: inline;
+    background: none;
+    border: none;
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.intro_font_size_mobile }}px;
+    font-weight: 400;
+    opacity: 0.45;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 0 0 6px;
+    transition: opacity 0.2s ease;
+    text-decoration: none;
+    font-family: inherit;
+    line-height: inherit;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-expand-btn:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-expand-btn:focus {
+    outline: 1px dotted currentColor;
+    outline-offset: 2px;
+    opacity: 0.7;
+  }
+  
+  /* Nasconde completamente il pulsante quando espanso */
+  #shopify-section-{{ section.id }} .fr-expand-btn[aria-expanded="true"] {
+    display: none;
+  }
+  
+  /* Contenuto completo - CRITICO per SEO */
+  #shopify-section-{{ section.id }} .fr-full-content {
+    /* Contenuto SEMPRE nel DOM ma visualmente nascosto inizialmente */
+    display: inline;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    font-size: 0;
+    line-height: 0;
+    transition: opacity 0.3s ease, 
+                font-size 0.3s ease,
+                line-height 0.3s ease;
+    /* Importante: NON usare display:none o visibility:hidden */
+  }
+  
+  #shopify-section-{{ section.id }} .fr-full-content[aria-hidden="false"] {
+    max-height: none;
+    opacity: 1;
+    font-size: inherit;
+    line-height: inherit;
+  }
+  
+  /* Aggiunge uno spazio prima del contenuto espanso */
+  #shopify-section-{{ section.id }} .fr-full-content[aria-hidden="false"]::before {
+    content: " ";
+    display: inline;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-content-inner {
+    display: inline;
+  }
+
+  
+  /* Rich text formatting - adattato per inline */
+  #shopify-section-{{ section.id }} .fr-text-container p {
+    display: inline;
+    margin: 0;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-text-container p + p::before {
+    content: " ";
+    display: inline;
+  }
+  
+  /* Desktop styles */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      max-width: {{ section.settings.max_dimensione }};
+      margin: 0 auto;
+    }
+    
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-content-wrapper {
+      padding: {{ section.settings.content_padding_desktop }}px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-description-container {
+      max-width: {{ section.settings.content_max_width }}px;
+      text-align: {{ section.settings.text_align_desktop }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-collection-title {
+      font-size: {{ section.settings.title_font_size_desktop }}px;
+      margin-bottom: {{ section.settings.title_margin_bottom_desktop }}px;
+      text-align: {{ section.settings.text_align_desktop }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-text-container {
+      font-size: {{ section.settings.intro_font_size_desktop }}px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-expand-btn {
+      font-size: {{ section.settings.intro_font_size_desktop }}px;
+    }
+    
+    {% if section.settings.nascondi_desktop %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+  
+  /* Mobile styles */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+    }
+    
+    {% if section.settings.nascondi_mobile %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+  
+  /* Print styles - mostra tutto per stampa */
+  @media print {
+    #shopify-section-{{ section.id }} .fr-full-content {
+      max-height: none !important;
+      opacity: 1 !important;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-expand-btn {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+    
+    const expandBtn = section.querySelector('.fr-expand-btn');
+    const fullContent = section.querySelector('.fr-full-content');
+    
+    if (!expandBtn || !fullContent) return;
+    
+    // Gestione click sul pulsante
+    expandBtn.addEventListener('click', function() {
+      const isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+      
+      // Toggle stato
+      expandBtn.setAttribute('aria-expanded', !isExpanded);
+      fullContent.setAttribute('aria-hidden', isExpanded);
+      
+      // Il pulsante si nasconde automaticamente via CSS quando aria-expanded="true"
+      
+      // Analytics event (opzionale)
+      if (typeof gtag !== 'undefined' && !isExpanded) {
+        gtag('event', 'expand_content', {
+          'event_category': 'engagement',
+          'event_label': 'collection_description'
+        });
+      }
+    });
+    
+    // Accessibilità keyboard
+    expandBtn.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        expandBtn.click();
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "SEO Descrizione Coll.",
+  "tag": "section",
+  "class": "fr-collection-seo-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Titolo Collezione"
+    },
+    {
+      "type": "text",
+      "id": "collection_title",
+      "label": "Titolo H1",
+      "default": "Collezione Esclusiva",
+      "info": "Titolo SEO principale"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore Titolo",
+      "default": "#C33A32"
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso Font Titolo",
+      "options": [
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "label": "Font Titolo Mobile",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "label": "Font Titolo Desktop",
+      "min": 28,
+      "max": 60,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_bottom_mobile",
+      "label": "Spazio Sotto Titolo Mob",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "title_margin_bottom_desktop",
+      "label": "Spazio Sotto Titolo Desk",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Contenuto Testuale"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Testo Introduttivo",
+      "default": "<p>Scopri la nostra esclusiva collezione di tessuti pregiati e design senza tempo. Ogni pezzo racconta una storia di artigianalità indiana, qualità superiore e sostenibilità. L'eleganza incontra la tradizione in creazioni uniche pensate per chi ama distinguersi.</p>",
+      "info": "30-50 parole visibili"
+    },
+    {
+      "type": "richtext",
+      "id": "full_content",
+      "label": "Contenuto Completo SEO",
+      "default": "<p>La collezione rappresenta l'essenza dell'artigianalità indiana reinterpretata in chiave contemporanea. Ogni capo è il risultato di secoli di tradizione tessile, dove le tecniche ancestrali si fondono con design moderni per creare pezzi unici e senza tempo.</p><p>I nostri tessuti sono selezionati con cura estrema, privilegiando fibre naturali come cotone organico, lino e seta, lavorate secondo metodi sostenibili che rispettano l'ambiente e valorizzano il lavoro degli artigiani locali. La palette cromatica spazia dalle tonalità neutre e sofisticate ai colori vibranti ispirati ai paesaggi dell'India.</p><p>Ogni creazione nasce dall'incontro tra maestria artigianale e innovazione stilistica. I ricami sono realizzati a mano da esperti artigiani che tramandano il loro sapere di generazione in generazione. Le stampe block print, caratteristiche della tradizione indiana, decorano tessuti pregiati con motivi geometrici e floreali che raccontano storie millenarie.</p><p>La sostenibilità è al centro della nostra filosofia: collaboriamo direttamente con cooperative di artigiani, garantendo condizioni di lavoro eque e contribuendo allo sviluppo delle comunità locali. Scegliere Fabindia significa abbracciare uno stile di vita consapevole, dove la bellezza si unisce all'etica in perfetta armonia.</p>",
+      "info": "250-300 parole per SEO"
+    },
+    {
+      "type": "text",
+      "id": "expand_text",
+      "label": "Testo Link Espandi",
+      "default": "...",
+      "info": "Ultra discreto"
+    },
+    {
+      "type": "header",
+      "content": "Aspetto e Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore Sfondo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Immagine Sfondo",
+      "info": "Opzionale"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Colore Overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Opacità Overlay",
+      "min": 0,
+      "max": 90,
+      "step": 10,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore Testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "Layout e Tipografia"
+    },
+    {
+      "type": "select",
+      "id": "text_align_mobile",
+      "label": "Allineamento Mobile",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Destra"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "text_align_desktop",
+      "label": "Allineamento Desktop",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Destra"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "intro_font_size_mobile",
+      "label": "Font Size Mobile",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "intro_font_size_desktop",
+      "label": "Font Size Desktop",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Larghezza Max Contenuto",
+      "min": 600,
+      "max": 1600,
+      "step": 50,
+      "default": 900,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_mobile",
+      "label": "Padding Interno Mobile",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_desktop",
+      "label": "Padding Interno Desktop",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Controlli Visibilità"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da Desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SEO Descrizione Coll.",
+      "category": "Fabindia custom"
+    }
+  ]
+}
+{% endschema %}

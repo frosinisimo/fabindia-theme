@@ -88,7 +88,7 @@
         <span>{{ block.settings.size_alert_text }}</span>
       </div>
       <h4 class="fbi-title">{{ block.settings.section_title_2 }} <span class="fbi-size-indicator fbi-title"></span></h4>
-      {%- comment -%} Griglia varianti colore {%- endcomment -%}
+      {%- comment -%} Griglia varianti colore con swatch immagini {%- endcomment -%}
       <div class="fbi-color-grid" 
            data-color-count="{{ color_count }}"
            {% if block.settings.auto_fit_colors_mobile %}data-auto-fit-mobile{% endif %}
@@ -103,18 +103,58 @@
               {%- assign variant_title = variant_title | remove: block.settings.remove_string | strip -%}
             {%- endif -%}
             
+            {%- comment -%} Logica per determinare quale immagine usare {%- endcomment -%}
+            {%- liquid
+              assign swatch_image = nil
+              
+              # Prima controlla se c'è un metafield personalizzato per lo swatch
+              if block.settings.use_metafield_swatch and variant_product.metafields.custom.swatch_image != blank
+                assign swatch_image = variant_product.metafields.custom.swatch_image
+              # Altrimenti usa la seconda immagine se abilitato
+              elsif block.settings.use_second_image_swatch and variant_product.images.size > 1
+                assign swatch_image = variant_product.images[1]
+              # Fallback all'immagine principale
+              else
+                assign swatch_image = variant_product.featured_image
+              endif
+            -%}
+            
             <a href="{{ variant_product.url }}" 
-               class="fbi-color-item"
+               class="fbi-color-item {% if block.settings.enable_image_swatches %}fbi-has-swatch{% endif %}"
                data-handle="{{ handle_clean }}"
                data-variants="{{ variant_product.variants | json | escape }}">
               
               <div class="fbi-color-image">
-                {%- if variant_product.featured_image -%}
-                  <img src="{{ variant_product.featured_image | img_url: '300x300' }}"
+                {%- if swatch_image -%}
+                  <img src="{{ swatch_image | img_url: '300x300' }}"
                        alt="{{ variant_product.title | escape }}"
                        loading="lazy">
                 {%- else -%}
                   {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+                
+                {%- comment -%} Swatch circolare sovrapposto se abilitato {%- endcomment -%}
+                {%- if block.settings.enable_image_swatches -%}
+                  <div class="fbi-swatch-overlay">
+                    {%- liquid
+                      assign overlay_swatch_image = nil
+                      
+                      # Determina quale immagine usare per lo swatch overlay
+                      if block.settings.use_metafield_swatch and variant_product.metafields.custom.swatch_image != blank
+                        assign overlay_swatch_image = variant_product.metafields.custom.swatch_image
+                      elsif block.settings.use_second_image_swatch and variant_product.images.size > 1
+                        assign overlay_swatch_image = variant_product.images[1]
+                      else
+                        assign overlay_swatch_image = variant_product.featured_image
+                      endif
+                    -%}
+                    
+                    {%- if overlay_swatch_image -%}
+                      <img src="{{ overlay_swatch_image | img_url: '80x80' }}"
+                           alt="{{ variant_product.title | escape }} swatch"
+                           loading="lazy">
+                    {%- endif -%}
+                  </div>
                 {%- endif -%}
                 
                 <div class="fbi-overlay">
@@ -154,8 +194,8 @@
       }
 
       h4.fbi-title {
-    margin-bottom: 11px;
-}
+        margin-bottom: 11px;
+      }
       
       /* Header - Nascosto 
       .fbi-header {
@@ -229,8 +269,6 @@
         background-color: #C33A32 !important;
         font-weight: 600 !important;
       }
-      
-      
       
       /* Alert */
       .fbi-alert {
@@ -329,6 +367,40 @@
         object-fit: cover;
       }
       
+      /* Swatch Overlay Styles */
+      .fbi-swatch-overlay {
+        position: absolute;
+        bottom: {{ block.settings.swatch_position }}px;
+        right: {{ block.settings.swatch_position }}px;
+        width: {{ block.settings.swatch_size }}px;
+        height: {{ block.settings.swatch_size }}px;
+        border-radius: {% if block.settings.swatch_shape == 'circle' %}50%{% else %}{{ block.settings.swatch_border_radius }}px{% endif %};
+        overflow: hidden;
+        border: 2px solid #FFFFFF;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 2;
+        transition: transform 0.2s ease;
+      }
+      
+      .fbi-has-swatch:hover .fbi-swatch-overlay {
+        transform: scale(1.1);
+      }
+      
+      .fbi-swatch-overlay img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      /* Nascondi swatch su mobile se richiesto */
+      {% if block.settings.hide_swatch_mobile %}
+      @media (max-width: 767px) {
+        .fbi-swatch-overlay {
+          display: none;
+        }
+      }
+      {% endif %}
+      
       .fbi-overlay {
         position: absolute;
         inset: 0;
@@ -382,8 +454,6 @@
         color: #9CA3AF;
         margin-right: 4px;
       }
-      
-     
       
       /* Bottoni disabilitati */
       button.btn.btn--full.add-to-cart.disabled {

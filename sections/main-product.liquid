@@ -2236,6 +2236,85 @@
     },
     {
       "type": "header",
+      "content": "Swatch Immagini"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_image_swatches",
+      "label": "Abilita swatch immagini",
+      "default": false,
+      "info": "Mostra miniature circolari"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_second_image_swatch",
+      "label": "Usa seconda immagine",
+      "default": true,
+      "info": "Usa la 2° immagine prodotto"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_metafield_swatch",
+      "label": "Usa metafield swatch",
+      "default": false,
+      "info": "custom.swatch_image"
+    },
+    {
+      "type": "select",
+      "id": "swatch_shape",
+      "label": "Forma swatch",
+      "options": [
+        {
+          "value": "circle",
+          "label": "Cerchio"
+        },
+        {
+          "value": "square",
+          "label": "Quadrato"
+        }
+      ],
+      "default": "circle"
+    },
+    {
+      "type": "range",
+      "id": "swatch_size",
+      "label": "Dimensione swatch",
+      "min": 30,
+      "max": 60,
+      "step": 5,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "swatch_position",
+      "label": "Posizione swatch",
+      "min": 5,
+      "max": 20,
+      "step": 5,
+      "default": 10,
+      "unit": "px",
+      "info": "Distanza dal bordo"
+    },
+    {
+      "type": "range",
+      "id": "swatch_border_radius",
+      "label": "Raggio bordi swatch",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "default": 8,
+      "unit": "px",
+      "info": "Solo per forma quadrata"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_swatch_mobile",
+      "label": "Nascondi swatch mobile",
+      "default": false
+    },
+    {
+      "type": "header",
       "content": "Layout Colori"
     },
     {

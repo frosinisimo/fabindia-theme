@@ -1,488 +1,495 @@
 {%- comment -%}
 ================================================================
-FABINDIA ROMA - HERO INSPIRATIONAL COLLAGE SECTION
+FABINDIA ROMA - HERO INSPIRATIONAL COLLAGE PREMIUM
+Sezione completamente ridisegnata per eleganza e funzionalità
 ================================================================
 {%- endcomment -%}
 
 <style>
-  {%- comment -%} Desktop Styles (769px e oltre) {%- endcomment -%}
-  @media only screen and (min-width: 769px) {
-    #shopify-section-{{ section.id }} {
-      {%- unless section.settings.max_width == 'default' -%}
-        {%- if section.settings.max_width == '100%' -%}
-          max-width: none;
-        {%- else -%}
-          max-width: {{ section.settings.max_width }};
-        {%- endif -%}
-        margin-left: auto;
-        margin-right: auto;
-      {%- endunless -%}
-      
-      {%- if section.settings.padding_top_desktop > 0 or section.settings.padding_bottom_desktop > 0 -%}
-        padding-top: {{ section.settings.padding_top_desktop }}px;
-        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
-      {%- endif -%}
-      
-      {%- if section.settings.margin_top_desktop != 0 or section.settings.margin_bottom_desktop != 0 -%}
-        margin-top: {{ section.settings.margin_top_desktop }}px;
-        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
-      {%- endif -%}
-      
-      {%- if section.settings.hide_on_desktop -%}
-        display: none !important;
-      {%- endif -%}
-    }
+  {%- comment -%} Variabili CSS Globali {%- endcomment -%}
+  #shopify-section-{{ section.id }} {
+    --fr-gap: {{ section.settings.grid_gap }}px;
+    --fr-border-radius: {{ section.settings.border_radius }}px;
+    --fr-transition: all {{ section.settings.animation_speed }}ms cubic-bezier(0.4, 0, 0.2, 1);
+    --fr-section-bg: {{ section.settings.section_bg_color }};
+    {%- case section.settings.overlay_gradient_type -%}
+      {%- when 'bottom-dark' -%}
+        --fr-overlay-gradient: to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%;
+      {%- when 'top-dark' -%}
+        --fr-overlay-gradient: to top, transparent 0%, rgba(0, 0, 0, 0.7) 100%;
+      {%- when 'full-gradient' -%}
+        --fr-overlay-gradient: to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%;
+      {%- when 'half-transparent' -%}
+        --fr-overlay-gradient: to bottom, transparent 50%, rgba(0, 0, 0, 0.9) 100%;
+      {%- when 'radial' -%}
+        --fr-overlay-gradient: ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 100%;
+      {%- else -%}
+        --fr-overlay-gradient: to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%;
+    {%- endcase -%}
   }
 
-  {%- comment -%} Mobile Styles (fino a 768px) {%- endcomment -%}
+  {%- comment -%} Layout Responsive Base {%- endcomment -%}
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      max-width: {{ section.settings.max_dimensione }};
+      margin: 0 auto;
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+    }
+    
+    {% if section.settings.nascondi_desktop %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+
   @media only screen and (max-width: 768px) {
     #shopify-section-{{ section.id }} {
-      {%- if section.settings.padding_top_mobile > 0 or section.settings.padding_bottom_mobile > 0 -%}
-        padding-top: {{ section.settings.padding_top_mobile }}px;
-        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
-      {%- endif -%}
-      
-      {%- if section.settings.margin_top_mobile != 0 or section.settings.margin_bottom_mobile != 0 -%}
-        margin-top: {{ section.settings.margin_top_mobile }}px;
-        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
-      {%- endif -%}
-      
-      {%- if section.settings.hide_on_mobile -%}
-        display: none !important;
-      {%- endif -%}
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
     }
+    
+    {% if section.settings.nascondi_mobile %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
   }
 
-  {%- comment -%} Animazioni opzionali per transizioni fluide {%- endcomment -%}
-  {%- if section.settings.enable_smooth_transitions -%}
-    #shopify-section-{{ section.id }} {
-      transition: all 0.3s ease;
-    }
-  {%- endif -%}
-
-  /* Stili custom della sezione */
-  .fabindia-inspirational {
-    background-color: {{ section.settings.section_bg_color }};
+  {%- comment -%} Struttura Base Sezione {%- endcomment -%}
+  #shopify-section-{{ section.id }} .fr-inspirational {
+    background: var(--fr-section-bg);
     position: relative;
-    overflow: hidden;
+    overflow: {% if section.settings.overflow_visible %}visible{% else %}hidden{% endif %};
   }
 
-  .fabindia-inspirational__container {
-    position: relative;
-    width: 100%;
-    max-width: 1400px;
+  #shopify-section-{{ section.id }} .fr-inspirational__wrapper {
+    max-width: 100%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px;
   }
 
-  .fabindia-inspirational__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    position: relative;
+  #shopify-section-{{ section.id }} .fr-inspirational__header {
+    text-align: center;
+    margin-bottom: {{ section.settings.title_spacing }}px;
   }
 
-  @media only screen and (min-width: 769px) {
-    .fabindia-inspirational__grid {
-      grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-    }
+  #shopify-section-{{ section.id }} .fr-inspirational__title {
+    color: {{ section.settings.title_color }};
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: {{ section.settings.title_weight }};
+    letter-spacing: {{ section.settings.title_letter_spacing | divided_by: 100.0 }}em;
+    margin: 0;
+    text-transform: {{ section.settings.title_transform }};
   }
 
-  .fabindia-inspirational__item {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    background-color: {{ section.settings.block_bg_color }};
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    cursor: pointer;
-  }
-
-  /* Dimensioni personalizzate per blocco */
-  {%- for block in section.blocks -%}
-    #block-{{ block.id }} {
-      {%- if block.settings.desktop_columns -%}
-        @media only screen and (min-width: 769px) {
-          grid-column: span {{ block.settings.desktop_columns }};
-        }
-      {%- endif -%}
-      
-      {%- if block.settings.desktop_rows -%}
-        @media only screen and (min-width: 769px) {
-          grid-row: span {{ block.settings.desktop_rows }};
-        }
-      {%- endif -%}
-      
-      {%- if block.settings.mobile_columns -%}
-        @media only screen and (max-width: 768px) {
-          grid-column: span {{ block.settings.mobile_columns }};
-        }
-      {%- endif -%}
-      
-      {%- if block.settings.custom_height -%}
-        height: {{ block.settings.custom_height }}px;
-      {%- else -%}
-        min-height: 300px;
-      {%- endif -%}
-      
-      {%- if block.settings.enable_overlap -%}
-        z-index: {{ forloop.index }};
-        {%- if block.settings.overlap_direction == 'left' -%}
-          margin-left: -{{ block.settings.overlap_amount }}px;
-        {%- elsif block.settings.overlap_direction == 'right' -%}
-          margin-right: -{{ block.settings.overlap_amount }}px;
-        {%- elsif block.settings.overlap_direction == 'top' -%}
-          margin-top: -{{ block.settings.overlap_amount }}px;
-        {%- elsif block.settings.overlap_direction == 'bottom' -%}
-          margin-bottom: -{{ block.settings.overlap_amount }}px;
-        {%- endif -%}
-      {%- endif -%}
-    }
-  {%- endfor -%}
-
-  .fabindia-inspirational__image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .fabindia-inspirational__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease-out;
-  }
-
-  /* Animazioni hover desktop */
-  @media only screen and (min-width: 769px) {
-    .fabindia-inspirational__item:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .fabindia-inspirational__item:hover .fabindia-inspirational__image {
-      transform: scale(1.1);
-    }
-
-    .fabindia-inspirational__item--zoom:hover .fabindia-inspirational__image {
-      transform: scale(1.2);
-    }
-
-    .fabindia-inspirational__item--rotate:hover .fabindia-inspirational__image {
-      transform: scale(1.1) rotate(2deg);
-    }
-
-    .fabindia-inspirational__item--slide:hover .fabindia-inspirational__image {
-      transform: translateX(10px);
-    }
-
-    .fabindia-inspirational__item--fade:hover .fabindia-inspirational__image {
-      opacity: 0.8;
-    }
-  }
-
-  /* Overlay e contenuto */
-  .fabindia-inspirational__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 20px;
-  }
-
-  .fabindia-inspirational__item:hover .fabindia-inspirational__overlay {
-    opacity: 1;
-  }
-
-  .fabindia-inspirational__content {
-    color: #FEFEFE;
-    transform: translateY(20px);
-    transition: transform 0.4s ease;
-  }
-
-  .fabindia-inspirational__item:hover .fabindia-inspirational__content {
-    transform: translateY(0);
-  }
-
-  .fabindia-inspirational__title {
-    font-size: 1.2em;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: {{ section.settings.overlay_text_color }};
-  }
-
-  .fabindia-inspirational__description {
-    font-size: 0.9em;
-    line-height: 1.4;
-    margin-bottom: 12px;
-    color: {{ section.settings.overlay_text_color }};
+  #shopify-section-{{ section.id }} .fr-inspirational__subtitle {
+    color: {{ section.settings.subtitle_color }};
+    font-size: {{ section.settings.subtitle_size }}px;
+    margin-top: 12px;
     opacity: 0.9;
   }
 
-  .fabindia-inspirational__cta {
+  {%- comment -%} Sistema Grid Avanzato {%- endcomment -%}
+  #shopify-section-{{ section.id }} .fr-inspirational__grid {
+    display: grid;
+    gap: var(--fr-gap);
+    position: relative;
+  }
+
+  {%- comment -%} Layout Desktop Grid {%- endcomment -%}
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} .fr-inspirational__grid {
+      grid-template-columns: repeat({{ section.settings.desktop_columns }}, 1fr);
+      grid-auto-rows: {{ section.settings.base_height }}px;
+    }
+
+    {%- comment -%} Stili di Layout Globali {%- endcomment -%}
+    {%- case section.settings.layout_style -%}
+      {%- when 'masonry' -%}
+        #shopify-section-{{ section.id }} .fr-inspirational__grid {
+          grid-auto-flow: dense;
+        }
+      
+      {%- when 'overlap' -%}
+        #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child(even) {
+          margin-top: {{ section.settings.overlap_offset }}px;
+          z-index: 2;
+        }
+        #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child(odd) {
+          z-index: 1;
+        }
+        
+      {%- when 'cascade' -%}
+        {%- for i in (1..12) -%}
+          #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child({{ i }}) {
+            transform: translateY({{ i | times: 20 }}px);
+            z-index: {{ 13 | minus: i }};
+          }
+        {%- endfor -%}
+        
+      {%- when 'scattered' -%}
+        #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child(3n+1) {
+          transform: rotate(-{{ section.settings.scatter_rotation }}deg);
+        }
+        #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child(3n+2) {
+          transform: rotate({{ section.settings.scatter_rotation }}deg);
+        }
+        #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child(4n) {
+          margin-top: {{ section.settings.scatter_offset }}px;
+        }
+    {%- endcase -%}
+  }
+
+  {%- comment -%} Layout Mobile Grid {%- endcomment -%}
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .fr-inspirational__grid {
+      grid-template-columns: repeat({{ section.settings.mobile_columns }}, 1fr);
+      grid-auto-rows: {{ section.settings.mobile_base_height }}px;
+    }
+  }
+
+  {%- comment -%} Stili Item del Grid {%- endcomment -%}
+  #shopify-section-{{ section.id }} .fr-inspirational__item {
+    position: relative;
+    border-radius: var(--fr-border-radius);
+    overflow: hidden;
+    transition: var(--fr-transition);
+    background: {{ section.settings.item_bg_color }};
+    cursor: pointer;
+  }
+
+  {%- comment -%} Dimensioni Custom per Blocco {%- endcomment -%}
+  {%- for block in section.blocks -%}
+    @media only screen and (min-width: 769px) {
+      #shopify-section-{{ section.id }} #block-{{ block.id }} {
+        grid-column: span {{ block.settings.desktop_span_x | default: 1 }};
+        grid-row: span {{ block.settings.desktop_span_y | default: 1 }};
+        {%- if block.settings.custom_position -%}
+          grid-column-start: {{ block.settings.grid_column_start }};
+          grid-row-start: {{ block.settings.grid_row_start }};
+        {%- endif -%}
+      }
+    }
+    
+    @media only screen and (max-width: 768px) {
+      #shopify-section-{{ section.id }} #block-{{ block.id }} {
+        grid-column: span {{ block.settings.mobile_span_x | default: 1 }};
+        grid-row: span {{ block.settings.mobile_span_y | default: 1 }};
+      }
+    }
+  {%- endfor -%}
+
+  {%- comment -%} Contenitore Immagine {%- endcomment -%}
+  #shopify-section-{{ section.id }} .fr-inspirational__media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .fr-inspirational__image {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ section.settings.image_fit }};
+    transition: transform {{ section.settings.animation_speed }}ms ease-out;
+  }
+
+  {%- comment -%} Overlay Elegante {%- endcomment -%}
+  #shopify-section-{{ section.id }} .fr-inspirational__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--fr-overlay-gradient));
+    opacity: 0;
+    transition: opacity {{ section.settings.animation_speed }}ms ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: {{ section.settings.content_position }};
+    padding: 24px;
+    z-index: 1;
+  }
+
+  #shopify-section-{{ section.id }} .fr-inspirational__content {
+    transform: translateY(20px);
+    transition: transform {{ section.settings.animation_speed }}ms ease;
+  }
+
+  #shopify-section-{{ section.id }} .fr-inspirational__content-title {
+    color: {{ section.settings.overlay_title_color }};
+    font-size: {{ section.settings.overlay_title_size }}px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  #shopify-section-{{ section.id }} .fr-inspirational__content-text {
+    color: {{ section.settings.overlay_text_color }};
+    font-size: {{ section.settings.overlay_text_size }}px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    opacity: 0.95;
+  }
+
+  #shopify-section-{{ section.id }} .fr-inspirational__cta {
     display: inline-block;
-    padding: 8px 20px;
-    background-color: {{ section.settings.cta_bg_color }};
+    padding: {{ section.settings.cta_padding_y }}px {{ section.settings.cta_padding_x }}px;
+    background: {{ section.settings.cta_bg_color }};
     color: {{ section.settings.cta_text_color }};
     text-decoration: none;
-    border-radius: {{ section.settings.cta_border_radius }}px;
-    font-size: 0.85em;
-    font-weight: {{ section.settings.cta_font_weight }};
+    border-radius: {{ section.settings.cta_radius }}px;
+    font-size: {{ section.settings.cta_size }}px;
+    font-weight: {{ section.settings.cta_weight }};
     letter-spacing: 0.05em;
-    transition: all 0.3s ease;
+    transition: var(--fr-transition);
     text-transform: uppercase;
   }
 
-  .fabindia-inspirational__cta:hover {
-    background-color: {{ section.settings.cta_hover_bg_color }};
-    transform: translateX(5px);
+  {%- comment -%} Badge Prezzo Prodotti {%- endcomment -%}
+  #shopify-section-{{ section.id }} .fr-inspirational__price {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(254, 254, 254, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-weight: 600;
+    color: {{ section.settings.price_color }};
+    font-size: 14px;
+    z-index: 2;
   }
 
-  /* Animazioni scroll mobile */
+  {%- comment -%} Animazioni Hover Desktop {%- endcomment -%}
+  @media (hover: hover) and (min-width: 769px) {
+    #shopify-section-{{ section.id }} .fr-inspirational__item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    #shopify-section-{{ section.id }} .fr-inspirational__item:hover .fr-inspirational__image {
+      transform: scale({{ section.settings.hover_scale | divided_by: 100.0 }});
+    }
+
+    #shopify-section-{{ section.id }} .fr-inspirational__item:hover .fr-inspirational__overlay {
+      opacity: 1;
+    }
+
+    #shopify-section-{{ section.id }} .fr-inspirational__item:hover .fr-inspirational__content {
+      transform: translateY(0);
+    }
+
+    #shopify-section-{{ section.id }} .fr-inspirational__cta:hover {
+      background: {{ section.settings.cta_hover_bg }};
+      transform: translateX(4px);
+    }
+
+    {%- comment -%} Animazioni Hover Speciali per Layout {%- endcomment -%}
+    {%- if section.settings.layout_style == 'scattered' -%}
+      #shopify-section-{{ section.id }} .fr-inspirational__item:hover {
+        transform: rotate(0deg) translateY(-4px) !important;
+      }
+    {%- endif -%}
+  }
+
+  {%- comment -%} Animazioni Mobile Touch {%- endcomment -%}
   @media only screen and (max-width: 768px) {
-    .fabindia-inspirational__item {
+    #shopify-section-{{ section.id }} .fr-inspirational__overlay {
+      opacity: 1;
+      background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.8) 100%);
+    }
+
+    #shopify-section-{{ section.id }} .fr-inspirational__content {
+      transform: translateY(0);
+    }
+
+    #shopify-section-{{ section.id }} .fr-inspirational__item {
       opacity: 0;
       transform: translateY(30px);
     }
 
-    .fabindia-inspirational__item.is-visible {
+    #shopify-section-{{ section.id }} .fr-inspirational__item.is-visible {
       opacity: 1;
       transform: translateY(0);
-      transition: all 0.6s ease-out;
-    }
-
-    .fabindia-inspirational__overlay {
-      opacity: 1;
-      background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.8) 100%);
-    }
-
-    .fabindia-inspirational__content {
-      transform: translateY(0);
-    }
-
-    /* Testo mobile diverso */
-    .fabindia-inspirational__description--desktop {
-      display: none;
-    }
-
-    .fabindia-inspirational__description--mobile {
-      display: block;
     }
   }
 
-  @media only screen and (min-width: 769px) {
-    .fabindia-inspirational__description--mobile {
-      display: none;
-    }
-
-    .fabindia-inspirational__description--desktop {
-      display: block;
-    }
-  }
-
-  /* Stili per prodotti e collezioni */
-  .fabindia-inspirational__product-info {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 0.8em;
-    font-weight: 500;
-    color: {{ section.settings.product_price_color }};
-  }
-
-  /* Animazioni personalizzate */
-  @keyframes float {
+  {%- comment -%} Animazioni Entry {%- endcomment -%}
+  @keyframes fr-float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
   }
 
-  @keyframes pulse {
+  @keyframes fr-pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.02); }
   }
 
-  @keyframes slide-in {
-    from { transform: translateX(-100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+  @keyframes fr-fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .fabindia-inspirational__item--float {
-    animation: float 4s ease-in-out infinite;
+  #shopify-section-{{ section.id }} .fr-inspirational__item--animated {
+    animation: fr-fade-in 0.6s ease-out forwards;
   }
 
-  .fabindia-inspirational__item--pulse {
-    animation: pulse 3s ease-in-out infinite;
-  }
+  {%- for i in (1..12) -%}
+    #shopify-section-{{ section.id }} .fr-inspirational__item:nth-child({{ i }}) {
+      animation-delay: {{ i | times: 0.1 }}s;
+    }
+  {%- endfor -%}
 </style>
 
-<section class="fabindia-inspirational" data-section-id="{{ section.id }}">
-  <div class="fabindia-inspirational__container">
-    {%- if section.settings.title != blank -%}
-      <h2 class="fabindia-inspirational__heading" style="color: {{ section.settings.title_color }}; text-align: center; margin-bottom: 40px;">
-        {{ section.settings.title }}
-      </h2>
+<section class="fr-inspirational" data-section-id="{{ section.id }}">
+  <div class="fr-inspirational__wrapper">
+    {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
+      <header class="fr-inspirational__header">
+        {%- if section.settings.title != blank -%}
+          <h2 class="fr-inspirational__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="fr-inspirational__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </header>
     {%- endif -%}
 
-    <div class="fabindia-inspirational__grid">
+    <div class="fr-inspirational__grid" data-layout="{{ section.settings.layout_style }}">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
+          
           {%- when 'image' -%}
-            <div id="block-{{ block.id }}" 
-                 class="fabindia-inspirational__item fabindia-inspirational__item--{{ block.settings.animation_type }}"
-                 {{ block.shopify_attributes }}>
+            <article id="block-{{ block.id }}" 
+                     class="fr-inspirational__item fr-inspirational__item--animated"
+                     {{ block.shopify_attributes }}>
               {%- if block.settings.link != blank -%}
-                <a href="{{ block.settings.link }}" class="fabindia-inspirational__link">
+                <a href="{{ block.settings.link }}" class="fr-inspirational__link">
               {%- endif -%}
-                <div class="fabindia-inspirational__image-wrapper">
+                
+                <div class="fr-inspirational__media">
                   {%- if block.settings.image != blank -%}
-                    <img class="fabindia-inspirational__image lazyload"
-                         src="{{ block.settings.image | img_url: '300x300' }}"
-                         data-src="{{ block.settings.image | img_url: '1200x1200' }}"
-                         alt="{{ block.settings.image.alt | escape }}">
+                    <img class="fr-inspirational__image lazyload"
+                         src="{{ block.settings.image | img_url: '50x50' }}"
+                         data-src="{{ block.settings.image | img_url: '1400x1400' }}"
+                         data-sizes="auto"
+                         alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+                         loading="lazy">
                   {%- else -%}
-                    {{ 'image' | placeholder_svg_tag: 'fabindia-inspirational__image' }}
+                    {{ 'image' | placeholder_svg_tag: 'fr-inspirational__image' }}
                   {%- endif -%}
                 </div>
+
                 {%- if block.settings.show_overlay -%}
-                  <div class="fabindia-inspirational__overlay">
-                    <div class="fabindia-inspirational__content">
+                  <div class="fr-inspirational__overlay">
+                    <div class="fr-inspirational__content">
                       {%- if block.settings.title != blank -%}
-                        <h3 class="fabindia-inspirational__title">{{ block.settings.title }}</h3>
+                        <h3 class="fr-inspirational__content-title">{{ block.settings.title }}</h3>
                       {%- endif -%}
                       {%- if block.settings.description != blank -%}
-                        <p class="fabindia-inspirational__description fabindia-inspirational__description--desktop">
-                          {{ block.settings.description }}
-                        </p>
-                      {%- endif -%}
-                      {%- if block.settings.description_mobile != blank -%}
-                        <p class="fabindia-inspirational__description fabindia-inspirational__description--mobile">
-                          {{ block.settings.description_mobile }}
-                        </p>
-                      {%- elsif block.settings.description != blank -%}
-                        <p class="fabindia-inspirational__description fabindia-inspirational__description--mobile">
-                          {{ block.settings.description }}
-                        </p>
+                        <p class="fr-inspirational__content-text">{{ block.settings.description }}</p>
                       {%- endif -%}
                       {%- if block.settings.cta_text != blank -%}
-                        <span class="fabindia-inspirational__cta">{{ block.settings.cta_text }}</span>
+                        <span class="fr-inspirational__cta">{{ block.settings.cta_text }}</span>
                       {%- endif -%}
                     </div>
                   </div>
                 {%- endif -%}
+                
               {%- if block.settings.link != blank -%}
                 </a>
               {%- endif -%}
-            </div>
+            </article>
 
           {%- when 'product' -%}
             {%- assign product = all_products[block.settings.product] -%}
             {%- if product != blank -%}
-              <div id="block-{{ block.id }}" 
-                   class="fabindia-inspirational__item fabindia-inspirational__item--{{ block.settings.animation_type }}"
-                   {{ block.shopify_attributes }}>
-                <a href="{{ product.url }}" class="fabindia-inspirational__link">
-                  <div class="fabindia-inspirational__image-wrapper">
-                    {%- if block.settings.custom_image != blank -%}
-                      <img class="fabindia-inspirational__image lazyload"
-                           src="{{ block.settings.custom_image | img_url: '300x300' }}"
-                           data-src="{{ block.settings.custom_image | img_url: '1200x1200' }}"
-                           alt="{{ block.settings.custom_image.alt | escape }}">
-                    {%- elsif product.featured_image != blank -%}
-                      <img class="fabindia-inspirational__image lazyload"
-                           src="{{ product.featured_image | img_url: '300x300' }}"
-                           data-src="{{ product.featured_image | img_url: '1200x1200' }}"
-                           alt="{{ product.featured_image.alt | escape }}">
+              <article id="block-{{ block.id }}" 
+                       class="fr-inspirational__item fr-inspirational__item--animated"
+                       {{ block.shopify_attributes }}>
+                <a href="{{ product.url }}" class="fr-inspirational__link">
+                  
+                  <div class="fr-inspirational__media">
+                    {%- assign product_image = block.settings.custom_image | default: product.featured_image -%}
+                    {%- if product_image != blank -%}
+                      <img class="fr-inspirational__image lazyload"
+                           src="{{ product_image | img_url: '50x50' }}"
+                           data-src="{{ product_image | img_url: '1400x1400' }}"
+                           data-sizes="auto"
+                           alt="{{ product_image.alt | default: product.title | escape }}"
+                           loading="lazy">
                     {%- else -%}
-                      {{ 'product-1' | placeholder_svg_tag: 'fabindia-inspirational__image' }}
+                      {{ 'product-1' | placeholder_svg_tag: 'fr-inspirational__image' }}
                     {%- endif -%}
                   </div>
-                  {%- if block.settings.show_overlay -%}
-                    <div class="fabindia-inspirational__product-info">
+
+                  {%- if block.settings.show_price -%}
+                    <div class="fr-inspirational__price">
                       {{ product.price | money }}
                     </div>
-                    <div class="fabindia-inspirational__overlay">
-                      <div class="fabindia-inspirational__content">
-                        <h3 class="fabindia-inspirational__title">{{ product.title }}</h3>
+                  {%- endif -%}
+
+                  {%- if block.settings.show_overlay -%}
+                    <div class="fr-inspirational__overlay">
+                      <div class="fr-inspirational__content">
+                        <h3 class="fr-inspirational__content-title">{{ product.title }}</h3>
                         {%- if block.settings.description != blank -%}
-                          <p class="fabindia-inspirational__description fabindia-inspirational__description--desktop">
-                            {{ block.settings.description }}
-                          </p>
+                          <p class="fr-inspirational__content-text">{{ block.settings.description }}</p>
+                        {%- elsif product.description != blank -%}
+                          <p class="fr-inspirational__content-text">{{ product.description | strip_html | truncate: 100 }}</p>
                         {%- endif -%}
-                        {%- if block.settings.description_mobile != blank -%}
-                          <p class="fabindia-inspirational__description fabindia-inspirational__description--mobile">
-                            {{ block.settings.description_mobile }}
-                          </p>
-                        {%- elsif block.settings.description != blank -%}
-                          <p class="fabindia-inspirational__description fabindia-inspirational__description--mobile">
-                            {{ block.settings.description }}
-                          </p>
-                        {%- endif -%}
-                        <span class="fabindia-inspirational__cta">{{ block.settings.cta_text | default: 'Scopri' }}</span>
+                        <span class="fr-inspirational__cta">{{ block.settings.cta_text | default: 'Scopri' }}</span>
                       </div>
                     </div>
                   {%- endif -%}
+                  
                 </a>
-              </div>
+              </article>
             {%- endif -%}
 
           {%- when 'collection' -%}
             {%- assign collection = collections[block.settings.collection] -%}
             {%- if collection != blank -%}
-              <div id="block-{{ block.id }}" 
-                   class="fabindia-inspirational__item fabindia-inspirational__item--{{ block.settings.animation_type }}"
-                   {{ block.shopify_attributes }}>
-                <a href="{{ collection.url }}" class="fabindia-inspirational__link">
-                  <div class="fabindia-inspirational__image-wrapper">
-                    {%- if block.settings.custom_image != blank -%}
-                      <img class="fabindia-inspirational__image lazyload"
-                           src="{{ block.settings.custom_image | img_url: '300x300' }}"
-                           data-src="{{ block.settings.custom_image | img_url: '1200x1200' }}"
-                           alt="{{ block.settings.custom_image.alt | escape }}">
-                    {%- elsif collection.image != blank -%}
-                      <img class="fabindia-inspirational__image lazyload"
-                           src="{{ collection.image | img_url: '300x300' }}"
-                           data-src="{{ collection.image | img_url: '1200x1200' }}"
-                           alt="{{ collection.image.alt | escape }}">
+              <article id="block-{{ block.id }}" 
+                       class="fr-inspirational__item fr-inspirational__item--animated"
+                       {{ block.shopify_attributes }}>
+                <a href="{{ collection.url }}" class="fr-inspirational__link">
+                  
+                  <div class="fr-inspirational__media">
+                    {%- assign collection_image = block.settings.custom_image | default: collection.image -%}
+                    {%- if collection_image != blank -%}
+                      <img class="fr-inspirational__image lazyload"
+                           src="{{ collection_image | img_url: '50x50' }}"
+                           data-src="{{ collection_image | img_url: '1400x1400' }}"
+                           data-sizes="auto"
+                           alt="{{ collection_image.alt | default: collection.title | escape }}"
+                           loading="lazy">
                     {%- else -%}
-                      {{ 'collection-1' | placeholder_svg_tag: 'fabindia-inspirational__image' }}
+                      {{ 'collection-1' | placeholder_svg_tag: 'fr-inspirational__image' }}
                     {%- endif -%}
                   </div>
+
                   {%- if block.settings.show_overlay -%}
-                    <div class="fabindia-inspirational__overlay">
-                      <div class="fabindia-inspirational__content">
-                        <h3 class="fabindia-inspirational__title">{{ collection.title }}</h3>
+                    <div class="fr-inspirational__overlay">
+                      <div class="fr-inspirational__content">
+                        <h3 class="fr-inspirational__content-title">{{ collection.title }}</h3>
                         {%- if block.settings.description != blank -%}
-                          <p class="fabindia-inspirational__description fabindia-inspirational__description--desktop">
-                            {{ block.settings.description }}
-                          </p>
+                          <p class="fr-inspirational__content-text">{{ block.settings.description }}</p>
+                        {%- elsif collection.description != blank -%}
+                          <p class="fr-inspirational__content-text">{{ collection.description | strip_html | truncate: 100 }}</p>
                         {%- endif -%}
-                        {%- if block.settings.description_mobile != blank -%}
-                          <p class="fabindia-inspirational__description fabindia-inspirational__description--mobile">
-                            {{ block.settings.description_mobile }}
-                          </p>
-                        {%- elsif block.settings.description != blank -%}
-                          <p class="fabindia-inspirational__description fabindia-inspirational__description--mobile">
-                            {{ block.settings.description }}
-                          </p>
-                        {%- endif -%}
-                        <span class="fabindia-inspirational__cta">{{ block.settings.cta_text | default: 'Esplora' }}</span>
+                        <span class="fr-inspirational__cta">{{ block.settings.cta_text | default: 'Esplora' }}</span>
                       </div>
                     </div>
                   {%- endif -%}
+                  
                 </a>
-              </div>
+              </article>
             {%- endif -%}
+
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -492,13 +499,16 @@ FABINDIA ROMA - HERO INSPIRATIONAL COLLAGE SECTION
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const section = document.querySelector('[data-section-id="{{ section.id }}"]');
-  const items = section.querySelectorAll('.fabindia-inspirational__item');
+  if (!section) return;
   
-  // Animazione scroll mobile
-  if (window.innerWidth <= 768) {
+  const items = section.querySelectorAll('.fr-inspirational__item');
+  const isMobile = window.innerWidth <= 768;
+  
+  // Animazione scroll mobile con Intersection Observer
+  if (isMobile && items.length > 0) {
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+      rootMargin: '0px 0px -10% 0px'
     };
     
     const observer = new IntersectionObserver(function(entries) {
@@ -506,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (entry.isIntersecting) {
           setTimeout(function() {
             entry.target.classList.add('is-visible');
-          }, index * 100);
+          }, index * 50);
           observer.unobserve(entry.target);
         }
       });
@@ -515,53 +525,57 @@ document.addEventListener('DOMContentLoaded', function() {
     items.forEach(function(item) {
       observer.observe(item);
     });
-    
-    // Touch interactions
-    let touchStartY = 0;
-    let touchEndY = 0;
-    
-    section.addEventListener('touchstart', function(e) {
-      touchStartY = e.changedTouches[0].screenY;
-    });
-    
-    section.addEventListener('touchend', function(e) {
-      touchEndY = e.changedTouches[0].screenY;
-      handleSwipe();
-    });
-    
-    function handleSwipe() {
-      if (touchEndY < touchStartY - 50) {
-        // Swipe up - add subtle animation
-        items.forEach(function(item, index) {
-          if (item.classList.contains('is-visible')) {
-            item.style.transform = 'translateY(-5px)';
-            setTimeout(function() {
-              item.style.transform = 'translateY(0)';
-            }, 300);
-          }
-        });
-      }
-    }
   }
   
-  // Lazy loading
-  if ('IntersectionObserver' in window) {
+  // Lazy loading immagini con Intersection Observer
+  const lazyImages = section.querySelectorAll('.lazyload');
+  if ('IntersectionObserver' in window && lazyImages.length > 0) {
     const imageObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           const img = entry.target;
-          img.src = img.dataset.src;
-          img.classList.remove('lazyload');
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.classList.remove('lazyload');
+            img.classList.add('lazyloaded');
+          }
           imageObserver.unobserve(img);
         }
       });
+    }, {
+      rootMargin: '50px 0px'
     });
     
-    const lazyImages = section.querySelectorAll('.lazyload');
     lazyImages.forEach(function(img) {
       imageObserver.observe(img);
     });
   }
+  
+  // Gestione layout speciali
+  const layoutStyle = section.querySelector('.fr-inspirational__grid').dataset.layout;
+  
+  if (layoutStyle === 'masonry' && !isMobile) {
+    // Ottimizzazione layout masonry
+    const grid = section.querySelector('.fr-inspirational__grid');
+    const resizeObserver = new ResizeObserver(function() {
+      requestAnimationFrame(function() {
+        grid.style.gridAutoFlow = 'dense';
+      });
+    });
+    resizeObserver.observe(grid);
+  }
+  
+  // Preload immagini critiche (prime 3)
+  const criticalImages = section.querySelectorAll('.fr-inspirational__image:nth-child(-n+3)');
+  criticalImages.forEach(function(img) {
+    if (img.dataset.src) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = img.dataset.src;
+      document.head.appendChild(link);
+    }
+  });
 });
 </script>
 
@@ -570,14 +584,221 @@ document.addEventListener('DOMContentLoaded', function() {
   "name": "Hero Inspirational",
   "settings": [
     {
+      "type": "header",
+      "content": "📝 Contenuto"
+    },
+    {
       "type": "text",
       "id": "title",
-      "label": "Titolo sezione",
+      "label": "Titolo",
       "default": "Ispirati"
     },
     {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Dimensione titolo",
+      "min": 24,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Dimensione sottotitolo",
+      "min": 14,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "title_weight",
+      "label": "Peso font titolo",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "label": "Spaziatura lettere",
+      "min": -5,
+      "max": 15,
+      "step": 1,
+      "default": 2,
+      "info": "Valore in centesimi di em"
+    },
+    {
+      "type": "select",
+      "id": "title_transform",
+      "label": "Trasformazione testo",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normale"
+        },
+        {
+          "value": "uppercase",
+          "label": "MAIUSCOLO"
+        },
+        {
+          "value": "lowercase",
+          "label": "minuscolo"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalizzato"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Spazio sotto titolo",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
       "type": "header",
-      "content": "🎨 Colori Sezione"
+      "content": "🎨 Layout Globale"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Stile Layout",
+      "info": "Sovrapposizione globale",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Griglia Standard"
+        },
+        {
+          "value": "masonry",
+          "label": "Masonry"
+        },
+        {
+          "value": "overlap",
+          "label": "Sovrapposizione"
+        },
+        {
+          "value": "cascade",
+          "label": "Cascata"
+        },
+        {
+          "value": "scattered",
+          "label": "Disperso"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "overlap_offset",
+      "label": "Offset sovrapposizione",
+      "info": "Per layout Overlap",
+      "min": -50,
+      "max": 50,
+      "step": 10,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "scatter_rotation",
+      "label": "Rotazione dispersione",
+      "info": "Per layout Scattered",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "deg",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "scatter_offset",
+      "label": "Offset dispersione",
+      "info": "Per layout Scattered",
+      "min": 0,
+      "max": 50,
+      "step": 10,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "📐 Griglia"
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "label": "Colonne desktop",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_columns",
+      "label": "Colonne mobile",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "base_height",
+      "label": "Altezza base desktop",
+      "min": 100,
+      "max": 400,
+      "step": 50,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "mobile_base_height",
+      "label": "Altezza base mobile",
+      "min": 100,
+      "max": 300,
+      "step": 50,
+      "unit": "px",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Spazio tra elementi",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "overflow_visible",
+      "label": "Overflow visibile",
+      "info": "Per sovrapposizioni",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "🎨 Colori"
     },
     {
       "type": "color",
@@ -593,15 +814,103 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       "type": "color",
-      "id": "block_bg_color",
-      "label": "Sfondo blocchi",
+      "id": "subtitle_color",
+      "label": "Colore sottotitolo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "item_bg_color",
+      "label": "Sfondo elementi",
       "default": "#F0E6E0"
+    },
+    {
+      "type": "header",
+      "content": "🎭 Overlay"
+    },
+    {
+      "type": "select",
+      "id": "overlay_gradient_type",
+      "label": "Tipo gradiente overlay",
+      "options": [
+        {
+          "value": "bottom-dark",
+          "label": "Scuro in basso"
+        },
+        {
+          "value": "top-dark",
+          "label": "Scuro in alto"
+        },
+        {
+          "value": "full-gradient",
+          "label": "Graduale completo"
+        },
+        {
+          "value": "half-transparent",
+          "label": "Metà trasparente"
+        },
+        {
+          "value": "radial",
+          "label": "Radiale"
+        }
+      ],
+      "default": "bottom-dark"
+    },
+    {
+      "type": "color",
+      "id": "overlay_title_color",
+      "label": "Colore titolo overlay",
+      "default": "#FEFEFE"
     },
     {
       "type": "color",
       "id": "overlay_text_color",
       "label": "Colore testo overlay",
-      "default": "#FEFEFE"
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "range",
+      "id": "overlay_title_size",
+      "label": "Dimensione titolo",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "overlay_text_size",
+      "label": "Dimensione testo",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Posizione contenuto",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Alto"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "flex-end",
+          "label": "Basso"
+        }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "header",
+      "content": "🔘 Call to Action"
     },
     {
       "type": "color",
@@ -617,202 +926,258 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       "type": "color",
-      "id": "cta_hover_bg_color",
+      "id": "cta_hover_bg",
       "label": "Sfondo CTA hover",
       "default": "#B5A397"
     },
     {
+      "type": "range",
+      "id": "cta_padding_x",
+      "label": "Padding orizzontale",
+      "min": 12,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "cta_padding_y",
+      "label": "Padding verticale",
+      "min": 6,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "cta_radius",
+      "label": "Raggio bordi",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "cta_size",
+      "label": "Dimensione font",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "cta_weight",
+      "label": "Peso font",
+      "min": 400,
+      "max": 700,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "⚡ Animazioni"
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "label": "Velocità animazioni",
+      "min": 200,
+      "max": 800,
+      "step": 100,
+      "unit": "ms",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "hover_scale",
+      "label": "Scala hover immagine",
+      "min": 105,
+      "max": 130,
+      "step": 5,
+      "default": 110,
+      "info": "Percentuale di zoom (110 = 110%)"
+    },
+    {
+      "type": "header",
+      "content": "🎯 Altre Impostazioni"
+    },
+    {
       "type": "color",
-      "id": "product_price_color",
+      "id": "price_color",
       "label": "Colore prezzo",
       "default": "#C33A32"
     },
     {
-      "type": "range",
-      "id": "cta_border_radius",
-      "label": "Raggio bordi CTA",
-      "min": 0,
-      "max": 30,
-      "step": 3,
-      "unit": "px",
-      "default": 6
-    },
-    {
-      "type": "range",
-      "id": "cta_font_weight",
-      "label": "Peso font CTA",
-      "min": 300,
-      "max": 900,
-      "step": 100,
-      "default": 500
-    },
-    {
-      "type": "header",
-      "content": "📐 Layout & Spacing"
-    },
-    {
       "type": "select",
-      "id": "max_width",
-      "label": "Larghezza Max Desktop",
-      "info": "Limita larghezza su schermi grandi",
+      "id": "image_fit",
+      "label": "Adattamento immagini",
       "options": [
         {
-          "value": "default",
-          "label": "Larghezza standard tema"
+          "value": "cover",
+          "label": "Cover"
         },
         {
-          "value": "100%",
-          "label": "Schermo intero (100%)"
+          "value": "contain",
+          "label": "Contain"
         },
         {
-          "value": "1400px",
-          "label": "Extra large (1400px)"
-        },
-        {
-          "value": "1200px",
-          "label": "Large (1200px)"
-        },
-        {
-          "value": "1100px",
-          "label": "Medium-large (1100px)"
-        },
-        {
-          "value": "1000px",
-          "label": "Medium (1000px)"
-        },
-        {
-          "value": "900px",
-          "label": "Compact (900px)"
-        },
-        {
-          "value": "800px",
-          "label": "Small (800px)"
-        },
-        {
-          "value": "700px",
-          "label": "Extra small (700px)"
+          "value": "fill",
+          "label": "Fill"
         }
       ],
-      "default": "default"
+      "default": "cover"
     },
     {
-      "type": "header",
-      "content": "📱 Visibilità Responsive"
+      "type": "range",
+      "id": "border_radius",
+      "label": "Raggio bordi elementi",
+      "min": 0,
+      "max": 24,
+      "step": 4,
+      "unit": "px",
+      "default": 8
     },
     {
       "type": "checkbox",
-      "id": "hide_on_mobile",
+      "id": "nascondi_mobile",
       "label": "Nascondi su Mobile",
-      "info": "Sezione non visibile su mobile",
       "default": false
     },
     {
       "type": "checkbox",
-      "id": "hide_on_desktop",
+      "id": "nascondi_desktop",
       "label": "Nascondi su Desktop",
-      "info": "Sezione non visibile su desktop",
       "default": false
-    },
-    {
-      "type": "header",
-      "content": "📏 Spacing Mobile"
     },
     {
       "type": "range",
       "id": "padding_top_mobile",
-      "label": "Padding superiore",
-      "default": 24,
+      "label": "Padding Top Mobile",
+      "default": 20,
       "min": 0,
       "max": 100,
-      "step": 4,
+      "step": 5,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "padding_bottom_mobile",
-      "label": "Padding inferiore",
-      "default": 24,
+      "label": "Padding Bottom Mobile",
+      "default": 20,
       "min": 0,
       "max": 100,
-      "step": 4,
+      "step": 5,
       "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_top_mobile",
-      "label": "Margine superiore",
-      "info": "Valori negativi per sovrapposizione",
-      "default": 0,
-      "min": -100,
-      "max": 100,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_bottom_mobile",
-      "label": "Margine inferiore",
-      "default": 0,
-      "min": -100,
-      "max": 100,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "💻 Spacing Desktop"
     },
     {
       "type": "range",
       "id": "padding_top_desktop",
-      "label": "Padding superiore",
-      "default": 48,
+      "label": "Padding Top Desktop",
+      "default": 40,
       "min": 0,
       "max": 200,
-      "step": 8,
+      "step": 10,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "padding_bottom_desktop",
-      "label": "Padding inferiore",
-      "default": 48,
+      "label": "Padding Bottom Desktop",
+      "default": 40,
       "min": 0,
       "max": 200,
-      "step": 8,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 5,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "margin_top_desktop",
-      "label": "Margine superiore",
-      "info": "Valori negativi per sovrapposizione",
+      "label": "Margin Top Desktop",
       "default": 0,
       "min": -200,
       "max": 200,
-      "step": 8,
+      "step": 10,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "margin_bottom_desktop",
-      "label": "Margine inferiore",
+      "label": "Margin Bottom Desktop",
       "default": 0,
       "min": -200,
       "max": 200,
-      "step": 8,
+      "step": 10,
       "unit": "px"
     },
     {
-      "type": "header",
-      "content": "⚡ Opzioni Avanzate"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_smooth_transitions",
-      "label": "Transizioni fluide",
-      "info": "Animazioni quando cambia dimensione",
-      "default": false
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
     }
   ],
   "blocks": [
@@ -828,20 +1193,12 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           "type": "text",
           "id": "title",
-          "label": "Titolo",
-          "default": "Titolo immagine"
+          "label": "Titolo"
         },
         {
           "type": "textarea",
           "id": "description",
-          "label": "Descrizione desktop",
-          "default": "Descrizione immagine"
-        },
-        {
-          "type": "textarea",
-          "id": "description_mobile",
-          "label": "Descrizione mobile",
-          "info": "Lascia vuoto per usare desktop"
+          "label": "Descrizione"
         },
         {
           "type": "text",
@@ -857,53 +1214,17 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           "type": "checkbox",
           "id": "show_overlay",
-          "label": "Mostra overlay e testi",
+          "label": "Mostra overlay",
           "default": true
         },
         {
           "type": "header",
-          "content": "🎨 Animazione"
-        },
-        {
-          "type": "select",
-          "id": "animation_type",
-          "label": "Tipo animazione",
-          "options": [
-            {
-              "value": "zoom",
-              "label": "Zoom"
-            },
-            {
-              "value": "rotate",
-              "label": "Rotazione"
-            },
-            {
-              "value": "slide",
-              "label": "Scorrimento"
-            },
-            {
-              "value": "fade",
-              "label": "Dissolvenza"
-            },
-            {
-              "value": "float",
-              "label": "Fluttuante"
-            },
-            {
-              "value": "pulse",
-              "label": "Pulsante"
-            }
-          ],
-          "default": "zoom"
-        },
-        {
-          "type": "header",
-          "content": "📏 Dimensioni"
+          "content": "📏 Dimensioni Desktop"
         },
         {
           "type": "range",
-          "id": "desktop_columns",
-          "label": "Colonne desktop",
+          "id": "desktop_span_x",
+          "label": "Larghezza (colonne)",
           "min": 1,
           "max": 12,
           "step": 1,
@@ -911,17 +1232,21 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
           "type": "range",
-          "id": "desktop_rows",
-          "label": "Righe desktop",
+          "id": "desktop_span_y",
+          "label": "Altezza (righe)",
           "min": 1,
-          "max": 3,
+          "max": 4,
           "step": 1,
-          "default": 1
+          "default": 2
+        },
+        {
+          "type": "header",
+          "content": "📱 Dimensioni Mobile"
         },
         {
           "type": "range",
-          "id": "mobile_columns",
-          "label": "Colonne mobile",
+          "id": "mobile_span_x",
+          "label": "Larghezza mobile",
           "min": 1,
           "max": 4,
           "step": 1,
@@ -929,58 +1254,34 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
           "type": "range",
-          "id": "custom_height",
-          "label": "Altezza personalizzata",
-          "info": "0 = altezza automatica",
-          "min": 0,
-          "max": 600,
-          "step": 50,
-          "unit": "px",
-          "default": 600
+          "id": "mobile_span_y",
+          "label": "Altezza mobile",
+          "min": 1,
+          "max": 3,
+          "step": 1,
+          "default": 1
         },
         {
           "type": "header",
-          "content": "🎯 Sovrapposizione"
+          "content": "🎯 Posizione Custom"
         },
         {
           "type": "checkbox",
-          "id": "enable_overlap",
-          "label": "Abilita sovrapposizione",
+          "id": "custom_position",
+          "label": "Posizione manuale",
           "default": false
         },
         {
-          "type": "select",
-          "id": "overlap_direction",
-          "label": "Direzione sovrapposizione",
-          "options": [
-            {
-              "value": "left",
-              "label": "Sinistra"
-            },
-            {
-              "value": "right",
-              "label": "Destra"
-            },
-            {
-              "value": "top",
-              "label": "Alto"
-            },
-            {
-              "value": "bottom",
-              "label": "Basso"
-            }
-          ],
-          "default": "left"
+          "type": "number",
+          "id": "grid_column_start",
+          "label": "Colonna inizio",
+          "default": 1
         },
         {
-          "type": "range",
-          "id": "overlap_amount",
-          "label": "Quantità sovrapposizione",
-          "min": 0,
-          "max": 500,
-          "step": 5,
-          "unit": "px",
-          "default": 100
+          "type": "number",
+          "id": "grid_row_start",
+          "label": "Riga inizio",
+          "default": 1
         }
       ]
     },
@@ -996,19 +1297,13 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           "type": "image_picker",
           "id": "custom_image",
-          "label": "Immagine personalizzata",
-          "info": "Sovrascrivi immagine prodotto"
+          "label": "Immagine custom",
+          "info": "Sovrascrive prodotto"
         },
         {
           "type": "textarea",
           "id": "description",
-          "label": "Descrizione desktop"
-        },
-        {
-          "type": "textarea",
-          "id": "description_mobile",
-          "label": "Descrizione mobile",
-          "info": "Lascia vuoto per usare desktop"
+          "label": "Descrizione custom"
         },
         {
           "type": "text",
@@ -1019,53 +1314,23 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           "type": "checkbox",
           "id": "show_overlay",
-          "label": "Mostra overlay e testi",
+          "label": "Mostra overlay",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_price",
+          "label": "Mostra prezzo",
           "default": true
         },
         {
           "type": "header",
-          "content": "🎨 Animazione"
-        },
-        {
-          "type": "select",
-          "id": "animation_type",
-          "label": "Tipo animazione",
-          "options": [
-            {
-              "value": "zoom",
-              "label": "Zoom"
-            },
-            {
-              "value": "rotate",
-              "label": "Rotazione"
-            },
-            {
-              "value": "slide",
-              "label": "Scorrimento"
-            },
-            {
-              "value": "fade",
-              "label": "Dissolvenza"
-            },
-            {
-              "value": "float",
-              "label": "Fluttuante"
-            },
-            {
-              "value": "pulse",
-              "label": "Pulsante"
-            }
-          ],
-          "default": "zoom"
-        },
-        {
-          "type": "header",
-          "content": "📏 Dimensioni"
+          "content": "📏 Dimensioni Desktop"
         },
         {
           "type": "range",
-          "id": "desktop_columns",
-          "label": "Colonne desktop",
+          "id": "desktop_span_x",
+          "label": "Larghezza (colonne)",
           "min": 1,
           "max": 12,
           "step": 1,
@@ -1073,76 +1338,56 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
           "type": "range",
-          "id": "desktop_rows",
-          "label": "Righe desktop",
-          "min": 1,
-          "max": 3,
-          "step": 1,
-          "default": 1
-        },
-        {
-          "type": "range",
-          "id": "mobile_columns",
-          "label": "Colonne mobile",
+          "id": "desktop_span_y",
+          "label": "Altezza (righe)",
           "min": 1,
           "max": 4,
           "step": 1,
-          "default": 1
-        },
-        {
-          "type": "range",
-          "id": "custom_height",
-          "label": "Altezza personalizzata",
-          "info": "0 = altezza automatica",
-          "min": 0,
-          "max": 600,
-          "step": 50,
-          "unit": "px",
-          "default": 0
+          "default": 2
         },
         {
           "type": "header",
-          "content": "🎯 Sovrapposizione"
-        },
-        {
-          "type": "checkbox",
-          "id": "enable_overlap",
-          "label": "Abilita sovrapposizione",
-          "default": false
-        },
-        {
-          "type": "select",
-          "id": "overlap_direction",
-          "label": "Direzione sovrapposizione",
-          "options": [
-            {
-              "value": "left",
-              "label": "Sinistra"
-            },
-            {
-              "value": "right",
-              "label": "Destra"
-            },
-            {
-              "value": "top",
-              "label": "Alto"
-            },
-            {
-              "value": "bottom",
-              "label": "Basso"
-            }
-          ],
-          "default": "left"
+          "content": "📱 Dimensioni Mobile"
         },
         {
           "type": "range",
-          "id": "overlap_amount",
-          "label": "Quantità sovrapposizione",
-          "min": 0,
-          "max": 51,
-          "step": 3,
-          "unit": "px",
-          "default": 21
+          "id": "mobile_span_x",
+          "label": "Larghezza mobile",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "default": 2
+        },
+        {
+          "type": "range",
+          "id": "mobile_span_y",
+          "label": "Altezza mobile",
+          "min": 1,
+          "max": 3,
+          "step": 1,
+          "default": 2
+        },
+        {
+          "type": "header",
+          "content": "🎯 Posizione Custom"
+        },
+        {
+          "type": "checkbox",
+          "id": "custom_position",
+          "label": "Posizione manuale",
+          "default": false
+        },
+        {
+          "type": "number",
+          "id": "grid_column_start",
+          "label": "Colonna inizio",
+          "default": 1
+        },
+        {
+          "type": "number",
+          "id": "grid_row_start",
+          "label": "Riga inizio",
+          "default": 1
         }
       ]
     },
@@ -1158,19 +1403,13 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           "type": "image_picker",
           "id": "custom_image",
-          "label": "Immagine personalizzata",
-          "info": "Sovrascrivi immagine collezione"
+          "label": "Immagine custom",
+          "info": "Sovrascrive collezione"
         },
         {
           "type": "textarea",
           "id": "description",
-          "label": "Descrizione desktop"
-        },
-        {
-          "type": "textarea",
-          "id": "description_mobile",
-          "label": "Descrizione mobile",
-          "info": "Lascia vuoto per usare desktop"
+          "label": "Descrizione custom"
         },
         {
           "type": "text",
@@ -1181,53 +1420,17 @@ document.addEventListener('DOMContentLoaded', function() {
         {
           "type": "checkbox",
           "id": "show_overlay",
-          "label": "Mostra overlay e testi",
+          "label": "Mostra overlay",
           "default": true
         },
         {
           "type": "header",
-          "content": "🎨 Animazione"
-        },
-        {
-          "type": "select",
-          "id": "animation_type",
-          "label": "Tipo animazione",
-          "options": [
-            {
-              "value": "zoom",
-              "label": "Zoom"
-            },
-            {
-              "value": "rotate",
-              "label": "Rotazione"
-            },
-            {
-              "value": "slide",
-              "label": "Scorrimento"
-            },
-            {
-              "value": "fade",
-              "label": "Dissolvenza"
-            },
-            {
-              "value": "float",
-              "label": "Fluttuante"
-            },
-            {
-              "value": "pulse",
-              "label": "Pulsante"
-            }
-          ],
-          "default": "zoom"
-        },
-        {
-          "type": "header",
-          "content": "📏 Dimensioni"
+          "content": "📏 Dimensioni Desktop"
         },
         {
           "type": "range",
-          "id": "desktop_columns",
-          "label": "Colonne desktop",
+          "id": "desktop_span_x",
+          "label": "Larghezza (colonne)",
           "min": 1,
           "max": 12,
           "step": 1,
@@ -1235,76 +1438,56 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         {
           "type": "range",
-          "id": "desktop_rows",
-          "label": "Righe desktop",
+          "id": "desktop_span_y",
+          "label": "Altezza (righe)",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "default": 2
+        },
+        {
+          "type": "header",
+          "content": "📱 Dimensioni Mobile"
+        },
+        {
+          "type": "range",
+          "id": "mobile_span_x",
+          "label": "Larghezza mobile",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "default": 2
+        },
+        {
+          "type": "range",
+          "id": "mobile_span_y",
+          "label": "Altezza mobile",
           "min": 1,
           "max": 3,
           "step": 1,
           "default": 1
         },
         {
-          "type": "range",
-          "id": "mobile_columns",
-          "label": "Colonne mobile",
-          "min": 1,
-          "max": 4,
-          "step": 1,
-          "default": 1
-        },
-        {
-          "type": "range",
-          "id": "custom_height",
-          "label": "Altezza personalizzata",
-          "info": "0 = altezza automatica",
-          "min": 0,
-          "max": 600,
-          "step": 50,
-          "unit": "px",
-          "default": 0
-        },
-        {
           "type": "header",
-          "content": "🎯 Sovrapposizione"
+          "content": "🎯 Posizione Custom"
         },
         {
           "type": "checkbox",
-          "id": "enable_overlap",
-          "label": "Abilita sovrapposizione",
+          "id": "custom_position",
+          "label": "Posizione manuale",
           "default": false
         },
         {
-          "type": "select",
-          "id": "overlap_direction",
-          "label": "Direzione sovrapposizione",
-          "options": [
-            {
-              "value": "left",
-              "label": "Sinistra"
-            },
-            {
-              "value": "right",
-              "label": "Destra"
-            },
-            {
-              "value": "top",
-              "label": "Alto"
-            },
-            {
-              "value": "bottom",
-              "label": "Basso"
-            }
-          ],
-          "default": "left"
+          "type": "number",
+          "id": "grid_column_start",
+          "label": "Colonna inizio",
+          "default": 1
         },
         {
-          "type": "range",
-          "id": "overlap_amount",
-          "label": "Quantità sovrapposizione",
-          "min": 0,
-          "max": 51,
-          "step": 3,
-          "unit": "px",
-          "default": 21
+          "type": "number",
+          "id": "grid_row_start",
+          "label": "Riga inizio",
+          "default": 1
         }
       ]
     }
@@ -1312,38 +1495,38 @@ document.addEventListener('DOMContentLoaded', function() {
   "presets": [
     {
       "name": "Hero Inspirational",
-      "category": "Fabindia Custom",
+      "category": "Fabindia custom",
       "blocks": [
         {
           "type": "image",
           "settings": {
-            "title": "Stile Fabindia",
-            "description": "Eleganza senza tempo",
-            "desktop_columns": 4,
-            "desktop_rows": 2
-          }
-        },
-        {
-          "type": "collection",
-          "settings": {
-            "desktop_columns": 3,
-            "desktop_rows": 1
+            "title": "Eleganza Italiana",
+            "description": "Design senza tempo",
+            "desktop_span_x": 6,
+            "desktop_span_y": 2
           }
         },
         {
           "type": "product",
           "settings": {
-            "desktop_columns": 3,
-            "desktop_rows": 1
+            "desktop_span_x": 3,
+            "desktop_span_y": 2
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "desktop_span_x": 3,
+            "desktop_span_y": 1
           }
         },
         {
           "type": "image",
           "settings": {
             "title": "Artigianato",
-            "description": "Fatto a mano con amore",
-            "desktop_columns": 2,
-            "desktop_rows": 1
+            "description": "Fatto a mano",
+            "desktop_span_x": 3,
+            "desktop_span_y": 1
           }
         }
       ]

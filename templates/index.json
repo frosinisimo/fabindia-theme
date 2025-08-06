@@ -940,142 +940,142 @@
         "lazyload_images": true
       }
     },
-    "inspirational_Cqt3rz": {
+    "inspirational_aqyRXT": {
       "type": "inspirational",
       "blocks": {
-        "image_rMFTYm": {
+        "image_f94mFt": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/bustan_3.jpg",
-            "title": "Stile Fabindia",
-            "description": "Eleganza senza tempo",
-            "description_mobile": "",
+            "image": "shopify://shop_images/timo3.jpg",
+            "title": "Eleganza Italiana",
+            "description": "Design senza tempo",
+            "cta_text": "Scopri",
+            "link": "",
+            "show_overlay": true,
+            "desktop_span_x": 6,
+            "desktop_span_y": 2,
+            "mobile_span_x": 1,
+            "mobile_span_y": 1,
+            "custom_position": false,
+            "grid_column_start": 1,
+            "grid_row_start": 1
+          }
+        },
+        "image_xnVFTn": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/timo3.jpg",
+            "title": "Eleganza Italiana",
+            "description": "Design senza tempo",
+            "cta_text": "Scopri",
+            "link": "",
+            "show_overlay": true,
+            "desktop_span_x": 6,
+            "desktop_span_y": 2,
+            "mobile_span_x": 1,
+            "mobile_span_y": 1,
+            "custom_position": false,
+            "grid_column_start": 1,
+            "grid_row_start": 1
+          }
+        },
+        "image_WBVDTz": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/timo3.jpg",
+            "title": "Eleganza Italiana",
+            "description": "Design senza tempo",
             "cta_text": "Scopri",
             "link": "",
             "show_overlay": false,
-            "animation_type": "fade",
-            "desktop_columns": 4,
-            "desktop_rows": 1,
-            "mobile_columns": 1,
-            "custom_height": 600,
-            "enable_overlap": false,
-            "overlap_direction": "left",
-            "overlap_amount": 100
+            "desktop_span_x": 6,
+            "desktop_span_y": 2,
+            "mobile_span_x": 1,
+            "mobile_span_y": 1,
+            "custom_position": false,
+            "grid_column_start": 1,
+            "grid_row_start": 1
           }
         },
-        "image_tM8HQq": {
+        "image_3ULKA6": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/polty7.jpg",
-            "title": "Artigianato",
-            "description": "Fatto a mano con amore",
-            "description_mobile": "",
+            "image": "shopify://shop_images/timo3.jpg",
+            "title": "Eleganza Italiana",
+            "description": "Design senza tempo",
             "cta_text": "Scopri",
             "link": "",
             "show_overlay": true,
-            "animation_type": "zoom",
-            "desktop_columns": 2,
-            "desktop_rows": 1,
-            "mobile_columns": 1,
-            "custom_height": 250,
-            "enable_overlap": true,
-            "overlap_direction": "right",
-            "overlap_amount": 265
-          }
-        },
-        "image_fdQWaz": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/bustan_3.jpg",
-            "title": "Stile Fabindia",
-            "description": "Eleganza senza tempo",
-            "description_mobile": "",
-            "cta_text": "Scopri",
-            "link": "",
-            "show_overlay": false,
-            "animation_type": "fade",
-            "desktop_columns": 4,
-            "desktop_rows": 1,
-            "mobile_columns": 1,
-            "custom_height": 600,
-            "enable_overlap": false,
-            "overlap_direction": "left",
-            "overlap_amount": 100
-          }
-        },
-        "image_RNpVP9": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/polty7.jpg",
-            "title": "Artigianato",
-            "description": "Fatto a mano con amore",
-            "description_mobile": "",
-            "cta_text": "Scopri",
-            "link": "",
-            "show_overlay": true,
-            "animation_type": "zoom",
-            "desktop_columns": 2,
-            "desktop_rows": 1,
-            "mobile_columns": 1,
-            "custom_height": 600,
-            "enable_overlap": false,
-            "overlap_direction": "left",
-            "overlap_amount": 100
-          }
-        },
-        "image_4GWUN8": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/nabucco3.jpg",
-            "title": "Titolo immagine",
-            "description": "Descrizione immagine",
-            "description_mobile": "",
-            "cta_text": "Scopri",
-            "link": "",
-            "show_overlay": true,
-            "animation_type": "zoom",
-            "desktop_columns": 3,
-            "desktop_rows": 1,
-            "mobile_columns": 1,
-            "custom_height": 600,
-            "enable_overlap": false,
-            "overlap_direction": "left",
-            "overlap_amount": 100
+            "desktop_span_x": 6,
+            "desktop_span_y": 2,
+            "mobile_span_x": 1,
+            "mobile_span_y": 1,
+            "custom_position": false,
+            "grid_column_start": 1,
+            "grid_row_start": 1
           }
         }
       },
       "block_order": [
-        "image_rMFTYm",
-        "image_tM8HQq",
-        "image_fdQWaz",
-        "image_RNpVP9",
-        "image_4GWUN8"
+        "image_f94mFt",
+        "image_xnVFTn",
+        "image_WBVDTz",
+        "image_3ULKA6"
       ],
       "name": "Hero Inspirational",
       "settings": {
-        "title": "",
+        "title": "Ispirati",
+        "subtitle": "",
+        "title_size": 48,
+        "subtitle_size": 18,
+        "title_weight": 600,
+        "title_letter_spacing": 2,
+        "title_transform": "none",
+        "title_spacing": 40,
+        "layout_style": "masonry",
+        "overlap_offset": -10,
+        "scatter_rotation": 7,
+        "scatter_offset": 20,
+        "desktop_columns": 12,
+        "mobile_columns": 2,
+        "base_height": 200,
+        "mobile_base_height": 150,
+        "grid_gap": 16,
+        "overflow_visible": true,
         "section_bg_color": "#FEFEFE",
         "title_color": "#3E3E3E",
-        "block_bg_color": "#F0E6E0",
-        "overlay_text_color": "#FEFEFE",
+        "subtitle_color": "#B5A397",
+        "item_bg_color": "#F0E6E0",
+        "overlay_gradient_type": "full-gradient",
+        "overlay_title_color": "#FEFEFE",
+        "overlay_text_color": "#F0E6E0",
+        "overlay_title_size": 24,
+        "overlay_text_size": 15,
+        "content_position": "flex-end",
         "cta_bg_color": "#C33A32",
         "cta_text_color": "#FEFEFE",
-        "cta_hover_bg_color": "#B5A397",
-        "product_price_color": "#C33A32",
-        "cta_border_radius": 6,
-        "cta_font_weight": 500,
-        "max_width": "100%",
-        "hide_on_mobile": false,
-        "hide_on_desktop": false,
-        "padding_top_mobile": 24,
-        "padding_bottom_mobile": 24,
+        "cta_hover_bg": "#B5A397",
+        "cta_padding_x": 20,
+        "cta_padding_y": 10,
+        "cta_radius": 4,
+        "cta_size": 13,
+        "cta_weight": 600,
+        "animation_speed": 400,
+        "hover_scale": 110,
+        "price_color": "#C33A32",
+        "image_fit": "cover",
+        "border_radius": 24,
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20,
+        "padding_top_desktop": 40,
+        "padding_bottom_desktop": 40,
         "margin_top_mobile": 0,
         "margin_bottom_mobile": 0,
-        "padding_top_desktop": 48,
-        "padding_bottom_desktop": 48,
         "margin_top_desktop": 0,
         "margin_bottom_desktop": 0,
-        "enable_smooth_transitions": false
+        "max_dimensione": "1200px"
       }
     }
   },
@@ -1091,6 +1091,6 @@
     "hero_images_big_JfMtkh",
     "collection_pro_J7FQby",
     "map_VAF3NN",
-    "inspirational_Cqt3rz"
+    "inspirational_aqyRXT"
   ]
 }
