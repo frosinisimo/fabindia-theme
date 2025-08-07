@@ -1,5 +1,7 @@
-<div class="product-block" {% if block.settings.product_dynamic_variants_enable %}data-dynamic-variants-enabled{% endif %} {{ block.shopify_attributes }}>
-  {%- comment -%} Controllo varianti colore {%- endcomment -%}
+{%- comment -%} Sistema Varianti Premium Fabindia con Tooltip {%- endcomment -%}
+<div class="fr-variant-system" {% if block.settings.product_dynamic_variants_enable %}data-dynamic-variants-enabled{% endif %} {{ block.shopify_attributes }}>
+  
+  {%- comment -%} Sistema Varianti Colore Premium {%- endcomment -%}
   {%- if block.settings.show_color_variants and product.metafields.custom.related_products != blank -%}
     {%- liquid
       assign related_handles_string = product.metafields.custom.related_products | strip
@@ -24,18 +26,16 @@
       endfor
     -%}
     
-    <div class="fbi-variants-section" data-size-index="{{ size_option_index }}">
-      {%- comment -%} Header sezione - Nascosto via CSS {%- endcomment -%}
-      <div class="fbi-header">
-        <h4 class="fbi-title">{{ block.settings.section_title }}</h4>
-        {%- if block.settings.show_selected_size and size_option_index != -1 -%}
-          <span class="fbi-size-indicator"></span>
-        {%- endif -%}
-      </div>
+    <div class="fr-container" 
+         data-size-index="{{ size_option_index }}" 
+         data-color-count="{{ color_count }}"
+         data-tooltip-duration="{{ block.settings.tooltip_duration }}"
+         data-product-id="{{ product.id }}"
+         data-product-variants="{{ product.variants | json | escape }}">
       
-      {%- comment -%} Variant picker originale con stili custom {%- endcomment -%}
+      {%- comment -%} Selettore Taglie Premium con Tooltip {%- endcomment -%}
       {%- unless product.has_only_default_variant -%}
-        <div class="fbi-original-variants {% if block.settings.auto_fit_variants_mobile %}fbi-auto-fit-mobile{% endif %} {% if block.settings.auto_fit_variants_desktop %}fbi-auto-fit-desktop{% endif %}">
+        <div class="fr-size-selector">
           {%- for option in product.options_with_values -%}
             {%- liquid
               if block.settings.color_swatches
@@ -53,46 +53,65 @@
             -%}
             
             {%- if block.settings.picker_type == 'button' -%}
-              {%- render 'variant-button',
-                block: block,
-                product: product,
-                form_id: form_id,
-                section_id: section_id,
-                option: option,
-                forloop: forloop,
-                variant_labels: block.settings.variant_labels,
-                is_color: is_color,
-                color_option_index: color_option_index,
-                connect_to_sizechart: connect_to_sizechart,
-                sizechart_index: sizechart_index
-              -%}
+              <div class="fr-option-group">
+                {%- render 'variant-button',
+                  block: block,
+                  product: product,
+                  form_id: form_id,
+                  section_id: section_id,
+                  option: option,
+                  forloop: forloop,
+                  variant_labels: block.settings.variant_labels,
+                  is_color: is_color,
+                  color_option_index: color_option_index,
+                  connect_to_sizechart: connect_to_sizechart,
+                  sizechart_index: sizechart_index
+                -%}
+              </div>
             {%- else -%}
-              {%- render 'variant-dropdown',
-                product: product,
-                form_id: form_id,
-                section_id: section_id,
-                option: option,
-                forloop: forloop,
-                variant_labels: block.settings.variant_labels
-              -%}
+              <div class="fr-option-group">
+                {%- render 'variant-dropdown',
+                  product: product,
+                  form_id: form_id,
+                  section_id: section_id,
+                  option: option,
+                  forloop: forloop,
+                  variant_labels: block.settings.variant_labels
+                -%}
+              </div>
             {%- endif -%}
           {%- endfor -%}
+          
+          {%- comment -%} Tooltip Elegante per Taglie Non Disponibili {%- endcomment -%}
+          {%- if block.settings.enable_tooltip -%}
+            <div class="fr-size-tooltip" style="display: none;">
+              <div class="fr-tooltip-content">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 8v4" stroke-linecap="round"/>
+                  <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                </svg>
+                <span>{{ block.settings.tooltip_text }}</span>
+              </div>
+              <div class="fr-tooltip-arrow"></div>
+            </div>
+          {%- endif -%}
         </div>
       {%- endunless -%}
       
-      {%- comment -%} Alert per taglia non disponibile {%- endcomment -%}
-      <div class="fbi-alert">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-        </svg>
-        <span>{{ block.settings.size_alert_text }}</span>
+      {%- comment -%} Header Varianti Colore {%- endcomment -%}
+      <div class="fr-colors-header">
+        <h3 class="fr-colors-title">
+          {{ block.settings.section_title_2 }}
+          
+        </h3>
+        <span class="fr-size-badge" style="display: none;">
+            <span class="fr-size-text"></span>
+          </span>
       </div>
-      <h4 class="fbi-title">{{ block.settings.section_title_2 }} <span class="fbi-size-indicator fbi-title"></span></h4>
-      {%- comment -%} Griglia varianti colore con swatch immagini {%- endcomment -%}
-      <div class="fbi-color-grid" 
-           data-color-count="{{ color_count }}"
-           {% if block.settings.auto_fit_colors_mobile %}data-auto-fit-mobile{% endif %}
-           {% if block.settings.auto_fit_colors_desktop %}data-auto-fit-desktop{% endif %}>
+      
+      {%- comment -%} Griglia Varianti Colore Premium {%- endcomment -%}
+      <div class="fr-colors-grid">
         {%- for handle in related_handles -%}
           {%- assign handle_clean = handle | strip -%}
           {%- assign variant_product = all_products[handle_clean] -%}
@@ -103,76 +122,63 @@
               {%- assign variant_title = variant_title | remove: block.settings.remove_string | strip -%}
             {%- endif -%}
             
-            {%- comment -%} Logica per determinare quale immagine usare {%- endcomment -%}
             {%- liquid
               assign swatch_image = nil
               
-              # Prima controlla se c'è un metafield personalizzato per lo swatch
               if block.settings.use_metafield_swatch and variant_product.metafields.custom.swatch_image != blank
                 assign swatch_image = variant_product.metafields.custom.swatch_image
-              # Altrimenti usa la seconda immagine se abilitato
               elsif block.settings.use_second_image_swatch and variant_product.images.size > 1
                 assign swatch_image = variant_product.images[1]
-              # Fallback all'immagine principale
               else
                 assign swatch_image = variant_product.featured_image
               endif
             -%}
             
             <a href="{{ variant_product.url }}" 
-               class="fbi-color-item {% if block.settings.enable_image_swatches %}fbi-has-swatch{% endif %}"
+               class="fr-color-card"
                data-handle="{{ handle_clean }}"
                data-variants="{{ variant_product.variants | json | escape }}">
               
-              <div class="fbi-color-image">
+              <div class="fr-card-image">
                 {%- if swatch_image -%}
-                  <img src="{{ swatch_image | img_url: '300x300' }}"
+                  <img src="{{ swatch_image | img_url: '400x400' }}"
                        alt="{{ variant_product.title | escape }}"
-                       loading="lazy">
+                       loading="lazy"
+                       class="fr-main-img">
                 {%- else -%}
-                  {{ 'product-1' | placeholder_svg_tag }}
+                  {{ 'product-1' | placeholder_svg_tag: 'fr-main-img' }}
                 {%- endif -%}
                 
-                {%- comment -%} Swatch circolare sovrapposto se abilitato {%- endcomment -%}
                 {%- if block.settings.enable_image_swatches -%}
-                  <div class="fbi-swatch-overlay">
-                    {%- liquid
-                      assign overlay_swatch_image = nil
-                      
-                      # Determina quale immagine usare per lo swatch overlay
-                      if block.settings.use_metafield_swatch and variant_product.metafields.custom.swatch_image != blank
-                        assign overlay_swatch_image = variant_product.metafields.custom.swatch_image
-                      elsif block.settings.use_second_image_swatch and variant_product.images.size > 1
-                        assign overlay_swatch_image = variant_product.images[1]
-                      else
-                        assign overlay_swatch_image = variant_product.featured_image
-                      endif
-                    -%}
-                    
-                    {%- if overlay_swatch_image -%}
-                      <img src="{{ overlay_swatch_image | img_url: '80x80' }}"
-                           alt="{{ variant_product.title | escape }} swatch"
+                  <div class="fr-swatch" 
+                       style="width: {{ block.settings.swatch_size }}px; 
+                              height: {{ block.settings.swatch_size }}px;
+                              bottom: {{ block.settings.swatch_position }}px;
+                              right: {{ block.settings.swatch_position }}px;">
+                    {%- if swatch_image -%}
+                      <img src="{{ swatch_image | img_url: '150x150' }}"
+                           alt="Swatch"
                            loading="lazy">
                     {%- endif -%}
                   </div>
                 {%- endif -%}
                 
-                <div class="fbi-overlay">
-                  <span>{{ block.settings.unavailable_text }}</span>
+                <div class="fr-unavailable">
+                  <span class="fr-unavailable-icon">🚫</span>
                 </div>
               </div>
               
-              <div class="fbi-color-info">
-                <span class="fbi-color-name">{{ variant_title }}</span>
+              <div class="fr-card-info">
+                <h4 class="fr-card-title">{{ variant_title }}</h4>
                 {%- if block.settings.show_prices -%}
-                  <span class="fbi-color-price">
+                  <div class="fr-card-price">
                     {%- if variant_product.compare_at_price > variant_product.price -%}
-                      <s>{{ variant_product.compare_at_price | money }}</s>
-                      {{ variant_product.price | money }}
+                      <span class="fr-price-old">{{ variant_product.compare_at_price | money }}</span>
+                      <span class="fr-price-current">{{ variant_product.price | money }}</span>
                     {%- else -%}
-                      {{ variant_product.price | money }}
+                      <span class="fr-price-current">{{ variant_product.price | money }}</span>
                     {%- endif -%}
-                  </span>
+                  </div>
                 {%- endif -%}
               </div>
             </a>
@@ -182,183 +188,238 @@
     </div>
     
     <style>
-      /* Base styles */
-      .fbi-variants-section {
-        margin-top: {{ block.settings.section_spacing }}px;
-        padding: 0px !important;
-        background: {{ block.settings.section_background }};
-        border-radius: {{ block.settings.border_radius }}px;
-        {% if block.settings.show_border %}
-          border: 1px solid {{ block.settings.border_color }};
-        {% endif %}
+      /* Reset e Base */
+      #shopify-section-{{ section.id }} .fr-variant-system * {
+        box-sizing: border-box;
       }
 
-      h4.fbi-title {
-        margin-bottom: 11px;
+      h4.fr-card-title {
+    text-transform: capitalize;
+}
+      
+      #shopify-section-{{ section.id }} .fr-container {
+        margin-top: {{ block.settings.margin_top_desktop }}px;
+        margin-bottom: {{ block.settings.margin_bottom_desktop }}px;
+        padding: {{ block.settings.padding_top_desktop }}px {{ block.settings.padding_horizontal_desktop }}px {{ block.settings.padding_bottom_desktop }}px;
+        background: {{ block.settings.section_background }};
+        border-radius: {{ block.settings.border_radius }}px;
+        position: relative;
+        {%- if block.settings.show_border -%}
+          border: 1px solid {{ block.settings.border_color }};
+        {%- endif -%}
       }
       
-      /* Header - Nascosto 
-      .fbi-header {
-        isplay: none !important;
-      }*/
+      /* Selettore Taglie Premium */
+      #shopify-section-{{ section.id }} .fr-size-selector {
+        margin-bottom: 28px;
+        position: relative;
+      }
       
-      .fbi-title {
+      #shopify-section-{{ section.id }} .fr-option-group {
+        margin-bottom: 14px;
+      }
+      
+      /* Override stili varianti per eleganza */
+      #shopify-section-{{ section.id }} .fr-size-selector .variant__button-label {
+        border-radius: 10px !important;
+        padding: 11px 18px;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.01em !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border: 1.5px solid #E5DDD5 !important;
+        background: white !important;
+        color: #3E3E3E !important;
+        position: relative;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant__button-label:hover {
+        background-color: #F0E6E0 !important;
+        border-color: #B5A397 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector input[type=radio]:checked + label {
+        background: #C33A32 !important;
+        border-color: #C33A32 !important;
+        color: white !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 12px rgba(195, 58, 50, 0.25) !important;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector input[type=radio].disabled + label {
+        opacity: 0.5;
+        cursor: not-allowed !important;
+      }
+      
+      /* Label con indicatore non disponibile */
+      #shopify-section-{{ section.id }} .fr-size-selector .variant__button-label.fr-unavailable-size {
+        border-color: #FCA5A5 !important;
+        background: #FEF3F2 !important;
+        color: #991B1B !important;
+        cursor: not-allowed !important;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant__button-label.fr-unavailable-size:hover {
+        background: #FEE2E2 !important;
+        border-color: #F87171 !important;
+        transform: none;
+      }
+      
+      {%- if block.settings.auto_fit_variants_desktop -%}
+      #shopify-section-{{ section.id }} .fr-size-selector .variant-input-wrap {
+        display: flex !important;
+        gap: {{ block.settings.variant_gap }}px !important;
+        flex-wrap: nowrap !important;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant-input {
+        flex: 1;
+        min-width: 0;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant__button-label {
+        width: 100% !important;
+        text-align: center !important;
+      }
+      {%- endif -%}
+      
+      /* Tooltip Elegante e Raffinato */
+      #shopify-section-{{ section.id }} .fr-size-tooltip {
+        position: absolute;
+        z-index: 1000;
+        pointer-events: none;
+        animation: tooltipFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-50%);
+      }
+      
+      @keyframes tooltipFadeIn {
+        from { 
+          opacity: 0; 
+          transform: translateX(-50%) translateY(5px);
+        }
+        to { 
+          opacity: 1; 
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      
+      #shopify-section-{{ section.id }} .fr-tooltip-content {
+        background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25),
+                    0 8px 10px -6px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      #shopify-section-{{ section.id }} .fr-tooltip-content svg {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        color: #FCA5A5;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-tooltip-arrow {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #1F2937;
+        transform: rotate(45deg);
+        bottom: -5px;
+        left: 50%;
+        margin-left: -5px;
+      }
+      
+      /* Header Colori */
+      #shopify-section-{{ section.id }} .fr-colors-header {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-colors-title {
         font-size: {{ block.settings.title_size }}px;
         font-weight: 600;
         color: {{ block.settings.text_color }};
         margin: 0;
+        letter-spacing: 0.01em;
       }
       
-      .fbi-size-indicator {
-        color: {{ block.settings.accent_color }};
-      }
-      
-      .fbi-size-indicator:before {
-        content: '{{ block.settings.size_prefix }}';
-      }
-      
-      /* Original variants */
-      .fbi-original-variants {
-        margin-bottom: 24px;
-      }
-      
-      /* Auto-fit variants */
-      @media (max-width: 767px) {
-        .fbi-auto-fit-mobile .variant-input-wrap {
-          display: flex !important;
-          flex-wrap: wrap !important;
-          gap: {{ block.settings.variant_gap }}px !important;
-        }
-        
-        .fbi-auto-fit-mobile .variant-input {
-          flex: 1 1 auto !important;
-          min-width: 60px !important;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .fbi-auto-fit-desktop .variant-input-wrap {
-          display: flex !important;
-          flex-wrap: wrap !important;
-          gap: {{ block.settings.variant_gap }}px !important;
-        }
-        
-        .fbi-auto-fit-desktop .variant-input {
-          flex: 1 1 auto !important;
-          min-width: 80px !important;
-        }
-      }
-      
-      /* Variant label styles 
-      .variant-wrapper.js label.variant__label {
-        display: none !important;
-      }*/
-      
-      label.variant__button-label {
-        border-radius: 12px !important;
-      }
-      
-      label.variant__button-label:hover {
-        background-color: #E5DDD5;
-        color: #3E3E3E;
-      }
-      
-      .variant-input-wrap input[type=radio]:checked+label {
-        box-shadow: 0 0 0 1px var(--colorTextBody) !important;
-        color: #ffffff !important;
-        background-color: #C33A32 !important;
-        font-weight: 600 !important;
-      }
-      
-      /* Alert */
-      .fbi-alert {
-        display: flex;
+      #shopify-section-{{ section.id }} .fr-size-badge {
+        display: inline-flex !important;
+        background: #F0E6E0;
+        padding: 5px 12px;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #C33A32;
         align-items: center;
-        gap: 8px;
-        padding: 12px 16px;
-        background: #FEF3F2;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        color: #991B1B;
+        animation: badgeFade 0.3s ease;
       }
       
-      .fbi-alert svg {
-        flex-shrink: 0;
-        color: #DC2626;
+      @keyframes badgeFade {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
       }
       
-      /* Color grid */
-      .fbi-color-grid {
+      #shopify-section-{{ section.id }} .fr-size-badge:before {
+        content: '{{ block.settings.size_prefix }}';
+        margin-right: 3px;
+      }
+      
+      /* Griglia Colori Premium */
+      #shopify-section-{{ section.id }} .fr-colors-grid {
         display: grid;
-        grid-template-columns: repeat({{ block.settings.colors_per_row_mobile }}, 1fr);
         gap: {{ block.settings.grid_gap }}px;
-      }
-      
-      /* Auto-fit per colori mobile */
-      @media (max-width: 767px) {
-        .fbi-color-grid[data-auto-fit-mobile] {
-          display: flex;
-          flex-wrap: wrap;
-          gap: {{ block.settings.grid_gap }}px;
-        }
-        
-        .fbi-color-grid[data-auto-fit-mobile] .fbi-color-item {
-          flex: 1 1 auto;
-          min-width: 120px;
-        }
-      }
-      
-      @media (min-width: 768px) {
-        .fbi-color-grid {
+        {%- if block.settings.auto_fit_colors_desktop -%}
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        {%- else -%}
           grid-template-columns: repeat({{ block.settings.colors_per_row_desktop }}, 1fr);
-        }
-        
-        /* Auto-fit per colori desktop */
-        .fbi-color-grid[data-auto-fit-desktop] {
-          display: flex;
-          flex-wrap: wrap;
-          gap: {{ block.settings.grid_gap }}px;
-        }
-        
-        .fbi-color-grid[data-auto-fit-desktop] .fbi-color-item {
-          flex: 1 1 auto;
-          min-width: 150px;
-          max-width: 250px;
-        }
+        {%- endif -%}
       }
       
-      /* Color item */
-      .fbi-color-item {
+      #shopify-section-{{ section.id }} .fr-color-card {
         text-decoration: none;
-        color: inherit;
-        transition: all 0.2s ease;
+        display: block;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
-      .fbi-color-item:hover {
-        transform: translateY(-2px);
+      #shopify-section-{{ section.id }} .fr-color-card:hover {
+        transform: translateY(-6px);
       }
       
-      .fbi-color-item.size-unavailable {
-        opacity: 0.5;
+      #shopify-section-{{ section.id }} .fr-color-card.size-unavailable {
+        opacity: 0.4;
         pointer-events: none;
+        filter: grayscale(0.8);
       }
       
-      .fbi-color-image {
+      #shopify-section-{{ section.id }} .fr-card-image {
         position: relative;
         padding-bottom: 100%;
         overflow: hidden;
         border-radius: {{ block.settings.image_radius }}px;
-        background: #f5f5f5;
-        border: 1px solid {{ block.settings.border_color }};
-        transition: border-color 0.2s ease;
+        background: #FAFAFA;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.25s ease;
       }
       
-      .fbi-color-image:hover {
-        border: 1px solid black !important;
+      #shopify-section-{{ section.id }} .fr-color-card:hover .fr-card-image {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
       }
       
-      .fbi-color-image img {
+      #shopify-section-{{ section.id }} .fr-main-img {
         position: absolute;
         top: 0;
         left: 0;
@@ -367,164 +428,373 @@
         object-fit: cover;
       }
       
-      /* Swatch Overlay Styles */
-      .fbi-swatch-overlay {
+      /* Swatch Premium */
+      #shopify-section-{{ section.id }} .fr-swatch {
         position: absolute;
-        bottom: {{ block.settings.swatch_position }}px;
-        right: {{ block.settings.swatch_position }}px;
-        width: {{ block.settings.swatch_size }}px;
-        height: {{ block.settings.swatch_size }}px;
-        border-radius: {% if block.settings.swatch_shape == 'circle' %}50%{% else %}{{ block.settings.swatch_border_radius }}px{% endif %};
+        border-radius: {%- if block.settings.swatch_shape == 'circle' -%}50%{%- else -%}{{ block.settings.swatch_border_radius }}px{%- endif -%};
         overflow: hidden;
-        border: 2px solid #FFFFFF;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        z-index: 2;
-        transition: transform 0.2s ease;
+        border: 2.5px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        transition: transform 0.25s ease;
       }
       
-      .fbi-has-swatch:hover .fbi-swatch-overlay {
-        transform: scale(1.1);
+      #shopify-section-{{ section.id }} .fr-color-card:hover .fr-swatch {
+        transform: scale(1.08);
       }
       
-      .fbi-swatch-overlay img {
+      #shopify-section-{{ section.id }} .fr-swatch img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
       
-      /* Nascondi swatch su mobile se richiesto */
-      {% if block.settings.hide_swatch_mobile %}
-      @media (max-width: 767px) {
-        .fbi-swatch-overlay {
-          display: none;
-        }
-      }
-      {% endif %}
-      
-      .fbi-overlay {
+      /* Overlay Non Disponibile con Emoji */
+      #shopify-section-{{ section.id }} .fr-unavailable {
         position: absolute;
         inset: 0;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.85);
         display: flex;
         align-items: center;
         justify-content: center;
         opacity: 0;
-        transition: opacity 0.2s;
+        transition: opacity 0.25s ease;
+        pointer-events: none;
       }
       
-      .size-unavailable .fbi-overlay {
+      #shopify-section-{{ section.id }} .size-unavailable .fr-unavailable {
         opacity: 1;
       }
       
-      .fbi-overlay span {
-        font-size: 12px;
-        font-weight: 600;
-        color: #6B7280;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+      #shopify-section-{{ section.id }} .fr-unavailable-icon {
+        font-size: 36px;
+        opacity: 0.4;
+        filter: grayscale(0.5);
       }
       
-      /* Color info */
-      .fbi-color-info {
-        padding: 8px 0px 0px 0px !important;
+      /* Info Card */
+      #shopify-section-{{ section.id }} .fr-card-info {
+        padding: 12px 2px 2px;
         text-align: {{ block.settings.text_align }};
       }
       
-      .fbi-color-name {
-        display: block;
+      /* Titolo Card con limite 1 riga */
+      #shopify-section-{{ section.id }} .fr-card-title {
         font-size: {{ block.settings.name_size }}px;
         color: {{ block.settings.text_color }};
-        margin-bottom: 0px !important;
-        -webkit-line-clamp: var(--line-clamp-count, 1) !important;
-        -webkit-box-orient: vertical !important;
-        display: -webkit-box !important;
-        overflow: hidden !important;
-        {% if block.settings.uppercase_names %}
+        margin: 0 0 5px 0;
+        font-weight: 500;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        {%- if block.settings.uppercase_names -%}
           text-transform: uppercase;
-          letter-spacing: 0.05em;
-        {% endif %}
+          letter-spacing: 0.04em;
+          font-size: {{ block.settings.name_size | minus: 1 }}px;
+        {%- endif -%}
       }
       
-      .fbi-color-price {
-        font-size: {{ block.settings.price_size }}px;
-        color: {{ block.settings.text_color }};
+      #shopify-section-{{ section.id }} .fr-card-price {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        {%- if block.settings.text_align == 'center' -%}
+          justify-content: center;
+        {%- elsif block.settings.text_align == 'right' -%}
+          justify-content: flex-end;
+        {%- endif -%}
       }
       
-      .fbi-color-price s {
+      #shopify-section-{{ section.id }} .fr-price-old {
+        font-size: {{ block.settings.price_size | minus: 1 }}px;
         color: #9CA3AF;
-        margin-right: 4px;
+        text-decoration: line-through;
       }
       
-      /* Bottoni disabilitati */
-      button.btn.btn--full.add-to-cart.disabled {
-        border: 1px solid #3E3E3E !important;
-        color: #3E3E3E !important;
+      #shopify-section-{{ section.id }} .fr-price-current {
+        font-size: {{ block.settings.price_size }}px;
+        color: #C33A32;
+        font-weight: 600;
       }
       
-      button.btn.btn--full.add-to-cart.disabled:hover {
-        background-color: #F6F6F6 !important;
-      }
-      
-      /* Mobile specific */
-      @media only screen and (max-width: 589px) {
-        .hero-collections__grid {
-          display: flex !important;
-          flex-wrap: nowrap !important;
-          padding: 0 !important;
+      /* Mobile Responsive Premium */
+      @media (max-width: 767px) {
+        #shopify-section-{{ section.id }} .fr-container {
+          margin-top: {{ block.settings.margin_top_mobile }}px;
+          margin-bottom: {{ block.settings.margin_bottom_mobile }}px;
+          padding: {{ block.settings.padding_top_mobile }}px {{ block.settings.padding_horizontal_mobile }}px {{ block.settings.padding_bottom_mobile }}px;
         }
         
-        .btn, .rte .btn, .shopify-payment-button .shopify-payment-button__button--unbranded {
-          font-size: max(calc(var(--typeBaseSize) - 5px), 15px);
-          padding: 16px 17px !important;
+        {%- if block.settings.auto_fit_variants_mobile -%}
+        #shopify-section-{{ section.id }} .fr-size-selector .variant-input-wrap {
+          display: flex !important;
+          overflow-x: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          gap: {{ block.settings.variant_gap }}px !important;
+          padding-bottom: 6px;
+          margin-bottom: 6px;
         }
+        
+        #shopify-section-{{ section.id }} .fr-size-selector .variant-input {
+          flex: 0 0 auto;
+        }
+        
+        #shopify-section-{{ section.id }} .fr-size-selector .variant__button-label {
+          white-space: nowrap !important;
+        }
+        {%- endif -%}
+        
+        #shopify-section-{{ section.id }} .fr-colors-grid {
+          {%- if block.settings.auto_fit_colors_mobile -%}
+            display: flex !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            gap: {{ block.settings.grid_gap }}px !important;
+            padding-bottom: 10px;
+          {%- else -%}
+            grid-template-columns: repeat({{ block.settings.colors_per_row_mobile }}, 1fr);
+          {%- endif -%}
+        }
+        
+        {%- if block.settings.auto_fit_colors_mobile -%}
+        #shopify-section-{{ section.id }} .fr-color-card {
+          flex: 0 0 calc(50% - {{ block.settings.grid_gap }}px / 2);
+          min-width: 140px;
+        }
+        {%- endif -%}
+        
+        {%- if block.settings.hide_swatch_mobile -%}
+        #shopify-section-{{ section.id }} .fr-swatch {
+          display: none !important;
+        }
+        {%- endif -%}
+        
+        /* Tooltip mobile più compatto e più in alto */
+        #shopify-section-{{ section.id }} .fr-tooltip-content {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+        
+        #shopify-section-{{ section.id }} .fr-tooltip-content svg {
+          width: 14px;
+          height: 14px;
+        }
+        
+        /* Aggiusta posizione tooltip su mobile */
+        #shopify-section-{{ section.id }} .fr-size-tooltip {
+          transform: translateX(-50%) translateY(-5px);
+        }
+      }
+
+      
+      
+      /* Scrollbar Elegante */
+      #shopify-section-{{ section.id }} .fr-size-selector .variant-input-wrap::-webkit-scrollbar,
+      #shopify-section-{{ section.id }} .fr-colors-grid::-webkit-scrollbar {
+        height: 5px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant-input-wrap::-webkit-scrollbar-track,
+      #shopify-section-{{ section.id }} .fr-colors-grid::-webkit-scrollbar-track {
+        background: #F5F5F5;
+        border-radius: 10px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant-input-wrap::-webkit-scrollbar-thumb,
+      #shopify-section-{{ section.id }} .fr-colors-grid::-webkit-scrollbar-thumb {
+        background: #D1D5DB;
+        border-radius: 10px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-selector .variant-input-wrap::-webkit-scrollbar-thumb:hover,
+      #shopify-section-{{ section.id }} .fr-colors-grid::-webkit-scrollbar-thumb:hover {
+        background: #B5A397;
       }
     </style>
     
     <script>
       (function() {
-        const section = document.querySelector('.fbi-variants-section');
-        if (!section) return;
+        const container = document.querySelector('.fr-container');
+        if (!container) return;
         
-        const sizeIndex = parseInt(section.dataset.sizeIndex);
+        const sizeIndex = parseInt(container.dataset.sizeIndex);
         const hasSize = sizeIndex >= 0;
-        const alert = section.querySelector('.fbi-alert');
-        const sizeIndicator = section.querySelector('.fbi-size-indicator');
-        const colorItems = section.querySelectorAll('.fbi-color-item');
+        const tooltipDuration = parseInt(container.dataset.tooltipDuration) || 2000;
+        const productVariantsData = container.dataset.productVariants;
+        const enableTooltip = {{ block.settings.enable_tooltip | json }};
+        
+        const tooltip = document.querySelector('.fr-size-tooltip');
+        const sizeBadge = document.querySelector('.fr-size-badge');
+        const sizeText = document.querySelector('.fr-size-text');
+        const colorCards = document.querySelectorAll('.fr-color-card');
+        
+        let tooltipTimeout;
+        let currentSelectedSize = null;
+        let productVariants = [];
+        let isMobile = window.innerWidth <= 767;
+        
+        // Parse product variants
+        try {
+          productVariants = JSON.parse(productVariantsData || '[]');
+        } catch (e) {
+          console.error('Error parsing product variants:', e);
+        }
+        
+        // Funzione per mostrare tooltip
+        function showTooltip(element) {
+          if (!tooltip || !enableTooltip) return;
+          
+          const rect = element.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          
+          // Calcola la posizione centrata sopra l'elemento
+          const tooltipHeight = 50; // Altezza approssimativa del tooltip
+          const gap = isMobile ? 15 : 10; // Spazio tra elemento e tooltip
+          
+          // Posizione X: centro dell'elemento
+          const centerX = rect.left - containerRect.left + (rect.width / 2);
+          tooltip.style.left = centerX + 'px';
+          
+          // Posizione Y: sopra l'elemento
+          const topY = rect.top - containerRect.top - tooltipHeight - gap;
+          tooltip.style.top = topY + 'px';
+          
+          tooltip.style.display = 'block';
+          
+          // Su mobile, nasconde dopo il tempo configurato
+          if (isMobile) {
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+              hideTooltip();
+            }, tooltipDuration);
+          }
+        }
+        
+        function hideTooltip() {
+          if (!tooltip) return;
+          tooltip.style.display = 'none';
+          clearTimeout(tooltipTimeout);
+        }
+        
+        function getSelectedOptions() {
+          const options = [];
+          
+          // Check radio buttons
+          const radios = document.querySelectorAll('.fr-size-selector input[type="radio"]:checked');
+          radios.forEach((radio) => {
+            const label = document.querySelector(`label[for="${radio.id}"]`);
+            if (label) {
+              options.push(label.textContent.trim());
+            }
+          });
+          
+          // Check dropdowns
+          const selects = document.querySelectorAll('.fr-size-selector select');
+          selects.forEach((select) => {
+            if (select.selectedIndex > 0) {
+              options.push(select.options[select.selectedIndex].text.trim());
+            }
+          });
+          
+          return options;
+        }
         
         function getSelectedSize() {
           if (!hasSize) return null;
           
-          const checked = document.querySelector('input[type="radio"]:checked');
-          if (checked) return checked.value;
-          
-          const select = document.querySelector('select[name="id"]');
-          if (select) {
-            const text = select.options[select.selectedIndex].text;
-            const match = text.match(/^\s*(\S+)/);
-            return match ? match[1] : null;
+          const options = getSelectedOptions();
+          if (options.length > sizeIndex) {
+            return options[sizeIndex];
           }
           
           return null;
         }
         
-        function updateVariants() {
+        function isSizeAvailableInCurrentProduct(size) {
+          if (!size || !hasSize) return true;
+          
+          for (const variant of productVariants) {
+            const variantSize = variant[`option${sizeIndex + 1}`];
+            if (variantSize === size && variant.available) {
+              return true;
+            }
+          }
+          
+          return false;
+        }
+        
+        function updateSizeLabels() {
+          if (!hasSize) return;
+          
+          // Aggiorna i label delle taglie con indicatore visivo
+          document.querySelectorAll('.fr-size-selector .variant__button-label').forEach(label => {
+            const size = label.textContent.trim();
+            const isAvailable = isSizeAvailableInCurrentProduct(size);
+            
+            // Rimuovi vecchi event listeners
+            const newLabel = label.cloneNode(true);
+            label.parentNode.replaceChild(newLabel, label);
+            
+            if (!isAvailable) {
+              newLabel.classList.add('fr-unavailable-size');
+              
+              if (enableTooltip) {
+                // Setup eventi hover/click per tooltip
+                if (!isMobile) {
+                  newLabel.addEventListener('mouseenter', function() {
+                    showTooltip(this);
+                  });
+                  
+                  newLabel.addEventListener('mouseleave', function() {
+                    hideTooltip();
+                  });
+                } else {
+                  newLabel.addEventListener('click', function(e) {
+                    // Previeni la selezione della taglia non disponibile
+                    const input = document.getElementById(this.getAttribute('for'));
+                    if (input && !input.checked) {
+                      e.preventDefault();
+                      showTooltip(this);
+                    }
+                  });
+                }
+              }
+            } else {
+              newLabel.classList.remove('fr-unavailable-size');
+            }
+          });
+        }
+        
+        function updateColorVariants() {
           const selectedSize = getSelectedSize();
           
-          // Update size indicator
-          if (sizeIndicator && selectedSize) {
-            sizeIndicator.textContent = selectedSize;
-            sizeIndicator.style.display = 'inline';
-          } else if (sizeIndicator) {
-            sizeIndicator.style.display = 'none';
+          // Update size badge
+          if (sizeBadge && sizeText) {
+            if (selectedSize) {
+              sizeText.textContent = selectedSize;
+              sizeBadge.style.display = 'inline-flex';
+            } else {
+              sizeBadge.style.display = 'none';
+            }
           }
           
           if (!hasSize) return;
           
-          let hasAvailable = false;
+          // Mostra tooltip se la taglia selezionata non è disponibile
+          if (enableTooltip && selectedSize && !isSizeAvailableInCurrentProduct(selectedSize)) {
+            const selectedLabel = document.querySelector('.fr-size-selector input[type="radio"]:checked + label');
+            if (selectedLabel) {
+              showTooltip(selectedLabel);
+            }
+          } else {
+            hideTooltip();
+          }
           
-          // Check each color variant
-          colorItems.forEach(item => {
-            const variantsData = item.dataset.variants;
+          // Update color cards availability
+          colorCards.forEach(card => {
+            const variantsData = card.dataset.variants;
             if (!variantsData) return;
             
             try {
@@ -538,41 +808,68 @@
                   const variantSize = variant[`option${sizeIndex + 1}`];
                   if (variantSize === selectedSize && variant.available) {
                     isAvailable = true;
-                    hasAvailable = true;
                     break;
                   }
                 }
               }
               
-              item.classList.toggle('size-unavailable', !isAvailable);
+              if (isAvailable) {
+                card.classList.remove('size-unavailable');
+              } else {
+                card.classList.add('size-unavailable');
+              }
             } catch (e) {
               console.error('Error parsing variant data:', e);
             }
           });
           
-          // Show/hide alert
-          if (alert) {
-            alert.style.display = (selectedSize && !hasAvailable) ? 'flex' : 'none';
-          }
+          currentSelectedSize = selectedSize;
         }
         
-        // Initial update
-        updateVariants();
+        // Rileva resize per mobile/desktop
+        window.addEventListener('resize', function() {
+          const wasMobile = isMobile;
+          isMobile = window.innerWidth <= 767;
+          
+          // Se cambia da mobile a desktop o viceversa, riaggiorna i labels
+          if (wasMobile !== isMobile) {
+            updateSizeLabels();
+          }
+        });
         
-        // Listen for changes
-        document.addEventListener('variant:change', updateVariants);
+        // Inizializzazione
+        updateSizeLabels();
+        setTimeout(() => updateColorVariants(), 100);
         
-        // Listen for form changes
-        const forms = document.querySelectorAll('form[action*="/cart/add"]');
-        forms.forEach(form => {
-          form.addEventListener('change', () => {
-            setTimeout(updateVariants, 100);
+        // Ascolta cambiamenti taglie
+        const sizeInputs = document.querySelectorAll('.fr-size-selector input[type="radio"], .fr-size-selector select');
+        sizeInputs.forEach(input => {
+          input.addEventListener('change', function() {
+            setTimeout(() => updateColorVariants(), 50);
           });
         });
+        
+        // Ascolta eventi variant:change
+        document.addEventListener('variant:change', function() {
+          setTimeout(() => {
+            updateSizeLabels();
+            updateColorVariants();
+          }, 50);
+        });
+        
+        // Nascondi tooltip quando si clicca fuori
+        if (enableTooltip) {
+          document.addEventListener('click', function(e) {
+            if (!e.target.closest('.fr-size-selector')) {
+              hideTooltip();
+            }
+          });
+        }
       })();
     </script>
+    
   {%- else -%}
-    {%- comment -%} Variant picker standard se non ci sono varianti colore {%- endcomment -%}
+    {%- comment -%} Variant picker standard senza colori {%- endcomment -%}
     {%- unless product.has_only_default_variant -%}
       {%- for option in product.options_with_values -%}
         {%- liquid

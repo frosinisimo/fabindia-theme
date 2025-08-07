@@ -1,0 +1,817 @@
+{%- comment -%}
+  Blocco Guida Taglie Ottimizzato per Fabindia Roma
+  Parametri: block, product, section_id
+{%- endcomment -%}
+
+<div class="fr-size-guide-wrapper product-block" {{ block.shopify_attributes }}>
+  <style>
+    #shopify-section-{{ section.id }} .fr-size-guide-trigger {
+      background: {{ block.settings.button_bg_color | default: '#FEFEFE' }};
+      color: {{ block.settings.button_text_color | default: '#C33A32' }};
+      border: 1px solid {{ block.settings.button_border_color | default: '#C33A32' }};
+      padding: 12px 24px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      margin: {{ block.settings.button_margin }}px 0;
+    }
+
+    .fr-measurement-content, .fr-tab-panel[data-panel="info"] {
+        padding: 0px 40px 40px 40px;
+        margin-top: -40px;
+    }
+
+    /* Stili responsive specifici dal CSS personalizzato */
+    @media only screen and (max-width: 589px) {
+      #shopify-section-{{ section.id }} .fr-size-guide-trigger {
+        margin-top: -15px;
+        width: fit-content !important;
+        padding: 12px 37px 12px 17px !important;
+        border-radius: 50px 0px 0px 50px !important;
+      }
+      
+      #shopify-section-{{ section.id }} .product-block.fr-size-guide-wrapper {
+        text-align: right !important;
+        margin-right: -20px;
+      }
+    }
+
+    @media only screen and (min-width: 590px) {
+      #shopify-section-{{ section.id }} .fr-size-guide-trigger {
+        width: fit-content !important;
+        padding: 12px 37px 12px 17px !important;
+        border-radius: 0px 50px 50px 0px !important;
+      }
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-guide-trigger::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: {{ block.settings.button_hover_bg | default: '#C33A32' }};
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: -1;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-guide-trigger:hover {
+      color: {{ block.settings.button_hover_text | default: '#FEFEFE' }};
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(195, 58, 50, 0.15);
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-guide-trigger:hover::before {
+      left: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-guide-trigger svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      transition: transform 0.3s ease;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-guide-trigger:hover svg {
+      transform: rotate(5deg);
+    }
+    
+    /* Modal Styles */
+    #shopify-section-{{ section.id }} .fr-size-modal-overlay {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(62, 62, 62, 0.85);
+      backdrop-filter: blur(5px);
+      animation: fr-fadeIn 0.3s ease;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-modal-content {
+      background: {{ block.settings.modal_bg_color | default: '#FEFEFE' }};
+      color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+      margin: 20px;
+      border-radius: 12px;
+      width: 95%;
+      max-width: 1000px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      animation: fr-slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-modal-header {
+      background: {{ block.settings.header_bg_color | default: '#F0E6E0' }};
+      color: {{ block.settings.header_text_color | default: '#3E3E3E' }};
+      padding: 24px 30px;
+      border-bottom: 1px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-modal-header h3 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-modal-close {
+      background: transparent;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: {{ block.settings.header_text_color | default: '#3E3E3E' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-modal-close:hover {
+      background: {{ block.settings.button_bg_color | default: '#C33A32' }};
+      color: #FEFEFE;
+      transform: rotate(90deg);
+    }
+    
+    #shopify-section-{{ section.id }} .fr-modal-close svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-modal-body {
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+      padding: 40px;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Tabs eleganti */
+    #shopify-section-{{ section.id }} .fr-tabs-container {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 40px;
+      background: {{ block.settings.border_color | default: '#E5DDD5' }};
+      padding: 2px;
+      border-radius: 8px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-tab-button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 14px 20px;
+      cursor: pointer;
+      font-weight: 400;
+      color: {{ block.settings.tab_inactive_color | default: '#B5A397' }};
+      transition: all 0.3s ease;
+      border-radius: 6px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-tab-button.active {
+      background: {{ block.settings.modal_bg_color | default: '#FEFEFE' }};
+      color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    #shopify-section-{{ section.id }} .fr-tab-button:hover:not(.active) {
+      color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    #shopify-section-{{ section.id }} .fr-tab-panel {
+      display: none;
+      animation: fr-fadeIn 0.4s ease;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-tab-panel.active {
+      display: block;
+    }
+    
+    /* Tabella taglie elegante */
+    #shopify-section-{{ section.id }} .fr-size-table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      background: {{ block.settings.modal_bg_color | default: '#FEFEFE' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 500px;
+      font-size: 14px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table th,
+    #shopify-section-{{ section.id }} .fr-size-table td {
+      padding: 16px;
+      text-align: center;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table th {
+      background: {{ block.settings.table_header_bg | default: '#F0E6E0' }};
+      color: {{ block.settings.table_header_text | default: '#3E3E3E' }};
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      border-bottom: 2px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table th:first-child {
+      border-top-left-radius: 12px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table th:last-child {
+      border-top-right-radius: 12px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table tbody tr {
+      border-bottom: 1px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+      transition: background 0.2s ease;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table tbody tr:hover {
+      background: {{ block.settings.table_alt_bg | default: '#FAFAFA' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table tbody tr:nth-child(even) {
+      background: {{ block.settings.table_alt_bg | default: '#FAFAFA' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table tbody tr:last-child {
+      border-bottom: none;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 12px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table tbody tr:last-child td:last-child {
+      border-bottom-right-radius: 12px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-size-table td:first-child {
+      font-weight: 600;
+      color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+      position: relative;
+    }
+    
+    /* Info sections */
+    #shopify-section-{{ section.id }} .fr-info-card {
+      background: {{ block.settings.info_bg_color | default: '#F0E6E0' }};
+      padding: 30px;
+      border-radius: 20px;
+      margin-top: {{ block.settings.card_margin_desktop | default: 25 }}px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    
+    #shopify-section-{{ section.id }} .fr-info-card:first-child {
+      margin-top: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-info-card h4 {
+      margin: 0 0 20px;
+      color: {{ block.settings.info_title_color | default: '#C33A32' }};
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Rich text styles */
+    #shopify-section-{{ section.id }} .fr-rich-text {
+      line-height: 1.7;
+      color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-rich-text p {
+      margin-bottom: 15px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-rich-text p:last-child {
+      margin-bottom: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-rich-text ul,
+    #shopify-section-{{ section.id }} .fr-rich-text ol {
+      margin: 15px 0;
+      padding-left: 30px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-rich-text li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-rich-text strong {
+      color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+      font-weight: 600;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-rich-text em {
+      font-style: italic;
+      color: {{ block.settings.tab_inactive_color | default: '#B5A397' }};
+    }
+    
+    #shopify-section-{{ section.id }} .fr-info-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-info-list li {
+      padding: 12px 0;
+      padding-left: 32px;
+      position: relative;
+      line-height: 1.6;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-info-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 16px;
+      width: 20px;
+      height: 20px;
+      background: {{ block.settings.info_icon_color | default: '#C33A32' }};
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-info-list li::after {
+      content: '✓';
+      position: absolute;
+      left: 6px;
+      top: 14px;
+      color: #FEFEFE;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    
+    /* Measurement panel layout - solo su desktop largo */
+    @media (min-width: 992px) {
+      #shopify-section-{{ section.id }} .fr-measurement-content {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-measurement-image {
+        flex: 1;
+        text-align: center;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-measurement-info {
+        flex: 1;
+      }
+      
+      /* Centra se solo info (senza immagine) */
+      #shopify-section-{{ section.id }} .fr-measurement-content.no-image {
+        justify-content: center;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-measurement-content.no-image .fr-measurement-info {
+        max-width: 600px;
+      }
+    }
+    
+    /* Layout verticale su tablet e mobile */
+    @media (max-width: 991px) {
+      #shopify-section-{{ section.id }} .fr-measurement-content {
+        display: block;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-measurement-image {
+        margin-bottom: 30px;
+        text-align: center;
+      }
+    }
+    
+    #shopify-section-{{ section.id }} .fr-measurement-image img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Animations */
+    @keyframes fr-fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fr-slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      #shopify-section-{{ section.id }} .fr-size-modal-overlay.active {
+        display: block;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-modal-content {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-modal-header {
+        padding: 20px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-modal-header h3 {
+        font-size: 18px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-modal-body {
+        padding: {{ block.settings.modal_padding_mobile | default: 25 }}px !important;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-tabs-container {
+        flex-direction: column;
+        gap: 1px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-tab-button {
+        text-align: center;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-table {
+        font-size: 13px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-size-table th,
+      #shopify-section-{{ section.id }} .fr-size-table td {
+        padding: 10px 8px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-info-card {
+        padding: 20px;
+        border-radius: 16px;
+        margin-top: {{ block.settings.card_margin_mobile | default: 20 }}px;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-info-card:first-child {
+        margin-top: 0;
+      }
+    }
+  </style>
+  
+  <!-- Pulsante trigger elegante -->
+  <button type="button" class="fr-size-guide-trigger" data-size-guide-trigger>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z"/>
+    </svg>
+    <span>{{ block.settings.button_text | default: 'Guida taglie' }}</span>
+  </button>
+  
+  <!-- Modal overlay -->
+  <div class="fr-size-modal-overlay" data-size-modal>
+    <div class="fr-size-modal-content">
+      <!-- Header -->
+      <div class="fr-modal-header">
+        <h3>{{ block.settings.modal_title | default: 'Guida alle Taglie Fabindia' }}</h3>
+        <button class="fr-modal-close" data-modal-close aria-label="Chiudi">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Body -->
+      <div class="fr-modal-body" style="padding: {{ block.settings.modal_padding_desktop | default: 40 }}px;">
+        <!-- Tabs -->
+        <div class="fr-tabs-container">
+          <button class="fr-tab-button" data-tab="sizes">
+            {{ block.settings.tab1_title | default: 'Tabella Taglie' }}
+          </button>
+          {%- if block.settings.show_measurements_tab -%}
+            <button class="fr-tab-button" data-tab="measurements">
+              {{ block.settings.tab2_title | default: 'Come Misurare' }}
+            </button>
+          {%- endif -%}
+          {%- if block.settings.show_info_tab -%}
+            <button class="fr-tab-button" data-tab="info">
+              {{ block.settings.tab3_title | default: 'Informazioni' }}
+            </button>
+          {%- endif -%}
+        </div>
+        
+        <!-- Tab Panels -->
+        <!-- Panel 1: Tabella Taglie -->
+        <div class="fr-tab-panel" data-panel="sizes">
+          <div class="fr-size-table-wrapper">
+            {%- if block.settings.size_chart_html != blank -%}
+              {{ block.settings.size_chart_html }}
+            {%- else -%}
+              <!-- Tabella di default se non c'è HTML personalizzato -->
+              <table class="fr-size-table">
+                <thead>
+                  <tr>
+                    <th>Taglia</th>
+                    <th>IT/EU</th>
+                    <th>Busto (cm)</th>
+                    <th>Vita (cm)</th>
+                    <th>Fianchi (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>XS</td>
+                    <td>38</td>
+                    <td>82-86</td>
+                    <td>62-66</td>
+                    <td>88-92</td>
+                  </tr>
+                  <tr>
+                    <td>S</td>
+                    <td>40</td>
+                    <td>86-90</td>
+                    <td>66-70</td>
+                    <td>92-96</td>
+                  </tr>
+                  <tr>
+                    <td>M</td>
+                    <td>42</td>
+                    <td>90-94</td>
+                    <td>70-74</td>
+                    <td>96-100</td>
+                  </tr>
+                  <tr>
+                    <td>L</td>
+                    <td>44</td>
+                    <td>94-98</td>
+                    <td>74-78</td>
+                    <td>100-104</td>
+                  </tr>
+                  <tr>
+                    <td>XL</td>
+                    <td>46</td>
+                    <td>98-102</td>
+                    <td>78-82</td>
+                    <td>104-108</td>
+                  </tr>
+                </tbody>
+              </table>
+            {%- endif -%}
+          </div>
+          
+          {%- if block.settings.size_note != blank -%}
+            <div class="fr-info-card">
+              <p style="margin: 0; font-style: italic;">{{ block.settings.size_note }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+        
+        <!-- Panel 2: Come Misurare -->
+        {%- if block.settings.show_measurements_tab -%}
+          <div class="fr-tab-panel" data-panel="measurements">
+            <div class="fr-measurement-content{% unless block.settings.measurement_image %} no-image{% endunless %}">
+              {%- if block.settings.measurement_image != blank -%}
+                <div class="fr-measurement-image">
+                  {%- render 'image-element',
+                    img: block.settings.measurement_image,
+                    widths: '360, 540, 720, 900',
+                    sizeVariable: '900px',
+                  -%}
+                </div>
+              {%- endif -%}
+              
+              <div class="fr-measurement-info">
+                <div class="fr-info-card">
+                  {%- if block.settings.measurement_title != blank -%}
+                    <h4 style="color: {{ block.settings.info_title_color | default: '#C33A32' }};">
+                      {{ block.settings.measurement_title }}
+                    </h4>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.measurement_instructions != blank -%}
+                    <div class="fr-rich-text">
+                      {{ block.settings.measurement_instructions }}
+                    </div>
+                  {%- else -%}
+                    <ul class="fr-info-list">
+                      <li>Usa un metro da sarta morbido</li>
+                      <li>Prendi le misure sopra la biancheria intima</li>
+                      <li>Mantieni il metro parallelo al pavimento</li>
+                      <li>Non stringere troppo il metro</li>
+                      <li>Fatti aiutare per maggiore precisione</li>
+                    </ul>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+        
+        <!-- Panel 3: Informazioni -->
+        {%- if block.settings.show_info_tab -%}
+          <div class="fr-tab-panel" data-panel="info">
+            {%- if block.settings.info_section_1_title != blank or block.settings.info_section_1_content != blank -%}
+              <div class="fr-info-card">
+                {%- if block.settings.info_section_1_title != blank -%}
+                  <h4 style="color: {{ block.settings.info_title_color | default: '#C33A32' }};">
+                    {{ block.settings.info_section_1_title }}
+                  </h4>
+                {%- endif -%}
+                {%- if block.settings.info_section_1_content != blank -%}
+                  <div class="fr-rich-text">
+                    {{ block.settings.info_section_1_content }}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            
+            {%- if block.settings.info_section_2_title != blank or block.settings.info_section_2_content != blank -%}
+              <div class="fr-info-card">
+                {%- if block.settings.info_section_2_title != blank -%}
+                  <h4 style="color: {{ block.settings.info_title_color | default: '#C33A32' }};">
+                    {{ block.settings.info_section_2_title }}
+                  </h4>
+                {%- endif -%}
+                {%- if block.settings.info_section_2_content != blank -%}
+                  <div class="fr-rich-text">
+                    {{ block.settings.info_section_2_content }}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            
+            {%- if block.settings.info_section_3_title != blank or block.settings.info_section_3_content != blank -%}
+              <div class="fr-info-card">
+                {%- if block.settings.info_section_3_title != blank -%}
+                  <h4 style="color: {{ block.settings.info_title_color | default: '#C33A32' }};">
+                    {{ block.settings.info_section_3_title }}
+                  </h4>
+                {%- endif -%}
+                {%- if block.settings.info_section_3_content != blank -%}
+                  <div class="fr-rich-text">
+                    {{ block.settings.info_section_3_content }}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    (function() {
+      document.addEventListener('DOMContentLoaded', function() {
+        const wrapper = document.querySelector('.fr-size-guide-wrapper');
+        if (!wrapper) return;
+        
+        const trigger = wrapper.querySelector('[data-size-guide-trigger]');
+        const modal = wrapper.querySelector('[data-size-modal]');
+        const closeBtn = wrapper.querySelector('[data-modal-close]');
+        const tabs = wrapper.querySelectorAll('.fr-tab-button');
+        const panels = wrapper.querySelectorAll('.fr-tab-panel');
+        
+        let scrollPosition = 0;
+        
+        // Inizializza la prima tab come attiva al caricamento
+        if (tabs.length > 0) {
+          tabs[0].classList.add('active');
+          const firstPanel = wrapper.querySelector('[data-panel="' + tabs[0].getAttribute('data-tab') + '"]');
+          if (firstPanel) {
+            firstPanel.classList.add('active');
+          }
+        }
+        
+        // Apri modal
+        if (trigger) {
+          trigger.addEventListener('click', function() {
+            if (modal) {
+              // Salva posizione scroll
+              scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+              
+              modal.classList.add('active');
+              
+              // Previeni scroll del body solo su mobile
+              if (window.innerWidth <= 768) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${scrollPosition}px`;
+                document.body.style.width = '100%';
+              } else {
+                document.body.style.overflow = 'hidden';
+              }
+            }
+          });
+        }
+        
+        // Chiudi modal
+        function closeModal() {
+          if (modal) {
+            modal.classList.remove('active');
+            
+            // Ripristina scroll
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            
+            // Ripristina posizione scroll su mobile
+            if (window.innerWidth <= 768) {
+              window.scrollTo(0, scrollPosition);
+            }
+          }
+        }
+        
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closeModal);
+        }
+        
+        // Chiudi cliccando fuori
+        if (modal) {
+          modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+              closeModal();
+            }
+          });
+        }
+        
+        // Gestione tabs
+        tabs.forEach(function(tab) {
+          tab.addEventListener('click', function() {
+            const targetPanel = this.getAttribute('data-tab');
+            
+            // Rimuovi active da tutti
+            tabs.forEach(function(t) {
+              t.classList.remove('active');
+            });
+            panels.forEach(function(p) {
+              p.classList.remove('active');
+            });
+            
+            // Aggiungi active al corrente
+            this.classList.add('active');
+            const panel = wrapper.querySelector('[data-panel="' + targetPanel + '"]');
+            if (panel) {
+              panel.classList.add('active');
+            }
+          });
+        });
+        
+        // Chiudi con ESC
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+            closeModal();
+          }
+        });
+      });
+    })();
+  </script>
+</div>

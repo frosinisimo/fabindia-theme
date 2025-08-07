@@ -23,7 +23,7 @@
         "intro_text": "<p>Scopri la nostra esclusiva collezione di tessuti pregiati e design senza tempo. Ogni pezzo racconta una storia di artigianalità indiana, qualità superiore e sostenibilità. </p>",
         "full_content": "<p>La nostra collezione rappresenta l'essenza dell'artigianalità indiana, con tessuti naturali come cotone biologico, lino e seta, lavorati secondo tecniche tradizionali tramandate da generazioni. </p><p>Ogni capo racconta una storia di sostenibilità e rispetto per l'ambiente, utilizzando tinture naturali e processi di produzione etici.</p><p>I nostri artigiani dedicano ore di lavoro meticoloso per creare pezzi unici che combinano motivi tradizionali con tagli moderni, garantendo comfort e versatilità.</p><p>Dalla tessitura a mano al ricamo dettagliato, ogni elemento riflette l'autenticità e la qualità che contraddistinguono Fabindia Roma.</p><p>Scopri capi che vanno oltre la moda stagionale, pensati per durare nel tempo e arricchire il tuo guardaroba con pezzi senza tempo che celebrano la cultura e l'arte tessile indiana.</p>",
         "expand_text": "Leggi altro.",
-        "background_color": "#c33a32",
+        "background_color": "#3e3e3e",
         "overlay_color": "#000000",
         "overlay_opacity": 20,
         "text_color": "#fefefe",
@@ -31,9 +31,9 @@
         "text_align_desktop": "left",
         "intro_font_size_mobile": 15,
         "intro_font_size_desktop": 16,
-        "content_max_width": 1200,
+        "content_max_width": 1500,
         "content_padding_mobile": 20,
-        "content_padding_desktop": 60,
+        "content_padding_desktop": 40,
         "nascondi_mobile": false,
         "nascondi_desktop": false,
         "padding_top_mobile": 0,
@@ -43,7 +43,7 @@
         "padding_top_desktop": 0,
         "padding_bottom_desktop": 0,
         "margin_top_desktop": 0,
-        "margin_bottom_desktop": 0,
+        "margin_bottom_desktop": -4,
         "max_dimensione": "none"
       }
     },
@@ -68,7 +68,7 @@
         "collapsed": false,
         "filter_style": "sidebar",
         "enable_color_swatches": true,
-        "enable_swatch_labels": true,
+        "enable_swatch_labels": false,
         "enable_sort": false
       }
     },
