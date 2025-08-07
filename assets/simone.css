@@ -80,9 +80,7 @@ button.btn.btn--full.add-to-cart.disabled:hover {
 /* MOBILE VISTA */
 @media only screen and (max-width: 589px) {
 
-    .fr-size-selector .variant__button-label {
-    padding: 9px 12px !important;
-}
+    
 
     .ft-timeline-container {
         padding: 20px 10px 10px !important;
@@ -171,4 +169,51 @@ button.btn.btn--full.add-to-cart.disabled:hover {
         font-size: max(calc(var(--typeBaseSize) - 4px), 15px);
         padding: 15px 17px !important;
     }
+}
+
+/* RIMUOVI QUESTE CLASSI: */
+
+button.size-guide-trigger {
+    border-radius: 12px;
+    border: 1px solid black;
+}
+
+/* Mobile vista - size guide specific */
+@media only screen and (max-width: 589px) {
+    button.size-guide-trigger {
+        margin-top: -15px;
+        width: fit-content !important;
+        align-content: center;
+        justify-content: flex-start;
+        display: inline-flex;
+        padding: 12px 37px 12px 17px !important;
+        border: 1px solid #C33A32 !important;
+        border-radius: 50px 0px 0px 50px !important;
+    }
+    
+    .product-block.product-block--size-guide {
+        text-align: right !important;
+        margin-right: -20px;
+    }
+}
+
+/* Desktop vista - size guide specific */
+@media only screen and (min-width: 590px) {
+    button.size-guide-trigger {
+        width: fit-content !important;
+        align-content: center;
+        justify-content: flex-start;
+        display: inline-flex;
+        padding: 12px 37px 12px 17px !important;
+        border: 1px solid #C33A32 !important;
+        border-radius: 0px 50px 50px 0px !important;
+    }
+    
+    .size-guide-panel.active[data-panel="measurements"] {
+        display: flex;
+    }
+}
+
+.info-section {
+    border-radius: 20px;
 }

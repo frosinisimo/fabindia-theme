@@ -1727,13 +1727,443 @@ Parte 1A: Codice Liquid/HTML/CSS/JS per product-template.liquid
 
 
 {%- when 'size_guide' -%}
-  {%- render 'block-size-guide',
-    block: block,
-    product: product,
-    section: section,
-    section_id: section_id
-  -%}
-
+  <div class="product-block product-block--size-guide" {{ block.shopify_attributes }}>
+    <style>
+      .size-guide-trigger {
+        background-color: {{ block.settings.button_bg_color | default: '#C33A32' }};
+        color: {{ block.settings.button_text_color | default: '#FFFFFF' }};
+        border: 2px solid {{ block.settings.button_border_color | default: '#C33A32' }};
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        margin: {{ block.settings.button_margin }}px 0;
+      }
+      
+      .size-guide-trigger:hover {
+        background-color: {{ block.settings.button_hover_bg | default: '#FEFEFE' }};
+        color: {{ block.settings.button_hover_text | default: '#C33A32' }};
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(195, 58, 50, 0.2);
+      }
+      
+      .size-guide-trigger svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+      
+      .size-guide-modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(62, 62, 62, 0.8);
+        overflow: auto;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      .size-guide-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .size-guide-content {
+        background-color: {{ block.settings.modal_bg_color | default: '#FEFEFE' }};
+        color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+        margin: 20px;
+        padding: 0;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 900px;
+        max-height: 90vh;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideUp 0.4s ease;
+      }
+      
+      .size-guide-header {
+        background-color: {{ block.settings.header_bg_color | default: '#F0E6E0' }};
+        color: {{ block.settings.header_text_color | default: '#3E3E3E' }};
+        padding: 20px 30px;
+        border-bottom: 1px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .size-guide-header h3 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      
+      .size-guide-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: {{ block.settings.header_text_color | default: '#3E3E3E' }};
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+      
+      .size-guide-close:hover {
+        background-color: {{ block.settings.button_bg_color | default: '#C33A32' }};
+        color: #FFFFFF;
+        transform: rotate(90deg);
+      }
+      
+      .size-guide-body {
+        overflow-y: auto;
+        max-height: calc(90vh - 80px);
+        padding: 30px;
+      }
+      
+      .size-guide-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid {{ block.settings.border_color | default: '#E5DDD5' }};
+        padding-bottom: 0;
+      }
+      
+      .size-guide-tab {
+        background: none;
+        border: none;
+        padding: 12px 24px;
+        cursor: pointer;
+        font-weight: 500;
+        color: {{ block.settings.tab_inactive_color | default: '#B5A397' }};
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        margin-bottom: -2px;
+      }
+      
+      .size-guide-tab.active {
+        color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+        border-bottom-color: {{ block.settings.tab_active_color | default: '#C33A32' }};
+      }
+      
+      .size-guide-tab:hover:not(.active) {
+        color: {{ block.settings.modal_text_color | default: '#3E3E3E' }};
+      }
+      
+      .size-guide-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      .size-guide-panel.active {
+        display: block;
+      }
+      
+      .size-table-wrapper {
+        overflow-x: auto;
+        margin-bottom: 20px;
+      }
+      
+      .size-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 500px;
+      }
+      
+      .size-table th,
+      .size-table td {
+        padding: 12px 15px;
+        text-align: center;
+        border: 1px solid {{ block.settings.table_border_color | default: '#E5DDD5' }};
+      }
+      
+      .size-table th {
+        background-color: {{ block.settings.table_header_bg | default: '#F0E6E0' }};
+        font-weight: 600;
+        color: {{ block.settings.table_header_text | default: '#3E3E3E' }};
+      }
+      
+      .size-table tr:nth-child(even) {
+        background-color: {{ block.settings.table_alt_bg | default: '#FAFAFA' }};
+      }
+      
+      .measurement-image {
+        text-align: center;
+        margin: 20px 0;
+      }
+      
+      .measurement-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+      
+      .info-section {
+        background-color: {{ block.settings.info_bg_color | default: '#F0E6E0' }};
+        padding: 20px;
+        border-radius: 4px;
+        margin-top: 20px;
+      }
+      
+      .info-section h4 {
+        margin-top: 0;
+        color: {{ block.settings.info_title_color | default: '#C33A32' }};
+      }
+      
+      .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .info-list li {
+        padding: 8px 0;
+        padding-left: 24px;
+        position: relative;
+      }
+      
+      .info-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: {{ block.settings.info_icon_color | default: '#C33A32' }};
+        font-weight: bold;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .size-guide-content {
+          width: 95%;
+          margin: 10px;
+        }
+        
+        .size-guide-header {
+          padding: 15px 20px;
+        }
+        
+        .size-guide-header h3 {
+          font-size: 20px;
+        }
+        
+        .size-guide-body {
+          padding: 20px;
+        }
+        
+        .size-guide-tabs {
+          flex-wrap: wrap;
+        }
+        
+        .size-guide-tab {
+          font-size: 14px;
+          padding: 10px 16px;
+        }
+        
+        .size-table {
+          font-size: 14px;
+        }
+        
+        .size-table th,
+        .size-table td {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+    
+    <button type="button" class="size-guide-trigger" data-size-guide-trigger>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z"/>
+      </svg>
+      {{ block.settings.button_text | default: 'Guida alle taglie' }}
+    </button>
+    
+    <div class="size-guide-modal" data-size-guide-modal>
+      <div class="size-guide-content">
+        <div class="size-guide-header">
+          <h3>{{ block.settings.modal_title | default: 'Guida alle taglie e misure' }}</h3>
+          <button class="size-guide-close" data-size-guide-close>&times;</button>
+        </div>
+        
+        <div class="size-guide-body">
+          <div class="size-guide-tabs">
+            <button class="size-guide-tab active" data-tab="sizes">
+              {{ block.settings.tab1_title | default: 'Tabella taglie' }}
+            </button>
+            <button class="size-guide-tab" data-tab="measurements">
+              {{ block.settings.tab2_title | default: 'Come prendere le misure' }}
+            </button>
+            <button class="size-guide-tab" data-tab="info">
+              {{ block.settings.tab3_title | default: 'Informazioni utili' }}
+            </button>
+          </div>
+          
+          <div class="size-guide-panel active" data-panel="sizes">
+            <div class="size-table-wrapper">
+              <table class="size-table">
+                <thead>
+                  <tr>
+                    <th>{{ block.settings.size_label | default: 'Taglia' }}</th>
+                    <th>{{ block.settings.bust_label | default: 'Busto (cm)' }}</th>
+                    <th>{{ block.settings.waist_label | default: 'Vita (cm)' }}</th>
+                    <th>{{ block.settings.hips_label | default: 'Fianchi (cm)' }}</th>
+                    <th>{{ block.settings.length_label | default: 'Lunghezza (cm)' }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for i in (1..6) -%}
+                    {%- assign size_key = 'size_' | append: i -%}
+                    {%- assign bust_key = 'bust_' | append: i -%}
+                    {%- assign waist_key = 'waist_' | append: i -%}
+                    {%- assign hips_key = 'hips_' | append: i -%}
+                    {%- assign length_key = 'length_' | append: i -%}
+                    
+                    {%- if block.settings[size_key] != blank -%}
+                      <tr>
+                        <td><strong>{{ block.settings[size_key] }}</strong></td>
+                        <td>{{ block.settings[bust_key] }}</td>
+                        <td>{{ block.settings[waist_key] }}</td>
+                        <td>{{ block.settings[hips_key] }}</td>
+                        <td>{{ block.settings[length_key] }}</td>
+                      </tr>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+            
+            {%- if block.settings.size_note != blank -%}
+              <div class="info-section">
+                <p>{{ block.settings.size_note }}</p>
+              </div>
+            {%- endif -%}
+          </div>
+          
+          <div class="size-guide-panel" data-panel="measurements">
+            {%- if block.settings.measurement_image != blank -%}
+              <div class="measurement-image">
+                {%- render 'image-element',
+                  img: block.settings.measurement_image,
+                  widths: '360, 540, 720, 900',
+                  sizeVariable: '900px',
+                -%}
+              </div>
+            {%- endif -%}
+            
+            <div class="info-section">
+              <h4>{{ block.settings.measurement_title | default: 'Come prendere correttamente le misure' }}</h4>
+              <ul class="info-list">
+                <li>{{ block.settings.measurement_tip_1 | default: 'Utilizza un metro da sarta morbido' }}</li>
+                <li>{{ block.settings.measurement_tip_2 | default: 'Prendi le misure sopra la biancheria intima' }}</li>
+                <li>{{ block.settings.measurement_tip_3 | default: 'Mantieni il metro parallelo al pavimento' }}</li>
+                <li>{{ block.settings.measurement_tip_4 | default: 'Non stringere troppo il metro' }}</li>
+                <li>{{ block.settings.measurement_tip_5 | default: 'Fatti aiutare da qualcuno per maggiore precisione' }}</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="size-guide-panel" data-panel="info">
+            <div class="info-section">
+              <h4>{{ block.settings.info_title_1 | default: 'Vestibilità dei prodotti Fabindia' }}</h4>
+              <p>{{ block.settings.info_content_1 | default: 'I nostri capi sono realizzati con tessuti naturali che potrebbero avere una leggera variazione nelle misure.' }}</p>
+            </div>
+            
+            <div class="info-section">
+              <h4>{{ block.settings.info_title_2 | default: 'Consigli per la scelta' }}</h4>
+              <p>{{ block.settings.info_content_2 | default: 'Se sei indeciso tra due taglie, consigliamo di scegliere quella più grande per una vestibilità comoda.' }}</p>
+            </div>
+            
+            {%- if block.settings.care_instructions != blank -%}
+              <div class="info-section">
+                <h4>{{ block.settings.care_title | default: 'Istruzioni di lavaggio' }}</h4>
+                <p>{{ block.settings.care_instructions }}</p>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const trigger = document.querySelector('[data-size-guide-trigger]');
+        const modal = document.querySelector('[data-size-guide-modal]');
+        const closeBtn = document.querySelector('[data-size-guide-close]');
+        const tabs = document.querySelectorAll('.size-guide-tab');
+        const panels = document.querySelectorAll('.size-guide-panel');
+        
+        // Apri modal
+        trigger.addEventListener('click', function() {
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+        
+        // Chiudi modal
+        function closeModal() {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+        
+        closeBtn.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+        
+        // Gestione tabs
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const targetPanel = this.getAttribute('data-tab');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            this.classList.add('active');
+            document.querySelector(`[data-panel="${targetPanel}"]`).classList.add('active');
+          });
+        });
+        
+        // Chiudi con ESC
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+          }
+        });
+      });
+    </script>
+  </div>
   
 
                  
@@ -1763,7 +2193,7 @@ Parte 1A: Codice Liquid/HTML/CSS/JS per product-template.liquid
  Inizio variant_picker
  {% endcomment %}
 
- {%- when 'variant_picker' -%}
+{%- when 'variant_picker' -%}
   {%- render 'block-variant-picker',
     block: block,
     product: product,

@@ -360,42 +360,20 @@
   "name": "t:product_block.quantity_selector.name",
   "limit": 1
 },
-{
+ {
   "type": "size_guide",
   "name": "Guida taglie",
   "limit": 1,
   "settings": [
     {
       "type": "header",
-      "content": "Impostazioni Generali"
-    },
-    {
-      "type": "text",
-      "id": "modal_title",
-      "label": "Titolo principale",
-      "default": "Guida alle Taglie Fabindia"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_measurements_tab",
-      "label": "Mostra tab Come Misurare",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_info_tab",
-      "label": "Mostra tab Informazioni",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Pulsante"
+      "content": "Impostazioni pulsante"
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "Testo pulsante",
-      "default": "Guida taglie"
+      "default": "Guida alle taglie"
     },
     {
       "type": "range",
@@ -410,36 +388,42 @@
     {
       "type": "color",
       "id": "button_bg_color",
-      "label": "Sfondo pulsante",
-      "default": "#FEFEFE"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Testo pulsante",
+      "label": "Colore sfondo pulsante",
       "default": "#C33A32"
     },
     {
       "type": "color",
+      "id": "button_text_color",
+      "label": "Colore testo pulsante",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
       "id": "button_border_color",
-      "label": "Bordo pulsante",
+      "label": "Colore bordo pulsante",
       "default": "#C33A32"
     },
     {
       "type": "color",
       "id": "button_hover_bg",
-      "label": "Sfondo hover",
-      "default": "#C33A32"
+      "label": "Sfondo pulsante hover",
+      "default": "#FEFEFE"
     },
     {
       "type": "color",
       "id": "button_hover_text",
-      "label": "Testo hover",
-      "default": "#FEFEFE"
+      "label": "Testo pulsante hover",
+      "default": "#C33A32"
     },
     {
       "type": "header",
-      "content": "Colori Modal"
+      "content": "Impostazioni modal"
+    },
+    {
+      "type": "text",
+      "id": "modal_title",
+      "label": "Titolo modal",
+      "default": "Guida alle taglie e misure"
     },
     {
       "type": "color",
@@ -450,19 +434,19 @@
     {
       "type": "color",
       "id": "modal_text_color",
-      "label": "Testo modal",
+      "label": "Colore testo modal",
       "default": "#3E3E3E"
     },
     {
       "type": "color",
       "id": "header_bg_color",
-      "label": "Sfondo header",
+      "label": "Sfondo header modal",
       "default": "#F0E6E0"
     },
     {
       "type": "color",
       "id": "header_text_color",
-      "label": "Testo header",
+      "label": "Testo header modal",
       "default": "#3E3E3E"
     },
     {
@@ -473,203 +457,407 @@
     },
     {
       "type": "header",
-      "content": "Spaziature"
-    },
-    {
-      "type": "range",
-      "id": "modal_padding_desktop",
-      "label": "Padding modal desktop",
-      "min": 20,
-      "max": 60,
-      "step": 5,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "modal_padding_mobile",
-      "label": "Padding modal mobile",
-      "min": 15,
-      "max": 40,
-      "step": 5,
-      "unit": "px",
-      "default": 25
-    },
-    {
-      "type": "range",
-      "id": "card_margin_desktop",
-      "label": "Margine card desktop",
-      "min": 15,
-      "max": 40,
-      "step": 5,
-      "unit": "px",
-      "default": 25
-    },
-    {
-      "type": "range",
-      "id": "card_margin_mobile",
-      "label": "Margine card mobile",
-      "min": 10,
-      "max": 30,
-      "step": 5,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "header",
-      "content": "Tab Titoli"
+      "content": "Impostazioni tabs"
     },
     {
       "type": "text",
       "id": "tab1_title",
-      "label": "Titolo tab taglie",
-      "default": "Tabella Taglie"
+      "label": "Titolo tab 1",
+      "default": "Tabella taglie"
     },
     {
       "type": "text",
       "id": "tab2_title",
-      "label": "Titolo tab misure",
-      "default": "Come Misurare"
+      "label": "Titolo tab 2",
+      "default": "Come prendere le misure"
     },
     {
       "type": "text",
       "id": "tab3_title",
-      "label": "Titolo tab info",
-      "default": "Informazioni"
+      "label": "Titolo tab 3",
+      "default": "Informazioni utili"
     },
     {
       "type": "color",
       "id": "tab_active_color",
-      "label": "Tab attivo",
+      "label": "Colore tab attivo",
       "default": "#C33A32"
     },
     {
       "type": "color",
       "id": "tab_inactive_color",
-      "label": "Tab inattivo",
+      "label": "Colore tab inattivo",
       "default": "#B5A397"
     },
     {
       "type": "header",
-      "content": "Tabella Taglie"
+      "content": "Tabella taglie"
     },
     {
-      "type": "html",
-      "id": "size_chart_html",
-      "label": "HTML tabella taglie",
-      "info": "Usa il template HTML fornito"
+      "type": "text",
+      "id": "size_label",
+      "label": "Etichetta taglia",
+      "default": "Taglia"
     },
     {
-      "type": "textarea",
-      "id": "size_note",
-      "label": "Nota sotto tabella",
-      "default": "Le misure sono indicative. I prodotti Fabindia sono realizzati artigianalmente."
+      "type": "text",
+      "id": "bust_label",
+      "label": "Etichetta busto",
+      "default": "Busto (cm)"
+    },
+    {
+      "type": "text",
+      "id": "waist_label",
+      "label": "Etichetta vita",
+      "default": "Vita (cm)"
+    },
+    {
+      "type": "text",
+      "id": "hips_label",
+      "label": "Etichetta fianchi",
+      "default": "Fianchi (cm)"
+    },
+    {
+      "type": "text",
+      "id": "length_label",
+      "label": "Etichetta lunghezza",
+      "default": "Lunghezza (cm)"
+    },
+    {
+      "type": "color",
+      "id": "table_border_color",
+      "label": "Colore bordi tabella",
+      "default": "#E5DDD5"
     },
     {
       "type": "color",
       "id": "table_header_bg",
-      "label": "Sfondo header",
+      "label": "Sfondo header tabella",
       "default": "#F0E6E0"
     },
     {
       "type": "color",
       "id": "table_header_text",
-      "label": "Testo header",
+      "label": "Testo header tabella",
       "default": "#3E3E3E"
     },
     {
       "type": "color",
       "id": "table_alt_bg",
-      "label": "Sfondo righe alt",
+      "label": "Sfondo righe alternate",
       "default": "#FAFAFA"
     },
     {
       "type": "header",
-      "content": "Come Misurare"
+      "content": "Dati taglia 1"
+    },
+    {
+      "type": "text",
+      "id": "size_1",
+      "label": "Taglia",
+      "default": "XS"
+    },
+    {
+      "type": "text",
+      "id": "bust_1",
+      "label": "Busto",
+      "default": "82-86"
+    },
+    {
+      "type": "text",
+      "id": "waist_1",
+      "label": "Vita",
+      "default": "62-66"
+    },
+    {
+      "type": "text",
+      "id": "hips_1",
+      "label": "Fianchi",
+      "default": "88-92"
+    },
+    {
+      "type": "text",
+      "id": "length_1",
+      "label": "Lunghezza",
+      "default": "98"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 2"
+    },
+    {
+      "type": "text",
+      "id": "size_2",
+      "label": "Taglia",
+      "default": "S"
+    },
+    {
+      "type": "text",
+      "id": "bust_2",
+      "label": "Busto",
+      "default": "86-90"
+    },
+    {
+      "type": "text",
+      "id": "waist_2",
+      "label": "Vita",
+      "default": "66-70"
+    },
+    {
+      "type": "text",
+      "id": "hips_2",
+      "label": "Fianchi",
+      "default": "92-96"
+    },
+    {
+      "type": "text",
+      "id": "length_2",
+      "label": "Lunghezza",
+      "default": "100"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 3"
+    },
+    {
+      "type": "text",
+      "id": "size_3",
+      "label": "Taglia",
+      "default": "M"
+    },
+    {
+      "type": "text",
+      "id": "bust_3",
+      "label": "Busto",
+      "default": "90-94"
+    },
+    {
+      "type": "text",
+      "id": "waist_3",
+      "label": "Vita",
+      "default": "70-74"
+    },
+    {
+      "type": "text",
+      "id": "hips_3",
+      "label": "Fianchi",
+      "default": "96-100"
+    },
+    {
+      "type": "text",
+      "id": "length_3",
+      "label": "Lunghezza",
+      "default": "102"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 4"
+    },
+    {
+      "type": "text",
+      "id": "size_4",
+      "label": "Taglia",
+      "default": "L"
+    },
+    {
+      "type": "text",
+      "id": "bust_4",
+      "label": "Busto",
+      "default": "94-98"
+    },
+    {
+      "type": "text",
+      "id": "waist_4",
+      "label": "Vita",
+      "default": "74-78"
+    },
+    {
+      "type": "text",
+      "id": "hips_4",
+      "label": "Fianchi",
+      "default": "100-104"
+    },
+    {
+      "type": "text",
+      "id": "length_4",
+      "label": "Lunghezza",
+      "default": "104"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 5"
+    },
+    {
+      "type": "text",
+      "id": "size_5",
+      "label": "Taglia",
+      "default": "XL"
+    },
+    {
+      "type": "text",
+      "id": "bust_5",
+      "label": "Busto",
+      "default": "98-102"
+    },
+    {
+      "type": "text",
+      "id": "waist_5",
+      "label": "Vita",
+      "default": "78-82"
+    },
+    {
+      "type": "text",
+      "id": "hips_5",
+      "label": "Fianchi",
+      "default": "104-108"
+    },
+    {
+      "type": "text",
+      "id": "length_5",
+      "label": "Lunghezza",
+      "default": "106"
+    },
+    {
+      "type": "header",
+      "content": "Dati taglia 6"
+    },
+    {
+      "type": "text",
+      "id": "size_6",
+      "label": "Taglia",
+      "default": "XXL"
+    },
+    {
+      "type": "text",
+      "id": "bust_6",
+      "label": "Busto",
+      "default": "102-106"
+    },
+    {
+      "type": "text",
+      "id": "waist_6",
+      "label": "Vita",
+      "default": "82-86"
+    },
+    {
+      "type": "text",
+      "id": "hips_6",
+      "label": "Fianchi",
+      "default": "108-112"
+    },
+    {
+      "type": "text",
+      "id": "length_6",
+      "label": "Lunghezza",
+      "default": "108"
+    },
+    {
+      "type": "textarea",
+      "id": "size_note",
+      "label": "Nota tabella taglie",
+      "default": "Le misure sono indicative. I prodotti Fabindia sono realizzati artigianalmente e potrebbero avere leggere variazioni."
+    },
+    {
+      "type": "header",
+      "content": "Come prendere le misure"
     },
     {
       "type": "image_picker",
       "id": "measurement_image",
-      "label": "Immagine guida"
+      "label": "Infografica misure"
     },
     {
       "type": "text",
       "id": "measurement_title",
       "label": "Titolo sezione",
-      "default": "Come prendere le misure"
-    },
-    {
-      "type": "richtext",
-      "id": "measurement_instructions",
-      "label": "Istruzioni",
-      "default": "<p>Usa un metro da sarta morbido<br>Prendi le misure sopra la biancheria intima<br>Mantieni il metro parallelo al pavimento<br>Non stringere troppo il metro<br>Fatti aiutare per maggiore precisione</p>"
-    },
-    {
-      "type": "header",
-      "content": "Informazioni - Sezione 1"
+      "default": "Come prendere correttamente le misure"
     },
     {
       "type": "text",
-      "id": "info_section_1_title",
-      "label": "Titolo sezione 1",
-      "default": "Vestibilità Fabindia"
-    },
-    {
-      "type": "richtext",
-      "id": "info_section_1_content",
-      "label": "Contenuto sezione 1",
-      "default": "<p>I nostri capi sono realizzati con tessuti naturali e tecniche artigianali tradizionali indiane. Ogni pezzo è unico e potrebbe avere leggere variazioni nelle misure.</p>"
-    },
-    {
-      "type": "header",
-      "content": "Informazioni - Sezione 2"
+      "id": "measurement_tip_1",
+      "label": "Consiglio 1",
+      "default": "Utilizza un metro da sarta morbido"
     },
     {
       "type": "text",
-      "id": "info_section_2_title",
-      "label": "Titolo sezione 2",
+      "id": "measurement_tip_2",
+      "label": "Consiglio 2",
+      "default": "Prendi le misure sopra la biancheria intima"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_3",
+      "label": "Consiglio 3",
+      "default": "Mantieni il metro parallelo al pavimento"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_4",
+      "label": "Consiglio 4",
+      "default": "Non stringere troppo il metro"
+    },
+    {
+      "type": "text",
+      "id": "measurement_tip_5",
+      "label": "Consiglio 5",
+      "default": "Fatti aiutare da qualcuno per maggiore precisione"
+    },
+    {
+      "type": "header",
+      "content": "Informazioni aggiuntive"
+    },
+    {
+      "type": "text",
+      "id": "info_title_1",
+      "label": "Titolo info 1",
+      "default": "Vestibilità dei prodotti Fabindia"
+    },
+    {
+      "type": "textarea",
+      "id": "info_content_1",
+      "label": "Contenuto info 1",
+      "default": "I nostri capi sono realizzati con tessuti naturali che potrebbero avere una leggera variazione nelle misure."
+    },
+    {
+      "type": "text",
+      "id": "info_title_2",
+      "label": "Titolo info 2",
       "default": "Consigli per la scelta"
     },
     {
-      "type": "richtext",
-      "id": "info_section_2_content",
-      "label": "Contenuto sezione 2",
-      "default": "<p>Se sei indeciso tra due taglie, ti consigliamo di scegliere quella più grande per una vestibilità comoda, in linea con lo stile tradizionale indiano.</p>"
-    },
-    {
-      "type": "header",
-      "content": "Informazioni - Sezione 3"
+      "type": "textarea",
+      "id": "info_content_2",
+      "label": "Contenuto info 2",
+      "default": "Se sei indeciso tra due taglie, consigliamo di scegliere quella più grande per una vestibilità comoda."
     },
     {
       "type": "text",
-      "id": "info_section_3_title",
-      "label": "Titolo sezione 3"
+      "id": "care_title",
+      "label": "Titolo cura capi",
+      "default": "Istruzioni di lavaggio"
     },
     {
-      "type": "richtext",
-      "id": "info_section_3_content",
-      "label": "Contenuto sezione 3"
-    },
-    {
-      "type": "header",
-      "content": "Colori Info Cards"
+      "type": "textarea",
+      "id": "care_instructions",
+      "label": "Istruzioni lavaggio",
+      "default": "Lavare a mano in acqua fredda. Non candeggiare. Stendere all'ombra. Stirare a bassa temperatura."
     },
     {
       "type": "color",
       "id": "info_bg_color",
-      "label": "Sfondo card",
+      "label": "Sfondo sezioni info",
       "default": "#F0E6E0"
     },
     {
       "type": "color",
       "id": "info_title_color",
-      "label": "Colore titoli",
+      "label": "Colore titoli info",
       "default": "#C33A32"
     },
     {
       "type": "color",
       "id": "info_icon_color",
-      "label": "Colore icone",
+      "label": "Colore icone info",
       "default": "#C33A32"
     }
   ]
@@ -1564,21 +1752,21 @@
     {
       "type": "checkbox",
       "id": "variant_labels",
-      "label": "Mostra etichette varianti",
+      "label": "t:product_block.variant_picker.settings.variant_labels.label",
       "default": true
     },
     {
       "type": "select",
       "id": "picker_type",
-      "label": "Tipo selettore",
+      "label": "t:product_block.variant_picker.settings.picker_type.label",
       "options": [
         {
           "value": "button",
-          "label": "Pulsanti"
+          "label": "t:product_block.variant_picker.settings.picker_type.options.button.label"
         },
         {
           "value": "dropdown",
-          "label": "Menu a tendina"
+          "label": "t:product_block.variant_picker.settings.picker_type.options.dropdown.label"
         }
       ],
       "default": "button"
@@ -1586,30 +1774,64 @@
     {
       "type": "checkbox",
       "id": "product_dynamic_variants_enable",
-      "label": "Varianti dinamiche",
+      "label": "t:product_block.variant_picker.settings.product_dynamic_variants_enable.label",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "color_swatches",
-      "label": "Campioni colore",
-      "info": "Solo con tipo Pulsanti"
+      "label": "Enable color swatches",
+      "info": "Requires type to be set to 'Buttons'. [Learn how to set up swatches](https://archetypethemes.co/blogs/impulse/how-do-i-set-up-color-swatches)"
     },
     {
       "type": "header",
-      "content": "🎨 Varianti Colore"
+      "content": "Layout Varianti"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_fit_variants_mobile",
+      "label": "Auto-espandi mobile",
+      "default": false,
+      "info": "Distribuisce le taglie al 100%"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_fit_variants_desktop",
+      "label": "Auto-espandi desktop",
+      "default": false,
+      "info": "Distribuisce le taglie al 100%"
+    },
+    {
+      "type": "range",
+      "id": "variant_gap",
+      "label": "Spazio tra varianti",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Varianti Colore"
     },
     {
       "type": "checkbox",
       "id": "show_color_variants",
       "label": "Mostra varianti colore",
       "default": true,
-      "info": "Usa custom.related_products"
+      "info": "Usa metafield custom.related_products"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo sezione",
+      "default": "Varianti Colore"
     },
     {
       "type": "text",
       "id": "section_title_2",
-      "label": "Titolo sezione",
+      "label": "Titolo Varianti Colore",
       "default": "Varianti Colore"
     },
     {
@@ -1619,114 +1841,27 @@
       "info": "Es: nome modello"
     },
     {
-      "type": "checkbox",
-      "id": "show_prices",
-      "label": "Mostra prezzi",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "uppercase_names",
-      "label": "Nomi in maiuscolo",
-      "default": false
-    },
-    {
       "type": "header",
-      "content": "📐 Layout Varianti"
-    },
-    {
-      "type": "checkbox",
-      "id": "auto_fit_variants_desktop",
-      "label": "Auto-fit Desktop",
-      "default": true,
-      "info": "Distribuisce su una riga"
-    },
-    {
-      "type": "checkbox",
-      "id": "auto_fit_variants_mobile",
-      "label": "Auto-fit Mobile",
-      "default": true,
-      "info": "Scroll orizzontale"
-    },
-    {
-      "type": "range",
-      "id": "variant_gap",
-      "label": "Spazio tra varianti",
-      "min": 4,
-      "max": 20,
-      "step": 2,
-      "default": 8,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "🎯 Layout Colori"
-    },
-    {
-      "type": "checkbox",
-      "id": "auto_fit_colors_desktop",
-      "label": "Auto-fit Desktop",
-      "default": false,
-      "info": "Adatta automaticamente"
-    },
-    {
-      "type": "checkbox",
-      "id": "auto_fit_colors_mobile",
-      "label": "Auto-fit Mobile",
-      "default": true,
-      "info": "Scroll orizzontale"
-    },
-    {
-      "type": "range",
-      "id": "colors_per_row_desktop",
-      "label": "Colonne desktop",
-      "min": 3,
-      "max": 9,
-      "step": 1,
-      "default": 4,
-      "info": "Se auto-fit OFF"
-    },
-    {
-      "type": "range",
-      "id": "colors_per_row_mobile",
-      "label": "Colonne mobile",
-      "min": 2,
-      "max": 9,
-      "step": 1,
-      "default": 2,
-      "info": "Se auto-fit OFF"
-    },
-    {
-      "type": "range",
-      "id": "grid_gap",
-      "label": "Spazio griglia",
-      "min": 8,
-      "max": 24,
-      "step": 4,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "🔲 Swatch Immagini"
+      "content": "Swatch Immagini"
     },
     {
       "type": "checkbox",
       "id": "enable_image_swatches",
-      "label": "Abilita swatch",
-      "default": true
+      "label": "Abilita swatch immagini",
+      "default": false,
+      "info": "Mostra miniature circolari"
     },
     {
       "type": "checkbox",
       "id": "use_second_image_swatch",
       "label": "Usa seconda immagine",
       "default": true,
-      "info": "Usa 2° foto prodotto"
+      "info": "Usa la 2° immagine prodotto"
     },
     {
       "type": "checkbox",
       "id": "use_metafield_swatch",
-      "label": "Usa metafield",
+      "label": "Usa metafield swatch",
       "default": false,
       "info": "custom.swatch_image"
     },
@@ -1759,57 +1894,82 @@
     {
       "type": "range",
       "id": "swatch_position",
-      "label": "Posizione dal bordo",
+      "label": "Posizione swatch",
       "min": 5,
       "max": 20,
       "step": 5,
       "default": 10,
-      "unit": "px"
+      "unit": "px",
+      "info": "Distanza dal bordo"
     },
     {
       "type": "range",
       "id": "swatch_border_radius",
-      "label": "Raggio bordi",
+      "label": "Raggio bordi swatch",
       "min": 0,
-      "max": 15,
-      "step": 3,
-      "default": 6,
+      "max": 20,
+      "step": 2,
+      "default": 8,
       "unit": "px",
-      "info": "Per forma quadrata"
+      "info": "Solo per forma quadrata"
     },
     {
       "type": "checkbox",
       "id": "hide_swatch_mobile",
-      "label": "Nascondi su mobile",
+      "label": "Nascondi swatch mobile",
       "default": false
     },
     {
       "type": "header",
-      "content": "💡 Tooltip Feedback"
+      "content": "Layout Colori"
     },
     {
       "type": "checkbox",
-      "id": "enable_tooltip",
-      "label": "Abilita tooltip",
-      "default": true,
-      "info": "Mostra tooltip su taglie non disponibili"
+      "id": "auto_fit_colors_mobile",
+      "label": "Auto-espandi mobile",
+      "default": false,
+      "info": "Distribuisce i colori al 100%"
     },
     {
-      "type": "text",
-      "id": "tooltip_text",
-      "label": "Testo tooltip",
-      "default": "Taglia non disponibile"
+      "type": "checkbox",
+      "id": "auto_fit_colors_desktop",
+      "label": "Auto-espandi desktop",
+      "default": false,
+      "info": "Distribuisce i colori al 100%"
     },
     {
       "type": "range",
-      "id": "tooltip_duration",
-      "label": "Durata tooltip mobile",
-      "min": 1000,
-      "max": 5000,
-      "step": 500,
-      "default": 2000,
-      "unit": "ms",
-      "info": "Su desktop scompare al mouse out"
+      "id": "colors_per_row_mobile",
+      "label": "Colonne mobile",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "info": "Se auto-espandi è OFF"
+    },
+    {
+      "type": "range",
+      "id": "colors_per_row_desktop",
+      "label": "Colonne desktop",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "info": "Se auto-espandi è OFF"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Spazio griglia",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Feedback Visivo"
     },
     {
       "type": "checkbox",
@@ -1821,41 +1981,35 @@
       "type": "text",
       "id": "size_prefix",
       "label": "Prefisso taglia",
-      "default": "- "
+      "default": "Taglia: "
+    },
+    {
+      "type": "text",
+      "id": "size_alert_text",
+      "label": "Testo avviso taglia",
+      "default": "Taglia non disponibile nelle varianti mostrate"
+    },
+    {
+      "type": "text",
+      "id": "unavailable_text",
+      "label": "Testo non disponibile",
+      "default": "Non disponibile"
     },
     {
       "type": "header",
-      "content": "📏 Dimensioni"
+      "content": "Stile"
     },
     {
-      "type": "range",
-      "id": "title_size",
-      "label": "Dimensione titolo",
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "default": 18,
-      "unit": "px"
+      "type": "checkbox",
+      "id": "show_prices",
+      "label": "Mostra prezzi",
+      "default": true
     },
     {
-      "type": "range",
-      "id": "name_size",
-      "label": "Dimensione nome",
-      "min": 12,
-      "max": 16,
-      "step": 1,
-      "default": 14,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "price_size",
-      "label": "Dimensione prezzo",
-      "min": 13,
-      "max": 17,
-      "step": 1,
-      "default": 15,
-      "unit": "px"
+      "type": "checkbox",
+      "id": "uppercase_names",
+      "label": "Nomi in maiuscolo",
+      "default": false
     },
     {
       "type": "select",
@@ -1878,8 +2032,38 @@
       "default": "center"
     },
     {
+      "type": "range",
+      "id": "title_size",
+      "label": "Dimensione titolo",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "name_size",
+      "label": "Dimensione nome",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Dimensione prezzo",
+      "min": 14,
+      "max": 18,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
       "type": "header",
-      "content": "🎨 Colori"
+      "content": "Colori"
     },
     {
       "type": "color",
@@ -1891,7 +2075,7 @@
       "type": "color",
       "id": "text_color",
       "label": "Colore testo",
-      "default": "#3E3E3E"
+      "default": "#111827"
     },
     {
       "type": "color",
@@ -1907,124 +2091,36 @@
     },
     {
       "type": "header",
-      "content": "💻 Spaziatura Desktop"
+      "content": "Spaziatura"
     },
     {
       "type": "range",
-      "id": "padding_top_desktop",
-      "label": "Padding superiore",
+      "id": "section_spacing",
+      "label": "Spazio sopra",
       "min": 0,
+      "max": 48,
+      "step": 8,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Padding interno",
+      "min": 16,
       "max": 40,
-      "step": 5,
-      "default": 0,
+      "step": 8,
+      "default": 24,
       "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_desktop",
-      "label": "Padding inferiore",
-      "min": 0,
-      "max": 40,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_horizontal_desktop",
-      "label": "Padding laterale",
-      "min": 0,
-      "max": 40,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_top_desktop",
-      "label": "Margine superiore",
-      "min": 0,
-      "max": 50,
-      "step": 5,
-      "default": 25,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_bottom_desktop",
-      "label": "Margine inferiore",
-      "min": 0,
-      "max": 50,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "📱 Spaziatura Mobile"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_mobile",
-      "label": "Padding superiore",
-      "min": 0,
-      "max": 30,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom_mobile",
-      "label": "Padding inferiore",
-      "min": 0,
-      "max": 30,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_horizontal_mobile",
-      "label": "Padding laterale",
-      "min": 0,
-      "max": 20,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_top_mobile",
-      "label": "Margine superiore",
-      "min": 0,
-      "max": 30,
-      "step": 5,
-      "default": 20,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_bottom_mobile",
-      "label": "Margine inferiore",
-      "min": 0,
-      "max": 30,
-      "step": 5,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "⚙️ Generale"
     },
     {
       "type": "range",
       "id": "border_radius",
-      "label": "Raggio bordi sezione",
+      "label": "Raggio bordi",
       "min": 0,
-      "max": 20,
+      "max": 16,
       "step": 4,
-      "default": 0,
+      "default": 12,
       "unit": "px"
     },
     {
@@ -2032,7 +2128,7 @@
       "id": "image_radius",
       "label": "Raggio immagini",
       "min": 0,
-      "max": 16,
+      "max": 12,
       "step": 2,
       "default": 8,
       "unit": "px"
@@ -2040,8 +2136,8 @@
     {
       "type": "checkbox",
       "id": "show_border",
-      "label": "Mostra bordo sezione",
-      "default": false
+      "label": "Mostra bordo",
+      "default": true
     }
   ]
 },
