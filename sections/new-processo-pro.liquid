@@ -1,0 +1,1182 @@
+<!-- Fabindia Processo Elegante -->
+<section class="fr-processo-elegante" data-section-id="{{ section.id }}">
+  <style>
+    /* Reset e Base */
+    #shopify-section-{{ section.id }} * {
+      box-sizing: border-box;
+    }
+
+    /* Contenitore principale */
+    #shopify-section-{{ section.id }} {
+      background: {{ section.settings.background_color }};
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Funzioni Base - Desktop */
+    @media only screen and (min-width:769px) {
+      #shopify-section-{{ section.id }} {
+        max-width: {{ section.settings.max_dimensione }};
+        margin: 0 auto;
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      }
+
+      {% if section.settings.nascondi_desktop %}
+        #shopify-section-{{ section.id }} {
+          display: none;
+        }
+      {% endif %}
+    }
+
+    /* Funzioni Base - Mobile */
+    @media only screen and (max-width:768px) {
+      #shopify-section-{{ section.id }} {
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      }
+
+      {% if section.settings.nascondi_mobile %}
+        #shopify-section-{{ section.id }} {
+          display: none;
+        }
+      {% endif %}
+    }
+
+    /* Container interno */
+    #shopify-section-{{ section.id }} .fr-processo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    /* Header elegante */
+    #shopify-section-{{ section.id }} .fr-processo-header {
+      text-align: center;
+      margin-bottom: 80px;
+      opacity: 0;
+      animation: frFadeIn 1s ease forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-title {
+      font-family: {{ section.settings.title_font }};
+      font-size: {{ section.settings.title_size_desktop }}px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: {{ section.settings.title_color }};
+      margin: 0 0 15px;
+      line-height: 1.2;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-subtitle {
+      font-family: {{ section.settings.text_font }};
+      font-size: {{ section.settings.subtitle_size_desktop }}px;
+      font-weight: 400;
+      font-style: italic;
+      color: {{ section.settings.subtitle_color }};
+      margin: 0;
+      opacity: 0.85;
+    }
+
+    /* Timeline verticale elegante */
+    #shopify-section-{{ section.id }} .fr-timeline {
+      position: relative;
+      padding: 60px 0;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: {{ section.settings.line_color }};
+      transform: translateX(-50%);
+      opacity: 0.3;
+    }
+
+    /* Step del processo */
+    #shopify-section-{{ section.id }} .fr-processo-step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 120px;
+      position: relative;
+      opacity: 0;
+      animation: frSlideIn 0.8s ease forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Contenuto step */
+    #shopify-section-{{ section.id }} .fr-step-content {
+      flex: 1;
+      padding: 0 60px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-number {
+      font-family: {{ section.settings.accent_font }};
+      font-size: {{ section.settings.number_size_desktop }}px;
+      font-weight: 200;
+      color: {{ section.settings.accent_color }};
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-title {
+      font-family: {{ section.settings.title_font }};
+      font-size: {{ section.settings.step_title_size_desktop }}px;
+      font-weight: 400;
+      color: {{ section.settings.step_title_color }};
+      margin: 0 0 20px;
+      letter-spacing: 1px;
+      line-height: 1.3;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-description {
+      font-family: {{ section.settings.text_font }};
+      font-size: {{ section.settings.step_text_size_desktop }}px;
+      line-height: 1.8;
+      color: {{ section.settings.step_text_color }};
+      margin: 0 0 25px;
+      opacity: 0.9;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-details {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-details li {
+      font-family: {{ section.settings.text_font }};
+      font-size: {{ section.settings.detail_size_desktop }}px;
+      color: {{ section.settings.detail_color }};
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-details li:before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: {{ section.settings.accent_color }};
+      opacity: 0.5;
+    }
+
+    /* Immagine step */
+    #shopify-section-{{ section.id }} .fr-step-image {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      height: 400px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:hover .fr-step-image img {
+      transform: scale(1.05);
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, transparent 60%, {{ section.settings.overlay_color }} 100%);
+      opacity: 0.3;
+      transition: opacity 0.4s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-processo-step:hover .fr-step-image-overlay {
+      opacity: 0.5;
+    }
+
+    /* Punto centrale timeline */
+    #shopify-section-{{ section.id }} .fr-timeline-point {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      background: {{ section.settings.background_color }};
+      border: 1px solid {{ section.settings.accent_color }};
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-point::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      background: {{ section.settings.accent_color }};
+      border-radius: 50%;
+    }
+
+    /* Sezione finale */
+    #shopify-section-{{ section.id }} .fr-processo-finale {
+      text-align: center;
+      padding: 80px 40px;
+      max-width: 900px;
+      margin: 80px auto 0;
+      position: relative;
+      opacity: 0;
+      animation: frFadeIn 1s ease 0.8s forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-finale-separator {
+      width: 60px;
+      height: 1px;
+      background: {{ section.settings.accent_color }};
+      margin: 0 auto 40px;
+      opacity: 0.5;
+    }
+
+    #shopify-section-{{ section.id }} .fr-finale-title {
+      font-family: {{ section.settings.title_font }};
+      font-size: {{ section.settings.finale_title_size_desktop }}px;
+      font-weight: 300;
+      color: {{ section.settings.finale_title_color }};
+      margin: 0 0 25px;
+      letter-spacing: 2px;
+      line-height: 1.4;
+    }
+
+    #shopify-section-{{ section.id }} .fr-finale-text {
+      font-family: {{ section.settings.text_font }};
+      font-size: {{ section.settings.finale_text_size_desktop }}px;
+      line-height: 1.8;
+      color: {{ section.settings.finale_text_color }};
+      margin: 0 0 40px;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    /* CTA elegante */
+    #shopify-section-{{ section.id }} .fr-processo-cta {
+      margin-top: 50px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-cta-button {
+      display: inline-block;
+      font-family: {{ section.settings.button_font }};
+      font-size: {{ section.settings.button_size_desktop }}px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: {{ section.settings.button_text_color }};
+      background: {{ section.settings.button_bg_color }};
+      padding: 18px 50px;
+      border: 1px solid {{ section.settings.button_border_color }};
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    #shopify-section-{{ section.id }} .fr-cta-button:hover {
+      color: {{ section.settings.button_hover_text }};
+      background: {{ section.settings.button_hover_bg }};
+      border-color: {{ section.settings.button_hover_border }};
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Mobile */
+    @media only screen and (max-width: 768px) {
+      #shopify-section-{{ section.id }} .fr-processo-header {
+        margin-bottom: 50px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-processo-title {
+        font-size: {{ section.settings.title_size_mobile }}px;
+        letter-spacing: 1px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-processo-subtitle {
+        font-size: {{ section.settings.subtitle_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline {
+        padding: 30px 0;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline-line {
+        left: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-processo-step {
+        flex-direction: column !important;
+        margin-bottom: 60px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-step-content {
+        padding: 0 0 0 50px;
+        margin-bottom: 30px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-step-number {
+        font-size: {{ section.settings.number_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-step-title {
+        font-size: {{ section.settings.step_title_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-step-description {
+        font-size: {{ section.settings.step_text_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-step-details li {
+        font-size: {{ section.settings.detail_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-step-image {
+        width: 100%;
+        height: 250px;
+        margin-left: 0;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline-point {
+        left: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-processo-finale {
+        padding: 50px 20px;
+        margin-top: 50px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-finale-title {
+        font-size: {{ section.settings.finale_title_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-finale-text {
+        font-size: {{ section.settings.finale_text_size_mobile }}px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-cta-button {
+        font-size: {{ section.settings.button_size_mobile }}px;
+        padding: 15px 35px;
+        letter-spacing: 1px;
+      }
+    }
+
+    /* Animazioni */
+    @keyframes frFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes frSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+
+  <div class="fr-processo-container">
+    {% if section.settings.show_header %}
+      <div class="fr-processo-header">
+        {% if section.settings.title != blank %}
+          <h2 class="fr-processo-title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="fr-processo-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="fr-timeline">
+      <div class="fr-timeline-line"></div>
+
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'processo_step' %}
+            <div class="fr-processo-step" {{ block.shopify_attributes }}>
+              <div class="fr-step-content">
+                {% if block.settings.step_number != blank %}
+                  <div class="fr-step-number">{{ block.settings.step_number }}</div>
+                {% endif %}
+                
+                {% if block.settings.step_title != blank %}
+                  <h3 class="fr-step-title">{{ block.settings.step_title }}</h3>
+                {% endif %}
+                
+                {% if block.settings.step_description != blank %}
+                  <p class="fr-step-description">{{ block.settings.step_description }}</p>
+                {% endif %}
+
+                {% if block.settings.show_details %}
+                  <ul class="fr-step-details">
+                    {% if block.settings.detail_1 != blank %}
+                      <li>{{ block.settings.detail_1 }}</li>
+                    {% endif %}
+                    {% if block.settings.detail_2 != blank %}
+                      <li>{{ block.settings.detail_2 }}</li>
+                    {% endif %}
+                    {% if block.settings.detail_3 != blank %}
+                      <li>{{ block.settings.detail_3 }}</li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+              </div>
+
+              {% if block.settings.step_image != blank %}
+                <div class="fr-step-image">
+                  {{ block.settings.step_image | image_url: width: 800 | image_tag: loading: 'lazy' }}
+                  <div class="fr-step-image-overlay"></div>
+                </div>
+              {% endif %}
+
+              <div class="fr-timeline-point"></div>
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_finale %}
+      <div class="fr-processo-finale">
+        <div class="fr-finale-separator"></div>
+        
+        {% if section.settings.finale_title != blank %}
+          <h3 class="fr-finale-title">{{ section.settings.finale_title }}</h3>
+        {% endif %}
+        
+        {% if section.settings.finale_text != blank %}
+          <p class="fr-finale-text">{{ section.settings.finale_text }}</p>
+        {% endif %}
+
+        {% if section.settings.show_cta and section.settings.cta_text != blank and section.settings.cta_link != blank %}
+          <div class="fr-processo-cta">
+            <a href="{{ section.settings.cta_link }}" class="fr-cta-button">
+              {{ section.settings.cta_text }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const section = document.querySelector('#shopify-section-{{ section.id }}');
+      
+      // Intersection Observer per animazioni
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animationPlayState = 'running';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Osserva elementi animati
+      const animatedElements = section.querySelectorAll('.fr-processo-header, .fr-processo-step, .fr-processo-finale');
+      animatedElements.forEach(el => {
+        el.style.animationPlayState = 'paused';
+        observer.observe(el);
+      });
+
+      // Parallax sottile per le immagini
+      {% if section.settings.enable_parallax %}
+      const images = section.querySelectorAll('.fr-step-image img');
+      
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        
+        images.forEach(img => {
+          const rect = img.getBoundingClientRect();
+          const speed = 0.05;
+          const yPos = -(scrolled * speed);
+          
+          if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+            img.style.transform = `translateY(${yPos}px) scale(1.05)`;
+          }
+        });
+      });
+      {% endif %}
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Processo Elegante",
+  "class": "fr-processo-elegante",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Intestazione"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Mostra intestazione",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Il Nostro Processo"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Dove il design italiano incontra l'artigianato indiano"
+    },
+    {
+      "type": "header",
+      "content": "Sezione Finale"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_finale",
+      "label": "Mostra sezione finale",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "finale_title",
+      "label": "Titolo finale",
+      "default": "Un Ponte tra Due Mondi"
+    },
+    {
+      "type": "textarea",
+      "id": "finale_text",
+      "label": "Testo finale",
+      "default": "Ogni creazione Fabindia Roma racconta una storia di eccellenza, dove la creatività italiana si fonde con la maestria artigianale indiana per creare pezzi unici e senza tempo."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Mostra call to action",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA",
+      "default": "Scopri le Collezioni"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA"
+    },
+    {
+      "type": "header",
+      "content": "Tipografia"
+    },
+    {
+      "type": "select",
+      "id": "title_font",
+      "label": "Font titoli",
+      "options": [
+        { "value": "var(--font-heading-family)", "label": "Font Heading" },
+        { "value": "var(--font-body-family)", "label": "Font Body" },
+        { "value": "'Playfair Display', serif", "label": "Playfair Display" },
+        { "value": "'Cormorant Garamond', serif", "label": "Cormorant" }
+      ],
+      "default": "var(--font-heading-family)"
+    },
+    {
+      "type": "select",
+      "id": "text_font",
+      "label": "Font testi",
+      "options": [
+        { "value": "var(--font-body-family)", "label": "Font Body" },
+        { "value": "var(--font-heading-family)", "label": "Font Heading" },
+        { "value": "'Lato', sans-serif", "label": "Lato" },
+        { "value": "'Roboto', sans-serif", "label": "Roboto" }
+      ],
+      "default": "var(--font-body-family)"
+    },
+    {
+      "type": "select",
+      "id": "accent_font",
+      "label": "Font accenti",
+      "options": [
+        { "value": "var(--font-heading-family)", "label": "Font Heading" },
+        { "value": "'Playfair Display', serif", "label": "Playfair Display" },
+        { "value": "'Bebas Neue', sans-serif", "label": "Bebas Neue" },
+        { "value": "'Montserrat', sans-serif", "label": "Montserrat" }
+      ],
+      "default": "var(--font-heading-family)"
+    },
+    {
+      "type": "select",
+      "id": "button_font",
+      "label": "Font bottoni",
+      "options": [
+        { "value": "var(--font-body-family)", "label": "Font Body" },
+        { "value": "var(--font-heading-family)", "label": "Font Heading" },
+        { "value": "'Montserrat', sans-serif", "label": "Montserrat" }
+      ],
+      "default": "var(--font-body-family)"
+    },
+    {
+      "type": "header",
+      "content": "Dimensioni Desktop"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "label": "Titolo principale",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_desktop",
+      "label": "Sottotitolo",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "number_size_desktop",
+      "label": "Numeri step",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "step_title_size_desktop",
+      "label": "Titoli step",
+      "min": 24,
+      "max": 42,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "step_text_size_desktop",
+      "label": "Testo step",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "detail_size_desktop",
+      "label": "Dettagli",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "finale_title_size_desktop",
+      "label": "Titolo finale",
+      "min": 28,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "finale_text_size_desktop",
+      "label": "Testo finale",
+      "min": 16,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_size_desktop",
+      "label": "Bottone",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Dimensioni Mobile"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Titolo principale",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size_mobile",
+      "label": "Sottotitolo",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "number_size_mobile",
+      "label": "Numeri step",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "step_title_size_mobile",
+      "label": "Titoli step",
+      "min": 20,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "step_text_size_mobile",
+      "label": "Testo step",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "detail_size_mobile",
+      "label": "Dettagli",
+      "min": 12,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "finale_title_size_mobile",
+      "label": "Titolo finale",
+      "min": 22,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "finale_text_size_mobile",
+      "label": "Testo finale",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_size_mobile",
+      "label": "Bottone",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Colori Principali"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Colore sottotitolo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Colore linea timeline",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "Colori Step"
+    },
+    {
+      "type": "color",
+      "id": "step_title_color",
+      "label": "Titolo step",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "step_text_color",
+      "label": "Testo step",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "detail_color",
+      "label": "Dettagli",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay immagini",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "Colori Finale"
+    },
+    {
+      "type": "color",
+      "id": "finale_title_color",
+      "label": "Titolo finale",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "finale_text_color",
+      "label": "Testo finale",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "Colori Bottone"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Sfondo bottone",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Testo bottone",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Bordo bottone",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Sfondo hover",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Testo hover",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border",
+      "label": "Bordo hover",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "Funzionalità"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Abilita parallax",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da Desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 80,
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 80,
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        { "value": "none", "label": "100%" },
+        { "value": "1400px", "label": "1400px" },
+        { "value": "1300px", "label": "1300px" },
+        { "value": "1200px", "label": "1200px" },
+        { "value": "1100px", "label": "1100px" },
+        { "value": "1000px", "label": "1000px" },
+        { "value": "900px", "label": "900px" },
+        { "value": "800px", "label": "800px" },
+        { "value": "700px", "label": "700px" }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "processo_step",
+      "name": "Step Processo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "step_number",
+          "label": "Numero/Fase",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "step_title",
+          "label": "Titolo step",
+          "default": "Design a Roma"
+        },
+        {
+          "type": "textarea",
+          "id": "step_description",
+          "label": "Descrizione",
+          "default": "Nel cuore di Roma, dove l'arte e la tradizione si incontrano, nascono le nostre creazioni. Ogni design è pensato per unire l'eleganza italiana alla ricchezza culturale indiana."
+        },
+        {
+          "type": "image_picker",
+          "id": "step_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_details",
+          "label": "Mostra dettagli",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "detail_1",
+          "label": "Dettaglio 1"
+        },
+        {
+          "type": "text",
+          "id": "detail_2",
+          "label": "Dettaglio 2"
+        },
+        {
+          "type": "text",
+          "id": "detail_3",
+          "label": "Dettaglio 3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Processo Elegante",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "processo_step",
+          "settings": {
+            "step_number": "01",
+            "step_title": "Concezione a Roma",
+            "step_description": "Ogni collezione nasce dal dialogo tra la sensibilità estetica italiana e l'ispirazione dei pattern tradizionali indiani, creando un linguaggio visivo unico."
+          }
+        },
+        {
+          "type": "processo_step",
+          "settings": {
+            "step_number": "02",
+            "step_title": "Artigianato in India",
+            "step_description": "I nostri maestri artigiani trasformano i disegni in realtà utilizzando tecniche secolari, dove ogni pezzo è lavorato a mano con dedizione e precisione."
+          }
+        },
+        {
+          "type": "processo_step",
+          "settings": {
+            "step_number": "03",
+            "step_title": "Qualità e Controllo",
+            "step_description": "Ogni creazione ritorna a Roma per un rigoroso controllo qualità, garantendo che ogni dettaglio rispecchi i nostri standard di eccellenza."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

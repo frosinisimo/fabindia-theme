@@ -1,13 +1,16 @@
-/* STILI GENERALI 
-.fbi-color-name {
+/* STILI GENERALI  */
+.fr-color-name {
     -webkit-line-clamp: var(--line-clamp-count, 1) !important;
     -webkit-box-orient: vertical !important;
     display: -webkit-box !important;
     overflow: hidden !important;
     margin-bottom: 0px !important;
 }
-*/
 
+.fr-hero-title {
+    font-weight: 400!important;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
 
 .hero-collections__item-overlay {
     top: 50px !important;
@@ -24,36 +27,7 @@
     display: none !important;
 }
 
-.variant-input-wrap input[type=radio]:checked+label {
-    box-shadow: 0 0 0 1px var(--colorTextBody) !important;
-    color: #ffffff !important;
-    background-color: #C33A32 !important;
-    font-weight: 600 !important;
-}
 
-label.variant__button-label {
-    border-radius: 8px !important;
-}
-
-.variant-input-wrap input[type=radio].disabled:checked+label {
-    background-color: #F6F6F6 !important;
-    color: #3e3e3e !important;
-    font-weight: 400 !important;
-    box-shadow: 0 0 0 1px var(--colorBorder);
-}
-
-.variant-input-wrap label.disabled:hover {
-    cursor: help;
-}
-
-.product__policies.rte.small--text-center {
-    display: none !important;
-}
-
-label.variant__button-label:hover {
-    background-color: #E5DDD5;
-    color: #3E3E3E;
-}
 
 button.btn.btn--full.add-to-cart.disabled {
     border: 1px solid #3E3E3E !important;
@@ -79,6 +53,11 @@ button.btn.btn--full.add-to-cart.disabled:hover {
 
 /* MOBILE VISTA */
 @media only screen and (max-width: 589px) {
+
+  .info-section  p {
+    margin: 0;
+    text-align: center;
+}
 
     
 
@@ -115,6 +94,13 @@ button.btn.btn--full.add-to-cart.disabled:hover {
 
 /* DESKTOP VISTA */
 @media only screen and (min-width: 590px) {
+
+    .fr-color-title {
+    font-size: 15px;
+    font-weight: 400;
+    align-items: baseline;
+    gap: 5px;
+  }
     
     .image-wrap.loaded {
         border-radius: 8px;

@@ -1,0 +1,95 @@
+<div class="fr-hero-content" style="--content-position-desktop: {{ content_position }}%; --content-position-mobile: {{ content_position_mobile }}%;">
+    <div class="page-width">
+      <div class="fr-hero-text-wrapper {{ text_alignment | default: 'text-center' }}">
+        {%- if title != blank -%}
+          <h2 class="fr-hero-title" style="color: {{ text_color | default: '#FFFFFF' }}; font-weight: {{ title_font_weight | default: 600 }};">
+            {{ title | newline_to_br }}
+          </h2>
+        {%- endif -%}
+        
+        {%- if subtitle != blank -%}
+          <div class="fr-hero-subtitle" style="color: {{ text_color | default: '#FFFFFF' }};">
+            {{ subtitle }}
+          </div>
+        {%- endif -%}
+        
+        {%- if cta_text != blank and cta_link != blank and link_type != 'background' -%}
+          <div class="fr-hero-cta">
+            <a href="{{ cta_link }}" 
+               class="btn {{ cta_style }}"
+               style="
+                 {%- if cta_bg_color != blank -%}background-color: {{ cta_bg_color }};{%- endif -%}
+                 {%- if cta_text_color != blank -%}color: {{ cta_text_color }};{%- endif -%}
+                 {%- if cta_border_color != blank -%}border-color: {{ cta_border_color }};{%- endif -%}
+               ">
+              {{ cta_text }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .fr-hero-content {
+      position: absolute;
+      top: var(--content-position-desktop, 50%);
+      left: 0;
+      width: 100%;
+      transform: translateY(-50%);
+      z-index: 3;
+      pointer-events: none;
+      padding: 0 20px;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .fr-hero-content {
+        top: var(--content-position-mobile, 50%);
+      }
+    }
+    
+    .fr-hero-text-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .fr-hero-title {
+      font-size: clamp(32px, 5vw, 60px);
+      line-height: 1.1;
+      margin: 0 0 20px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    
+    .fr-hero-subtitle {
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.5;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.3);
+    }
+    
+    .fr-hero-cta {
+      pointer-events: auto;
+      margin-top: 30px;
+    }
+    
+    .fr-hero-cta .btn {
+      padding: 14px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    .fr-hero-cta .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .text-left { text-align: left; }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+  </style>

@@ -1,372 +1,197 @@
 <div
   data-section-id="{{ section.id }}"
   data-section-type="hero-collections"
-  class="hero-collections-section">
+  class="fr-hero-section">
 
   {%- if section.blocks.size > 0 -%}
-    {%- comment -%} Check if we have at least one collection block with an image {%- endcomment -%}
-    {%- assign has_collection_images = false -%}
+    {%- assign has_images = false -%}
     {%- for block in section.blocks -%}
       {%- if block.type == 'collection_block' and block.settings.hero_image != blank -%}
-        {%- assign has_collection_images = true -%}
+        {%- assign has_images = true -%}
         {%- break -%}
       {%- endif -%}
     {%- endfor -%}
     
-    {%- if has_collection_images or section.settings.default_image != blank or section.settings.default_video != blank -%}
-    <div class="hero-collections-wrapper">
+    {%- if has_images or section.settings.default_image != blank or section.settings.default_video != blank -%}
+  <div class="fr-hero-wrapper{% if section.settings.desktop_height == '100vh-with-collections' %} fr-hero-fullscreen-with-collections{% endif %}">
       
-      {%- comment -%} Natural height calculations {%- endcomment -%}
-      {%- assign natural_height = false -%}
-      {%- assign natural_mobile_height = false -%}
-      {%- assign default_media_natural = false -%}
-      {%- assign default_media_mobile_natural = false -%}
-      
-      {%- comment -%} Calculate natural height for default media {%- endcomment -%}
-      {%- if section.settings.desktop_height == 'natural' and section.settings.default_image != blank -%}
-        {%- assign default_media_natural = true -%}
-        {%- capture default_natural_ratio -%}{{ 100 | divided_by: section.settings.default_image.aspect_ratio }}%{%- endcapture -%}
-      {%- endif -%}
-      
-      {%- if section.settings.mobile_height == 'natural' -%}
-        {%- if section.settings.default_image_mobile != blank -%}
-          {%- assign default_media_mobile_natural = true -%}
-          {%- capture default_mobile_natural_ratio -%}{{ 100 | divided_by: section.settings.default_image_mobile.aspect_ratio }}%{%- endcapture -%}
-        {%- elsif section.settings.default_image != blank -%}
-          {%- assign default_media_mobile_natural = true -%}
-          {%- capture default_mobile_natural_ratio -%}{{ 100 | divided_by: section.settings.default_image.aspect_ratio }}%{%- endcapture -%}
-        {%- endif -%}
-      {%- endif -%}
-      
-      {%- comment -%} Calculate natural height for blocks {%- endcomment -%}
-      {%- if section.settings.desktop_height == 'natural' or section.settings.mobile_height == 'natural' -%}
-        {%- for block in section.blocks limit: 1 -%}
-          {%- if block.type == 'collection_block' and block.settings.hero_image != blank -%}
-            {%- if section.settings.desktop_height == 'natural' -%}
-              {%- assign natural_height = true -%}
-              {%- capture natural_height_ratio -%}{{ 100 | divided_by: block.settings.hero_image.aspect_ratio }}%{%- endcapture -%}
-            {%- endif -%}
-            {%- if section.settings.mobile_height == 'natural' -%}
-              {%- if block.settings.hero_image_mobile != blank -%}
-                {%- assign natural_mobile_height = true -%}
-                {%- capture natural_mobile_height_ratio -%}{{ 100 | divided_by: block.settings.hero_image_mobile.aspect_ratio }}%{%- endcapture -%}
-              {%- else -%}
-                {%- assign natural_mobile_height = true -%}
-                {%- capture natural_mobile_height_ratio -%}{{ 100 | divided_by: block.settings.hero_image.aspect_ratio }}%{%- endcapture -%}
-              {%- endif -%}
-            {%- endif -%}
-          {%- endif -%}
-        {%- endfor -%}
-      {%- endif -%}
-      
-      <!-- Hero Images Container -->
-      <div class="hero-collections__images-container{% if natural_height or default_media_natural %} hero-natural--{{ section.id }}{% endif %}{% if natural_mobile_height or default_media_mobile_natural %} hero-natural-mobile--{{ section.id }}{% endif %}"
-           data-natural-height="{{ natural_height }}"
-           data-natural-mobile-height="{{ natural_mobile_height }}">
+      <!-- Hero Media Container -->
+      <div class="fr-hero-media-container" 
+           data-height-desktop="{{ section.settings.desktop_height }}"
+           data-height-mobile="{{ section.settings.mobile_height }}">
         
-        {%- comment -%} Default Media (shown when no hover) {%- endcomment -%}
+        {%- comment -%} Default Media {%- endcomment -%}
         {%- if section.settings.default_image != blank or section.settings.default_video != blank -%}
-          <div class="hero-collections__image-wrapper hero-collections__default-media active" 
-               data-collection-index="default"
-               data-block-id="default">
+          <div class="fr-hero-media active" data-media-id="default">
             
-            {%- comment -%} Clickable Background Link {%- endcomment -%}
-            {%- if section.settings.default_link != blank -%}
-              {%- if section.settings.link_type == 'background' or section.settings.link_type == 'both' -%}
-                <a href="{{ section.settings.default_link }}" class="hero-collections__bg-link" aria-label="{{ section.settings.default_title | default: 'Hero link' }}"></a>
-              {%- endif -%}
+            {%- if section.settings.default_link != blank and section.settings.link_type != 'button' -%}
+              <a href="{{ section.settings.default_link }}" class="fr-hero-link-overlay" aria-label="{{ section.settings.default_title | default: 'Hero link' }}"></a>
             {%- endif -%}
             
             {%- if section.settings.default_video != blank -%}
-              <!-- Video -->
-              <div class="hero-collections__video-wrapper">
-                <video 
-                  class="hero-collections__video"
-                  autoplay
-                  muted
-                  loop
-                  playsinline
-                  data-autoplay-video
-                  poster="{% if section.settings.default_image != blank %}{{ section.settings.default_image | img_url: '2400x' }}{% endif %}">
-                  <source src="{{ section.settings.default_video }}" type="video/mp4">
+              <video class="fr-hero-video" autoplay muted loop playsinline>
+                <source src="{{ section.settings.default_video }}" type="video/mp4">
+              </video>
+              {%- if section.settings.default_video_mobile != blank -%}
+                <video class="fr-hero-video fr-hero-video--mobile" autoplay muted loop playsinline>
+                  <source src="{{ section.settings.default_video_mobile }}" type="video/mp4">
                 </video>
-                
-                <!-- Mobile Video or Fallback -->
-                {%- if section.settings.default_video_mobile != blank -%}
-                  <video 
-                    class="hero-collections__video hero-collections__video--mobile"
-                    autoplay
-                    muted
-                    loop
-                    playsinline
-                    data-autoplay-video
-                    poster="{% if section.settings.default_image_mobile != blank %}{{ section.settings.default_image_mobile | img_url: '800x' }}{% endif %}">
-                    <source src="{{ section.settings.default_video_mobile }}" type="video/mp4">
-                  </video>
-                {%- endif -%}
-              </div>
+              {%- endif -%}
             {%- elsif section.settings.default_image != blank -%}
-              <!-- Default Images -->
-              <div class="hero-collections__image hero-collections__image--desktop">
+              <div class="fr-hero-image fr-hero-image--desktop">
                 {%- render 'image-element',
                   img: section.settings.default_image,
                   img_width: 2400,
-                  loading: false,
-                  classes: 'hero-image-desktop'
+                  loading: false
                 -%}
               </div>
-              
-              {%- if section.settings.default_image_mobile != blank -%}
-                <div class="hero-collections__image hero-collections__image--mobile">
+              <div class="fr-hero-image fr-hero-image--mobile">
+                {%- if section.settings.default_image_mobile != blank -%}
                   {%- render 'image-element',
                     img: section.settings.default_image_mobile,
                     img_height: 800,
-                    loading: false,
-                    classes: 'hero-image-mobile'
+                    loading: false
                   -%}
-                </div>
-              {%- else -%}
-                <div class="hero-collections__image hero-collections__image--mobile">
+                {%- else -%}
                   {%- render 'image-element',
                     img: section.settings.default_image,
                     img_height: 800,
-                    loading: false,
-                    classes: 'hero-image-mobile'
+                    loading: false
                   -%}
-                </div>
-              {%- endif -%}
-            {%- endif -%}
-            
-            <!-- Default Overlay -->
-            {%- if section.settings.default_overlay_opacity > 0 -%}
-              <div class="hero-collections__overlay" style="opacity: {{ section.settings.default_overlay_opacity | divided_by: 100.0 }}"></div>
-            {%- endif -%}
-            
-            <!-- Default Content -->
-            {%- if section.settings.default_title != blank or section.settings.default_subtitle != blank or section.settings.cta_text != blank -%}
-              <div class="hero-collections__content" style="--content-position-desktop: {{ section.settings.content_vertical_position }}%; --content-position-mobile: {{ section.settings.content_vertical_position_mobile }}%;">
-                <div class="page-width" style="width: 100%;">
-                  <div class="hero-collections__text-wrapper {% if section.settings.default_text_alignment != blank %}{{ section.settings.default_text_alignment }}{% else %}text-center{% endif %}">
-                    {%- if section.settings.default_title != blank -%}
-                      <h2 class="hero-collections__title h1{% if section.settings.enable_text_shadow %} text-shadow{% endif %}" style="color: {{ section.settings.default_text_color }};">
-                        {{ section.settings.default_title | newline_to_br }}
-                      </h2>
-                    {%- endif -%}
-                    
-                    {%- if section.settings.default_subtitle != blank -%}
-                      <div class="hero-collections__subtitle{% if section.settings.enable_text_shadow %} text-shadow-light{% endif %}" style="color: {{ section.settings.default_text_color }};">
-                        {{ section.settings.default_subtitle }}
-                      </div>
-                    {%- endif -%}
-                    
-                    {%- comment -%} Call to Action Button {%- endcomment -%}
-                    {%- if section.settings.cta_text != blank and section.settings.default_link != blank -%}
-                      {%- if section.settings.link_type == 'button' or section.settings.link_type == 'both' -%}
-                        <div class="hero-collections__cta-wrapper">
-                          <a href="{{ section.settings.default_link }}" 
-                             class="btn btn--full {{ section.settings.cta_style }}"
-                             style="
-                               {%- if section.settings.cta_bg_color != blank -%}background-color: {{ section.settings.cta_bg_color }};{%- endif -%}
-                               {%- if section.settings.cta_text_color != blank -%}color: {{ section.settings.cta_text_color }};{%- endif -%}
-                               {%- if section.settings.cta_border_color != blank -%}border-color: {{ section.settings.cta_border_color }};{%- endif -%}
-                             ">
-                            {{ section.settings.cta_text }}
-                          </a>
-                        </div>
-                      {%- endif -%}
-                    {%- endif -%}
-                  </div>
-                </div>
+                {%- endif -%}
               </div>
             {%- endif -%}
+            
+            {%- if section.settings.default_overlay_opacity > 0 -%}
+              <div class="fr-hero-overlay" style="opacity: {{ section.settings.default_overlay_opacity | divided_by: 100.0 }}"></div>
+            {%- endif -%}
+            
+            {%- render 'hero-content',
+              title: section.settings.default_title,
+              subtitle: section.settings.default_subtitle,
+              text_color: section.settings.default_text_color,
+              text_alignment: section.settings.default_text_alignment,
+              cta_text: section.settings.cta_text,
+              cta_link: section.settings.default_link,
+              cta_style: section.settings.cta_style,
+              cta_bg_color: section.settings.cta_bg_color,
+              cta_text_color: section.settings.cta_text_color,
+              cta_border_color: section.settings.cta_border_color,
+              link_type: section.settings.link_type,
+              content_position: section.settings.content_vertical_position,
+              content_position_mobile: section.settings.content_vertical_position_mobile,
+              title_font_weight: section.settings.title_font_weight
+            -%}
           </div>
-        {%- else -%}
-          {%- comment -%} If no default media, show first block as active {%- endcomment -%}
-          {%- assign show_first_as_default = true -%}
         {%- endif -%}
         
         {%- comment -%} Collection Images {%- endcomment -%}
         {%- for block in section.blocks -%}
-          {%- if block.type == 'collection_block' -%}
-            {%- if section.settings.default_image == blank and section.settings.default_video == blank and forloop.first -%}
-              {%- assign is_active = true -%}
-            {%- else -%}
-              {%- assign is_active = false -%}
-            {%- endif -%}
-            <div class="hero-collections__image-wrapper{% if is_active %} active{% endif %}" 
-                 data-collection-index="{{ forloop.index0 }}"
-                 data-block-id="{{ block.id }}">
-              
-              {%- if block.settings.hero_image != blank -%}
-                <!-- Desktop Image -->
-                <div class="hero-collections__image hero-collections__image--desktop">
+          {%- if block.type == 'collection_block' and block.settings.hero_image != blank -%}
+            <div class="fr-hero-media" data-media-id="{{ block.id }}">
+              <div class="fr-hero-image fr-hero-image--desktop">
+                {%- render 'image-element',
+                  img: block.settings.hero_image,
+                  img_width: 2400,
+                  loading: true
+                -%}
+              </div>
+              <div class="fr-hero-image fr-hero-image--mobile">
+                {%- if block.settings.hero_image_mobile != blank -%}
+                  {%- render 'image-element',
+                    img: block.settings.hero_image_mobile,
+                    img_height: 800,
+                    loading: true
+                  -%}
+                {%- else -%}
                   {%- render 'image-element',
                     img: block.settings.hero_image,
-                    img_width: 2400,
-                    loading: is_active == false,
-                    classes: 'hero-image-desktop'
+                    img_height: 800,
+                    loading: true
                   -%}
-                  
-                  <!-- Overlay -->
-                  {%- if block.settings.overlay_opacity > 0 -%}
-                    <div class="hero-collections__overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }}"></div>
-                  {%- endif -%}
-                </div>
-                
-                <!-- Mobile Image -->
-                {%- if block.settings.hero_image_mobile != blank -%}
-                  <div class="hero-collections__image hero-collections__image--mobile">
-                    {%- render 'image-element',
-                      img: block.settings.hero_image_mobile,
-                      img_height: 800,
-                      loading: is_active == false,
-                      classes: 'hero-image-mobile'
-                    -%}
-                    
-                    <!-- Mobile Overlay -->
-                    {%- if block.settings.overlay_opacity > 0 -%}
-                      <div class="hero-collections__overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }}"></div>
-                    {%- endif -%}
-                  </div>
-                {%- else -%}
-                  <!-- Use desktop image for mobile if no mobile image provided -->
-                  <div class="hero-collections__image hero-collections__image--mobile">
-                    {%- render 'image-element',
-                      img: block.settings.hero_image,
-                      img_height: 800,
-                      loading: is_active == false,
-                      classes: 'hero-image-mobile'
-                    -%}
-                    
-                    {%- if block.settings.overlay_opacity > 0 -%}
-                      <div class="hero-collections__overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }}"></div>
-                    {%- endif -%}
-                  </div>
                 {%- endif -%}
-              {%- else -%}
-                {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+              
+              {%- if block.settings.overlay_opacity > 0 -%}
+                <div class="fr-hero-overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }}"></div>
               {%- endif -%}
               
-              <!-- Hero Text Content -->
-              {%- if block.settings.hero_title != blank or block.settings.hero_subtitle != blank -%}
-                <div class="hero-collections__content" style="--content-position: {{ section.settings.content_vertical_position }}%;">
-                  <div class="page-width" style="width: 100%;">
-                    <div class="hero-collections__text-wrapper {% if block.settings.text_alignment != blank %}{{ block.settings.text_alignment }}{% else %}text-center{% endif %}">
-                      {%- if block.settings.hero_title != blank -%}
-                        <h2 class="hero-collections__title h1{% if section.settings.enable_text_shadow %} text-shadow{% endif %}" style="color: {% if block.settings.hero_text_color != blank %}{{ block.settings.hero_text_color }}{% else %}#FFFFFF{% endif %};">
-                          {{ block.settings.hero_title | newline_to_br }}
-                        </h2>
-                      {%- endif -%}
-                      
-                      {%- if block.settings.hero_subtitle != blank -%}
-                        <div class="hero-collections__subtitle{% if section.settings.enable_text_shadow %} text-shadow-light{% endif %}" style="color: {% if block.settings.hero_text_color != blank %}{{ block.settings.hero_text_color }}{% else %}#FFFFFF{% endif %};">
-                          {{ block.settings.hero_subtitle }}
-                        </div>
-                      {%- endif -%}
-                    </div>
-                  </div>
-                </div>
-              {%- endif -%}
+              {%- render 'hero-content',
+                title: block.settings.hero_title,
+                subtitle: block.settings.hero_subtitle,
+                text_color: block.settings.hero_text_color,
+                text_alignment: block.settings.text_alignment,
+                content_position: section.settings.content_vertical_position,
+                content_position_mobile: section.settings.content_vertical_position_mobile,
+                title_font_weight: section.settings.title_font_weight
+              -%}
             </div>
           {%- endif -%}
         {%- endfor -%}
       </div>
       
       <!-- Collections Grid -->
-      <div class="hero-collections__grid-wrapper{% if section.settings.half_overlap %} half-overlap{% endif %} mobile-layout-{{ section.settings.mobile_layout }}"
-           style="--overlap-offset: {{ section.settings.overlap_offset }}px; --mobile-overlap-offset: {{ section.settings.mobile_overlap_offset }}px;">
-        <div class="page-width">
-          <div class="hero-collections__grid collection-format-{{ section.settings.collection_block_format }}">
-            {%- assign collection_count = 0 -%}
+      <div class="fr-collections-container{% if section.settings.half_overlap %} fr-collections--overlap{% endif %}"
+           style="--overlap-desktop: {{ section.settings.overlap_offset_desktop }}px; --overlap-mobile: {{ section.settings.overlap_offset_mobile }}px;">
+        <div class="fr-collections-inner" style="max-width: {{ section.settings.collections_max_width }}; margin: 0 auto; padding: 0 20px;">
+          <div class="fr-collections-grid">
             {%- for block in section.blocks -%}
               {%- if block.type == 'collection_block' -%}
-                {%- assign collection_count = collection_count | plus: 1 -%}
-                <div class="hero-collections__item" 
-                     data-collection-trigger="{{ forloop.index0 }}"
-                     data-block-id="{{ block.id }}"
+                <div class="fr-collection-card" 
+                     data-trigger-id="{{ block.id }}"
                      {{ block.shopify_attributes }}>
                   
                   <a href="{{ block.settings.collection_link }}" 
-                     class="hero-collections__item-link"
+                     class="fr-collection-link"
                      {% if block.settings.collection_link == blank %}role="button" tabindex="0"{% endif %}>
                     
-                    <div class="hero-collections__item-image-wrapper">
-                      {%- comment -%} Animated Products Slider {%- endcomment -%}
+                    <div class="fr-collection-media {% if section.settings.collection_image_format == 'natural' %}fr-media-natural{% endif %}">
                       {%- if block.settings.enable_product_animation and block.settings.collection != blank -%}
                         {%- assign collection = collections[block.settings.collection] -%}
                         {%- if collection.products.size > 0 -%}
-                          <div class="hero-collections__product-slider animation-{{ block.settings.animation_type }}" 
+                          <div class="fr-product-slider" 
                                data-speed="{{ block.settings.animation_speed }}"
-                               data-block-id="{{ block.id }}">
+                               data-type="{{ block.settings.animation_type }}">
                             {%- for product in collection.products limit: block.settings.max_products -%}
                               {%- if product.featured_image != blank -%}
-                                <div class="hero-collections__product-slide{% if forloop.first %} active{% endif %}" data-slide-index="{{ forloop.index0 }}">
-                                  {%- case block.settings.image_format -%}
-                                    {%- when 'square' -%}
-                                      {%- render 'image-element',
-                                        img: product.featured_image,
-                                        img_width: 600,
-                                        loading: true,
-                                        classes: 'hero-collections__product-image'
-                                      -%}
-                                    {%- when 'portrait' -%}
-                                      {%- render 'image-element',
-                                        img: product.featured_image,
-                                        img_height: 800,
-                                        loading: true,
-                                        classes: 'hero-collections__product-image'
-                                      -%}
-                                    {%- when 'landscape' -%}
-                                      {%- render 'image-element',
-                                        img: product.featured_image,
-                                        img_width: 800,
-                                        loading: true,
-                                        classes: 'hero-collections__product-image'
-                                      -%}
-                                  {%- endcase -%}
+                                <div class="fr-product-slide{% if forloop.first %} active{% endif %}">
+                                  {%- render 'image-element',
+                                    img: product.featured_image,
+                                    img_width: 800,
+                                    loading: true
+                                  -%}
                                 </div>
                               {%- endif -%}
                             {%- endfor -%}
                           </div>
-                        {%- else -%}
-                          {%- comment -%} Fallback to static image if no products {%- endcomment -%}
-                          {%- if block.settings.collection_image != blank -%}
-                            {%- render 'image-element',
-                              img: block.settings.collection_image,
-                              img_width: 600,
-                              loading: true,
-                              classes: 'hero-collections__item-image'
-                            -%}
-                          {%- else -%}
-                            {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
-                          {%- endif -%}
-                        {%- endif -%}
-                      {%- else -%}
-                        {%- comment -%} Static Collection Image {%- endcomment -%}
-                        {%- if block.settings.collection_image != blank -%}
+                        {%- elsif block.settings.collection_image != blank -%}
                           {%- render 'image-element',
                             img: block.settings.collection_image,
-                            img_width: 600,
-                            loading: true,
-                            classes: 'hero-collections__item-image'
+                            img_width: 800,
+                            loading: true
                           -%}
                         {%- else -%}
                           {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
                         {%- endif -%}
+                      {%- elsif block.settings.collection_image != blank -%}
+                        {%- render 'image-element',
+                          img: block.settings.collection_image,
+                          img_width: 800,
+                          loading: true
+                        -%}
+                      {%- else -%}
+                        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
                       {%- endif -%}
-                      
-                      <div class="hero-collections__item-overlay"></div>
                     </div>
                     
-                    <div class="hero-collections__item-content">
+                    <div class="fr-collection-content">
                       {%- if block.settings.collection_title != blank -%}
-                        <h3 class="hero-collections__item-title{% if section.settings.enable_text_shadow %} text-shadow{% endif %}" style="color: {% if block.settings.collection_text_color != blank %}{{ block.settings.collection_text_color }}{% else %}#FFFFFF{% endif %};">
+                        <h3 class="fr-collection-title">
                           {{ block.settings.collection_title }}
                         </h3>
                       {%- endif -%}
-                      
                       {%- if block.settings.collection_subtitle != blank -%}
-                        <span class="hero-collections__item-subtitle{% if section.settings.enable_text_shadow %} text-shadow-light{% endif %}" style="color: {% if block.settings.collection_text_color != blank %}{{ block.settings.collection_text_color }}{% else %}#FFFFFF{% endif %};">
+                        <span class="fr-collection-subtitle">
                           {{ block.settings.collection_subtitle }}
                         </span>
                       {%- endif -%}
@@ -381,130 +206,126 @@
     </div>
 
     <style>
-      /* Base Styles */
-      .hero-collections-section {
+      /* Base Reset & Container */
+      #shopify-section-{{ section.id }} {
         position: relative;
-        overflow: visible;
         background-color: {{ section.settings.section_bg_color }};
-        padding-bottom: {% if section.settings.half_overlap %}120px{% else %}0{% endif %};
+        overflow: visible;
       }
 
-      /* Desktop Spacing and Visibility */
-      @media only screen and (min-width: 769px) {
-        #shopify-section-{{ section.id }} {
-          {%- if section.settings.padding_top_desktop > 0 or section.settings.padding_bottom_desktop > 0 -%}
-            padding-top: {{ section.settings.padding_top_desktop }}px;
-            padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
-          {%- endif -%}
-          
-          {%- if section.settings.margin_top_desktop != 0 or section.settings.margin_bottom_desktop != 0 -%}
-            margin-top: {{ section.settings.margin_top_desktop }}px;
-            margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
-          {%- endif -%}
-          
-          {%- if section.settings.hide_on_desktop -%}
-            display: none !important;
-          {%- endif -%}
-        }
+      #shopify-section-{{ section.id }} * {
+        box-sizing: border-box;
       }
 
-      /* Mobile Spacing and Visibility */
-      @media only screen and (max-width: 768px) {
-        #shopify-section-{{ section.id }} {
-          {%- if section.settings.padding_top_mobile > 0 or section.settings.padding_bottom_mobile > 0 -%}
-            padding-top: {{ section.settings.padding_top_mobile }}px;
-            padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
-          {%- endif -%}
-          
-          {%- if section.settings.margin_top_mobile != 0 or section.settings.margin_bottom_mobile != 0 -%}
-            margin-top: {{ section.settings.margin_top_mobile }}px;
-            margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
-          {%- endif -%}
-          
-          {%- if section.settings.hide_on_mobile -%}
-            display: none !important;
-          {%- endif -%}
-        }
-      }
-
-      .hero-collections-wrapper {
+      /* Hero Wrapper */
+      #shopify-section-{{ section.id }} .fr-hero-wrapper {
         position: relative;
-        min-height: {{ section.settings.desktop_height }};
+        width: 100%;
       }
 
-      /* Natural Height Styles */
-      {%- if natural_height or default_media_natural -%}
-        @media only screen and (min-width: 769px) {
-          .hero-natural--{{ section.id }} {
-            height: 0;
-            {%- if default_media_natural -%}
-              {%- if section.settings.default_image != blank or section.settings.default_video != blank -%}
-                padding-bottom: {{ default_natural_ratio }};
-              {%- else -%}
-                padding-bottom: {{ natural_height_ratio }};
-              {%- endif -%}
-            {%- else -%}
-              padding-bottom: {{ natural_height_ratio }};
-            {%- endif -%}
-            position: relative;
-          }
-          
-          .hero-collections-wrapper {
-            min-height: 0;
-          }
-        }
-      {%- endif -%}
-      
-      {%- if natural_mobile_height or default_media_mobile_natural -%}
-        @media screen and (max-width: 768px) {
-          .hero-natural-mobile--{{ section.id }} {
-            height: 0;
-            {%- if default_media_mobile_natural -%}
-              {%- if section.settings.default_image != blank or section.settings.default_video != blank -%}
-                padding-bottom: {{ default_mobile_natural_ratio }};
-              {%- else -%}
-                padding-bottom: {{ natural_mobile_height_ratio }};
-              {%- endif -%}
-            {%- else -%}
-              padding-bottom: {{ natural_mobile_height_ratio }};
-            {%- endif -%}
-            position: relative;
-          }
-        }
-      {%- endif -%}
-
-      /* Images Container */
-      .hero-collections__images-container {
+      /* Hero Media Container */
+      #shopify-section-{{ section.id }} .fr-hero-media-container {
         position: relative;
-        height: {{ section.settings.desktop_height }};
+        {%- if section.settings.desktop_height == '100vh-with-collections' -%}
+          /* Height sarà calcolata da JavaScript per precisione */
+          height: 70vh; /* Fallback height */
+        {%- else -%}
+          height: {{ section.settings.desktop_height }};
+        {%- endif -%}
         overflow: hidden;
-        {% if section.settings.half_overlap %}
-          margin-bottom: -100px;
-        {% endif %}
+        background: #000;
       }
       
-      .hero-collections__images-container[data-natural-height="true"] {
-        height: 100%;
-      }
+      /* Special case for 100vh with collections */
+      {%- if section.settings.desktop_height == '100vh-with-collections' -%}
+        @media only screen and (min-width: 769px) {
+          #shopify-section-{{ section.id }} {
+            min-height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          #shopify-section-{{ section.id }} .fr-hero-wrapper {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+          }
+          
+          #shopify-section-{{ section.id }} .fr-hero-media-container {
+            flex: 1 1 auto;
+            position: relative;
+          }
+          
+          #shopify-section-{{ section.id }} .fr-collections-container {
+            flex-shrink: 0;
+            position: relative;
+            z-index: 15; /* Ensure collections are above hero for hover */
+          }
+          
+          #shopify-section-{{ section.id }} .fr-collections-container.fr-collections--overlap {
+            margin-top: calc(-1 * var(--overlap-desktop));
+          }
+          
+          /* Ensure proper pointer events */
+          #shopify-section-{{ section.id }} .fr-collection-card {
+            pointer-events: auto;
+            position: relative;
+            z-index: 20;
+          }
+        }
+      {%- endif -%}
 
-      .hero-collections__image-wrapper {
+      /* Hero Media Items */
+      #shopify-section-{{ section.id }} .fr-hero-media {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         opacity: 0;
-        transition: opacity {{ section.settings.transition_duration }}ms ease-in-out;
-        z-index: 1;
+        transition: opacity {{ section.settings.transition_duration }}ms cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .hero-collections__image-wrapper.active {
+      #shopify-section-{{ section.id }} .fr-hero-media.active {
         opacity: 1;
         z-index: 2;
       }
 
-      /* Background Link */
-      .hero-collections__bg-link {
+      /* Images & Videos */
+      #shopify-section-{{ section.id }} .fr-hero-image,
+      #shopify-section-{{ section.id }} .fr-hero-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #shopify-section-{{ section.id }} .fr-hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #shopify-section-{{ section.id }} .fr-hero-video--mobile,
+      #shopify-section-{{ section.id }} .fr-hero-image--mobile {
+        display: none;
+      }
+
+      /* Overlay */
+      #shopify-section-{{ section.id }} .fr-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        pointer-events: none;
+      }
+
+      /* Link Overlay */
+      #shopify-section-{{ section.id }} .fr-hero-link-overlay {
         position: absolute;
         top: 0;
         left: 0;
@@ -514,993 +335,700 @@
         cursor: pointer;
       }
 
-      .hero-collections__image {
+      /* Collections Container - Desktop */
+      #shopify-section-{{ section.id }} .fr-collections-container {
         position: relative;
-        width: 100%;
-        height: 100%;
-      }
-
-      .hero-collections__image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      /* Video Styles */
-      .hero-collections__video-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100%;
-      }
-
-      .hero-collections__video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .hero-collections__video--mobile {
-        display: none;
-      }
-
-      .hero-collections__image--mobile {
-        display: none;
-      }
-
-      .hero-collections__overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        pointer-events: none;
-      }
-
-      /* Hero Content - Enhanced Positioning */
-      .hero-collections__content {
-  position: absolute;
-  top: var(--content-position-desktop, 50%);
-  left: 0;
-  width: 100%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  pointer-events: none;
-  transition: top 0.3s ease;
-}
-
-@media screen and (max-width: 768px) {
-  .hero-collections__content {
-    top: var(--content-position-mobile, 50%);
-  }
-}
-
-      .hero-collections__text-wrapper {
-        text-align: center;
-        width: 100%;
-        padding: 0 20px;
-      }
-      
-      @media screen and (max-width: 768px) {
-        .hero-collections__text-wrapper {
-          padding: 0 30px;
-        }
-      }
-
-      .hero-collections__text-wrapper.text-left {
-        text-align: left;
-      }
-
-      .hero-collections__text-wrapper.text-center {
-        text-align: center;
-      }
-
-      .hero-collections__text-wrapper.text-right {
-        text-align: right;
-      }
-
-      .hero-collections__title {
-        font-size: {{ section.settings.title_size }}px;
-        line-height: 1.2;
-        margin: 0 0 20px;
-        text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-      }
-      
-      .hero-collections__image-wrapper.active .hero-collections__title {
-        animation: fadeInUp 0.8s ease-out;
-      }
-
-      .hero-collections__subtitle {
-        font-size: 18px;
-        line-height: 1.5;
-        max-width: 600px;
-        margin: 0 auto;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-      
-      .hero-collections__text-wrapper.text-left .hero-collections__subtitle {
-        margin: 0;
-      }
-      
-      .hero-collections__text-wrapper.text-right .hero-collections__subtitle {
-        margin: 0 0 0 auto;
-      }
-      
-      .hero-collections__image-wrapper.active .hero-collections__subtitle {
-        animation: fadeInUp 0.8s ease-out 0.2s both;
-      }
-
-      /* CTA Button Styles */
-      .hero-collections__cta-wrapper {
-        margin-top: 30px;
-        pointer-events: auto;
-        position: relative;
-        z-index: 6;
-      }
-
-      .hero-collections__cta-button {
-        display: inline-block;
-        padding: 14px 40px;
-        font-size: 16px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .hero-collections__cta-button.btn-solid {
-        border: 2px solid transparent;
-      }
-
-      .hero-collections__cta-button.btn-solid:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      }
-
-      .hero-collections__cta-button.btn-outline {
-        background-color: transparent !important;
-        border: 2px solid;
-      }
-
-      .hero-collections__cta-button.btn-outline:hover {
-        transform: translateY(-2px);
-      }
-
-      .hero-collections__cta-button.btn-ghost {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-      }
-
-      .hero-collections__cta-button.btn-ghost:hover {
-        background-color: rgba(255, 255, 255, 0.2) !important;
-        border-color: rgba(255, 255, 255, 0.5);
-      }
-
-      .hero-collections__image-wrapper.active .hero-collections__cta-wrapper {
-        animation: fadeInUp 0.8s ease-out 0.4s both;
-      }
-
-      /* Text Shadow Effects */
-      .text-shadow {
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5),
-                     0 0 30px rgba(0, 0, 0, 0.4) !important;
-      }
-
-      .text-shadow-light {
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4),
-                     0 0 20px rgba(0, 0, 0, 0.3) !important;
-      }
-
-      /* Collections Grid */
-      .hero-collections__grid-wrapper {
-        position: absolute;
-        bottom: 40px;
-        left: 0;
-        width: 100%;
         z-index: 10;
-        transition: bottom 0.3s ease;
+        padding: 60px 0;
+        background: {{ section.settings.section_bg_color }};
+      }
+      
+      #shopify-section-{{ section.id }} .fr-collections-inner {
+        width: 100%;
       }
 
-      .hero-collections__grid-wrapper.half-overlap {
-        bottom: calc(var(--overlap-offset) - 100px);
+      #shopify-section-{{ section.id }} .fr-collections-container.fr-collections--overlap {
+        margin-top: calc(-1 * var(--overlap-desktop));
+        padding-top: 40px;
       }
 
-      .hero-collections__grid {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        flex-wrap: wrap;
+      /* Collections Grid - Desktop Ottimizzato */
+      #shopify-section-{{ section.id }} .fr-collections-grid {
+        display: {% if section.settings.collections_layout == 'flex' %}flex{% else %}grid{% endif %};
+        {%- if section.settings.collections_layout == 'flex' -%}
+          justify-content: center;
+          flex-wrap: wrap;
+        {%- else -%}
+          grid-template-columns: repeat({{ section.settings.collections_columns }}, minmax(0, 1fr));
+        {%- endif -%}
+        gap: {{ section.settings.collections_gap }}px;
+        width: 100%;
+        margin: 0 auto;
       }
-
-      /* Collection Block Formats */
-      .collection-format-square .hero-collections__item {
-        width: 200px;
-        height: 200px;
-      }
-
-      .collection-format-horizontal .hero-collections__item {
-        width: 280px;
-        height: 180px;
-      }
-
-      .collection-format-vertical .hero-collections__item {
-        width: 180px;
-        height: 240px;
-      }
-
-      .hero-collections__item {
+      
+      /* Collection Card con dimensione controllata */
+      #shopify-section-{{ section.id }} .fr-collection-card {
+        {%- if section.settings.collections_layout == 'flex' -%}
+          width: {{ section.settings.collection_card_width }}px;
+          flex: 0 0 auto;
+          max-width: 100%;
+        {%- else -%}
+          width: 100%;
+          min-width: 0;
+        {%- endif -%}
         position: relative;
-        cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: transform;
       }
-
-      .hero-collections__item:hover {
-        transform: translateY(-10px);
-      }
-
-      .hero-collections__item-link {
-        display: block;
-        width: 100%;
-        height: 100%;
-        text-decoration: none;
-        position: relative;
-        overflow: hidden;
-        border-radius: {{ section.settings.card_border_radius }}px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.1);
-        background: #fff;
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-      }
-
-      .hero-collections__item:hover .hero-collections__item-link {
-        box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15);
-      }
-
-      .hero-collections__item-image-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      .hero-collections__item-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-      }
-
-      .hero-collections__item:hover .hero-collections__item-image {
-        transform: scale(1.1);
-      }
-
-      /* Enhanced Product Slider Styles */
-      .hero-collections__product-slider {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      .hero-collections__product-slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .hero-collections__product-slide.active {
-        opacity: 1;
-      }
-
-      .hero-collections__product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      /* Enhanced Animation Types */
-      .animation-fade .hero-collections__product-slide {
-        transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .animation-slide .hero-collections__product-slide {
-        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .animation-slide .hero-collections__product-slide:not(.active) {
-        transform: translateX(100%);
-      }
-
-      .animation-slide .hero-collections__product-slide.prev {
-        transform: translateX(-100%);
-      }
-
-      .animation-zoom .hero-collections__product-slide {
-        transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .animation-zoom .hero-collections__product-slide:not(.active) {
-        transform: scale(1.2);
-      }
-
-      .animation-zoom .hero-collections__product-slide.active {
-        transform: scale(1);
-      }
-
-      .animation-flip .hero-collections__product-slide {
-        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        backface-visibility: hidden;
-      }
-
-      .animation-flip .hero-collections__product-slide:not(.active) {
-        transform: rotateY(90deg);
-      }
-
-      .animation-flip .hero-collections__product-slide.active {
-        transform: rotateY(0);
-      }
-
-      /* Prevent double transitions */
-      .hero-collections__product-slider.transitioning .hero-collections__product-slide {
-        transition-duration: 0s !important;
-      }
-
-      .hero-collections__item-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
-        transition: opacity 0.3s ease;
-      }
-
-      .hero-collections__item-content {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        padding: 20px;
-        text-align: center;
-        z-index: 2;
-      }
-
-      .hero-collections__item-title {
-        font-size: 20px;
-        font-weight: 600;
-        margin: 0 0 5px;
-        color: #fff;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      }
-
-      .hero-collections__item-subtitle {
-        font-size: 14px;
-        color: #fff;
-        opacity: 0.9;
-        text-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
-      }
-
-      /* Mobile Styles */
-      @media screen and (max-width: 768px) {
-        .hero-collections-section {
-          padding-bottom: {% if section.settings.half_overlap %}80px{% else %}0{% endif %};
-        }
-
-        .hero-collections-wrapper {
-          min-height: auto;
-        }
-
-        .hero-collections__images-container {
-          height: {{ section.settings.mobile_height }};
-          position: relative;
-          {% if section.settings.half_overlap %}
-            margin-bottom: -50px;
-          {% endif %}
+      
+      /* Center cards when fewer than expected */
+      {%- if section.settings.collections_layout == 'grid' -%}
+        #shopify-section-{{ section.id }} .fr-collections-grid:has(.fr-collection-card:only-child) {
+          grid-template-columns: 1fr;
+          max-width: min(400px, {{ section.settings.collections_max_width }});
         }
         
-        .hero-collections__images-container[data-natural-mobile-height="true"] {
-          height: 100%;
-        }
-
-        .hero-collections__image--desktop {
-          display: none;
-        }
-
-        .hero-collections__image--mobile {
-          display: block;
-        }
-
-        .hero-collections__video {
-          display: none;
-        }
-
-        .hero-collections__video--mobile {
-          display: block;
-        }
-
-        .hero-collections__title {
-          font-size: {{ section.settings.mobile_title_size }}px;
-        }
-
-        .hero-collections__subtitle {
-          font-size: 16px;
-          max-width: 90%;
-        }
-
-        .hero-collections__cta-button {
-          padding: 12px 30px;
-          font-size: 14px;
-        }
-
-        .hero-collections__grid-wrapper {
-          position: relative;
-          padding: 20px 0;
-          bottom: auto;
-        }
-
-        .hero-collections__grid-wrapper.half-overlap {
-          position: absolute;
-          bottom: calc(var(--mobile-overlap-offset) - 50px);
-          padding-bottom: 0;
-        }
-
-        /* Mobile Layout: Grid 2x2 */
-        .mobile-layout-grid .hero-collections__grid {
-          gap: 15px;
-          justify-content: center;
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          padding: 0 20px;
-        }
-
-        .mobile-layout-grid .hero-collections__item:last-child:nth-child(odd) {
-          grid-column: 1 / -1;
-          margin: 0 auto;
-          max-width: calc(50% - 7.5px);
-        }
-
-        /* Mobile Layout: Horizontal Scroll */
-        .mobile-layout-scroll .hero-collections__grid {
-          display: flex;
-          overflow-x: auto;
-          overflow-y: hidden;
-          scroll-snap-type: x mandatory;
-          -webkit-overflow-scrolling: touch;
-          padding: 0 20px;
-          gap: 15px;
-        }
-
-        .mobile-layout-scroll .hero-collections__item {
-          flex: 0 0 70%;
-          scroll-snap-align: center;
-          width: 70%;
-        }
-
-        .mobile-layout-scroll .hero-collections__grid::-webkit-scrollbar {
-          display: none;
-        }
-
-        /* Mobile Layout: Stack */
-        .mobile-layout-stack .hero-collections__grid {
-          display: flex;
-          flex-direction: column;
-          padding: 0 20px;
-          gap: 20px;
-        }
-
-        .mobile-layout-stack .hero-collections__item {
-          width: 100%;
-          height: 120px;
-        }
-
-        .mobile-layout-stack .hero-collections__item-link {
-          display: flex;
-          align-items: center;
-        }
-
-        .mobile-layout-stack .hero-collections__item-image-wrapper {
-          width: 40%;
-          height: 100%;
-        }
-
-        .mobile-layout-stack .hero-collections__item-content {
-          position: relative;
-          width: 60%;
-          padding: 20px;
-          text-align: left;
-          background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
-        }
-
-        /* Mobile Layout: Minimal */
-        .mobile-layout-minimal .hero-collections__grid {
-          display: flex;
-          justify-content: center;
-          padding: 0 30px;
-          gap: 20px;
-        }
-
-        .mobile-layout-minimal .hero-collections__item {
-          width: 80px;
-          height: 80px;
-        }
-
-        .mobile-layout-minimal .hero-collections__item-content {
-          padding: 10px;
-        }
-
-        .mobile-layout-minimal .hero-collections__item-title {
-          font-size: 12px;
-        }
-
-        .mobile-layout-minimal .hero-collections__item-subtitle {
-          display: none;
-        }
-
-        /* General Mobile Adjustments */
-        .collection-format-square .hero-collections__item {
-          width: 100%;
-          height: auto;
-          aspect-ratio: 1;
-        }
-
-        .collection-format-horizontal .hero-collections__item {
-          width: 100%;
-          height: auto;
-          aspect-ratio: 16/10;
-        }
-
-        .collection-format-vertical .hero-collections__item {
-          width: 100%;
-          height: auto;
-          aspect-ratio: 3/4;
-        }
-
-        .mobile-layout-stack .hero-collections__item {
-          aspect-ratio: auto;
-        }
-
-        .hero-collections__item-title {
-          font-size: 18px;
-        }
-
-        .hero-collections__item-subtitle {
-          font-size: 13px;
-        }
-
-        /* Touch optimization */
-        .hero-collections__item:active {
-          transform: scale(0.98);
-        }
-
-        .hero-collections__item:hover {
-          transform: none;
-        }
-
-        /* Mobile Swipe Support */
-        .hero-collections__images-container {
-          touch-action: pan-y;
-        }
-      }
-
-      /* Animations */
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Smooth Transitions */
-      {%- if section.settings.enable_smooth_transitions -%}
-        #shopify-section-{{ section.id }} {
-          transition: all 0.3s ease;
+        #shopify-section-{{ section.id }} .fr-collections-grid:has(.fr-collection-card:nth-child(2):last-child) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          max-width: min(800px, {{ section.settings.collections_max_width }});
         }
       {%- endif -%}
 
-      /* Disable animations in customizer */
-      .shopify-design-mode .hero-collections__image-wrapper {
-        transition: none !important;
-      }
-      
-      .shopify-design-mode .hero-collections__item {
-        transition: none !important;
-      }
-      
-      .shopify-design-mode * {
-        animation-duration: 0s !important;
-      }
-      
-      /* Placeholder styles */
-      .placeholder-noblocks {
-        text-align: center;
-        padding: 80px 20px;
-        background-color: {{ section.settings.section_bg_color }};
-      }
-      
-      .placeholder-noblocks h2 {
-        margin-bottom: 20px;
+      /* Collection Card */
+      #shopify-section-{{ section.id }} .fr-collection-card {
+        position: relative;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: transform;
       }
 
-      /* Utility Functions Integration */
-      {{ section.settings.utility_styles }}
+      #shopify-section-{{ section.id }} .fr-collection-card:hover {
+        transform: translateY(-8px);
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-link {
+        display: block;
+        position: relative;
+        border-radius: {{ section.settings.card_border_radius }}px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
+        transition: box-shadow 0.4s ease;
+        text-decoration: none;
+        height: 100%;
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-card:hover .fr-collection-link {
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
+      }
+
+      /* Collection Media - Con formato selezionabile */
+      #shopify-section-{{ section.id }} .fr-collection-media {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: #f5f5f5;
+        {%- case section.settings.collection_image_format -%}
+          {%- when 'natural' -%}
+            /* Natural format - no fixed aspect ratio */
+          {%- when 'square' -%}
+            padding-bottom: 100%;
+          {%- when 'portrait' -%}
+            padding-bottom: 133.33%;
+          {%- when 'landscape' -%}
+            padding-bottom: 75%;
+          {%- when 'wide' -%}
+            padding-bottom: 56.25%;
+        {%- endcase -%}
+      }
+
+      /* Natural format specific styles */
+      #shopify-section-{{ section.id }} .fr-collection-media.fr-media-natural {
+        padding-bottom: 0;
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-media.fr-media-natural img,
+      #shopify-section-{{ section.id }} .fr-collection-media.fr-media-natural .placeholder-svg {
+        position: relative;
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* Non-natural format styles */
+      #shopify-section-{{ section.id }} .fr-collection-media:not(.fr-media-natural) img,
+      #shopify-section-{{ section.id }} .fr-collection-media:not(.fr-media-natural) .placeholder-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-media img,
+      #shopify-section-{{ section.id }} .fr-collection-media .placeholder-svg {
+        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-card:hover .fr-collection-media img {
+        transform: scale(1.08);
+      }
+
+      /* Product Slider */
+      #shopify-section-{{ section.id }} .fr-product-slider {
+        {%- if section.settings.collection_image_format == 'natural' -%}
+          position: relative;
+          width: 100%;
+        {%- else -%}
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        {%- endif -%}
+      }
+
+      #shopify-section-{{ section.id }} .fr-product-slide {
+        {%- if section.settings.collection_image_format == 'natural' -%}
+          display: none;
+        {%- else -%}
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+        {%- endif -%}
+        transition: opacity 1s ease;
+      }
+
+      #shopify-section-{{ section.id }} .fr-product-slide.active {
+        {%- if section.settings.collection_image_format == 'natural' -%}
+          display: block;
+        {%- else -%}
+          opacity: 1;
+        {%- endif -%}
+      }
+
+      #shopify-section-{{ section.id }} .fr-product-slide img {
+        width: 100%;
+        {%- if section.settings.collection_image_format == 'natural' -%}
+          height: auto;
+        {%- else -%}
+          height: 100%;
+          object-fit: cover;
+        {%- endif -%}
+      }
+
+      /* Collection Content */
+      #shopify-section-{{ section.id }} .fr-collection-content {
+        {%- if section.settings.collections_layout == 'flex' -%}
+          padding: {% if section.settings.collection_card_width < 280 %}16px{% else %}24px{% endif %};
+        {%- else -%}
+          padding: 20px;
+        {%- endif -%}
+        background: linear-gradient(to bottom, #fff, #fafafa);
+        text-align: center;
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-title {
+        {%- if section.settings.collections_layout == 'flex' -%}
+          font-size: {% if section.settings.collection_card_width < 280 %}20px{% elsif section.settings.collection_card_width < 350 %}22px{% else %}24px{% endif %};
+        {%- else -%}
+          font-size: clamp(18px, 2vw, 24px);
+        {%- endif -%}
+        font-weight: 600;
+        color: #3E3E3E;
+        margin: 0 0 8px;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      #shopify-section-{{ section.id }} .fr-collection-subtitle {
+        {%- if section.settings.collections_layout == 'flex' -%}
+          font-size: {% if section.settings.collection_card_width < 280 %}13px{% elsif section.settings.collection_card_width < 350 %}14px{% else %}15px{% endif %};
+        {%- else -%}
+          font-size: clamp(12px, 1.5vw, 15px);
+        {%- endif -%}
+        color: #B5A397;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+
+      /* Mobile Ottimizzato */
+      @media only screen and (max-width: 768px) {
+        #shopify-section-{{ section.id }} .fr-hero-media-container {
+          height: {{ section.settings.mobile_height }};
+        }
+
+        #shopify-section-{{ section.id }} .fr-hero-video {
+          display: none;
+        }
+
+        #shopify-section-{{ section.id }} .fr-hero-video--mobile {
+          display: block;
+        }
+
+        #shopify-section-{{ section.id }} .fr-hero-image--desktop {
+          display: none;
+        }
+
+        #shopify-section-{{ section.id }} .fr-hero-image--mobile {
+          display: block;
+        }
+
+        /* Collections Mobile Ottimizzato */
+        #shopify-section-{{ section.id }} .fr-collections-container {
+          padding: 40px 0;
+        }
+
+        #shopify-section-{{ section.id }} .fr-collections-container.fr-collections--overlap {
+          margin-top: calc(-1 * var(--overlap-mobile));
+          padding-top: 20px;
+        }
+
+        #shopify-section-{{ section.id }} .fr-collections-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+        
+        #shopify-section-{{ section.id }} .fr-collection-card {
+          width: 100% !important;
+          flex: unset !important;
+          max-width: 100% !important;
+        }
+
+        /* Se c'è solo 1 elemento */
+        #shopify-section-{{ section.id }} .fr-collections-grid:has(.fr-collection-card:only-child) {
+          grid-template-columns: 1fr;
+          max-width: 400px;
+          margin: 0 auto;
+        }
+
+        /* Se ci sono 3 elementi - OTTIMIZZATO per essere ben visibile */
+        #shopify-section-{{ section.id }} .fr-collection-card:nth-child(3):nth-last-child(1) {
+          grid-column: 1 / -1;
+          justify-self: center;
+          width: calc(50% - 8px);
+          max-width: 300px;
+        }
+
+        /* Mobile specific aspect ratio adjustment */
+        #shopify-section-{{ section.id }} .fr-collection-media:not(.fr-media-natural) {
+          {%- case section.settings.collection_image_format_mobile -%}
+            {%- when 'square' -%}
+              padding-bottom: 100%;
+            {%- when 'portrait' -%}
+              padding-bottom: 133.33%;
+            {%- when 'landscape' -%}
+              padding-bottom: 75%;
+            {%- when 'wide' -%}
+              padding-bottom: 56.25%;
+            {%- else -%}
+              /* Mantieni formato desktop se non specificato */
+          {%- endcase -%}
+        }
+
+        #shopify-section-{{ section.id }} .fr-collection-content {
+          padding: 16px;
+        }
+
+        #shopify-section-{{ section.id }} .fr-collection-title {
+          font-size: 18px;
+          margin-bottom: 4px;
+        }
+
+        #shopify-section-{{ section.id }} .fr-collection-subtitle {
+          font-size: 12px;
+        }
+
+        /* Touch Optimization */
+        #shopify-section-{{ section.id }} .fr-collection-card:active {
+          transform: scale(0.98);
+        }
+
+        #shopify-section-{{ section.id }} .fr-collection-card:hover {
+          transform: none;
+        }
+      }
+
+      /* Tablet */
+      @media only screen and (min-width: 769px) and (max-width: 1024px) {
+        #shopify-section-{{ section.id }} .fr-collections-grid {
+          {%- if section.settings.collections_layout == 'flex' -%}
+            justify-content: center;
+          {%- else -%}
+            grid-template-columns: repeat(min(3, {{ section.settings.collections_columns }}), 1fr);
+          {%- endif -%}
+          gap: 20px;
+        }
+        
+        {%- if section.settings.collections_layout == 'flex' -%}
+          #shopify-section-{{ section.id }} .fr-collection-card {
+            width: min({{ section.settings.collection_card_width }}px, 300px);
+            flex: 0 0 auto;
+          }
+        {%- endif -%}
+      }
+
+      /* Desktop Large */
+      @media only screen and (min-width: 1400px) {
+        /* Additional styles for large screens if needed */
+      }
+      
+      /* Responsive adjustments for large cards */
+      @media only screen and (min-width: 769px) {
+        {%- if section.settings.collections_layout == 'flex' -%}
+          #shopify-section-{{ section.id }} .fr-collections-grid {
+            justify-content: center;
+          }
+        {%- endif -%}
+      }
+
+      /* Spacing Controls */
+      @media only screen and (min-width: 769px) {
+        #shopify-section-{{ section.id }} {
+          max-width: {{ section.settings.max_dimensione }};
+          margin: 0 auto;
+          padding-top: {{ section.settings.padding_top_desktop }}px;
+          padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+          margin-top: {{ section.settings.margin_top_desktop }}px;
+          margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+        }
+
+        {% if section.settings.nascondi_desktop %}
+          #shopify-section-{{ section.id }} {
+            display: none;
+          }
+        {% endif %}
+      }
+
+      @media only screen and (max-width: 768px) {
+        #shopify-section-{{ section.id }} {
+          padding-top: {{ section.settings.padding_top_mobile }}px;
+          padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+          margin-top: {{ section.settings.margin_top_mobile }}px;
+          margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+        }
+
+        {% if section.settings.nascondi_mobile %}
+          #shopify-section-{{ section.id }} {
+            display: none;
+          }
+        {% endif %}
+      }
     </style>
 
     <script>
       (function() {
-        // Prevent multiple initializations
-        if (window.heroCollectionsInit && window.heroCollectionsInit['{{ section.id }}']) {
-          return;
-        }
-        
-        if (!window.heroCollectionsInit) {
-          window.heroCollectionsInit = {};
-        }
-        window.heroCollectionsInit['{{ section.id }}'] = true;
+        const sectionId = '{{ section.id }}';
+        const section = document.querySelector(`[data-section-id="${sectionId}"]`);
+        if (!section) return;
 
-        document.addEventListener('DOMContentLoaded', function() {
-        const section = document.querySelector('[data-section-id="{{ section.id }}"]');
-        const collectionItems = section.querySelectorAll('[data-collection-trigger]');
-        const imageWrappers = section.querySelectorAll('.hero-collections__image-wrapper');
-        const defaultMedia = section.querySelector('.hero-collections__default-media');
-        let currentIndex = 0;
-        let autoplayInterval = null;
         const isMobile = window.innerWidth <= 768;
-        const hasDefaultMedia = defaultMedia !== null;
 
-        // Enhanced product slider initialization
+        // Product Slider Animation
         function initProductSliders() {
-          const sliders = section.querySelectorAll('.hero-collections__product-slider');
+          const sliders = section.querySelectorAll('.fr-product-slider');
           
           sliders.forEach(slider => {
-            const slides = slider.querySelectorAll('.hero-collections__product-slide');
+            const slides = slider.querySelectorAll('.fr-product-slide');
+            if (slides.length <= 1) return;
+            
             const speed = parseFloat(slider.dataset.speed) || 3;
             let currentSlide = 0;
-            let animationInterval = null;
             
-            if (slides.length > 1) {
-              // Clear any existing intervals
-              if (slider.animationInterval) {
-                clearInterval(slider.animationInterval);
-              }
+            setInterval(() => {
+              slides[currentSlide].classList.remove('active');
+              currentSlide = (currentSlide + 1) % slides.length;
+              slides[currentSlide].classList.add('active');
+            }, speed * 1000);
+          });
+        }
+
+        // Hero Image Change on Hover (Desktop only)
+        function setupHoverInteractions() {
+          if (isMobile) return;
+
+          // Query elements fresh each time
+          const currentCards = section.querySelectorAll('.fr-collection-card');
+          const currentMediaElements = section.querySelectorAll('.fr-hero-media');
+          const currentDefaultMedia = section.querySelector('[data-media-id="default"]');
+          
+          if (currentCards.length === 0) {
+            // If cards not ready, retry
+            setTimeout(setupHoverInteractions, 200);
+            return;
+          }
+          
+          currentCards.forEach(card => {
+            const triggerId = card.dataset.triggerId;
+            const targetMedia = section.querySelector(`[data-media-id="${triggerId}"]`);
+            
+            if (!targetMedia) return;
+            
+            // Clean way to add event listeners without duplicates
+            if (!card.hasAttribute('data-hover-initialized')) {
+              card.setAttribute('data-hover-initialized', 'true');
               
-              // Enhanced animation function
-              function animateSlides() {
-                // Remove transition class to prevent double transitions
-                slider.classList.add('transitioning');
-                
-                // Remove active and prev classes
-                slides.forEach(slide => {
-                  slide.classList.remove('active', 'prev');
-                });
-                
-                // Mark current as prev
-                slides[currentSlide].classList.add('prev');
-                
-                // Move to next slide
-                currentSlide = (currentSlide + 1) % slides.length;
-                
-                // Add active class to new slide
-                requestAnimationFrame(() => {
-                  slider.classList.remove('transitioning');
-                  slides[currentSlide].classList.add('active');
-                });
-              }
-              
-              // Start animation
-              animationInterval = setInterval(animateSlides, speed * 1000);
-              slider.animationInterval = animationInterval;
-              
-              // Pause on hover
-              slider.addEventListener('mouseenter', () => {
-                if (animationInterval) {
-                  clearInterval(animationInterval);
-                }
+              card.addEventListener('mouseenter', function() {
+                currentMediaElements.forEach(media => media.classList.remove('active'));
+                targetMedia.classList.add('active');
               });
-              
-              slider.addEventListener('mouseleave', () => {
-                if (!animationInterval) {
-                  animationInterval = setInterval(animateSlides, speed * 1000);
-                  slider.animationInterval = animationInterval;
+
+              card.addEventListener('mouseleave', function() {
+                if (currentDefaultMedia) {
+                  currentMediaElements.forEach(media => media.classList.remove('active'));
+                  currentDefaultMedia.classList.add('active');
                 }
               });
             }
           });
         }
 
-        // Initialize product sliders
+        // Initialize Product Sliders
         initProductSliders();
-
-        // Desktop hover functionality
-        if (!isMobile) {
-          collectionItems.forEach((item, index) => {
-            item.addEventListener('mouseenter', function() {
-              changeActiveImage(index);
-              stopAutoplay();
-            });
-
-            item.addEventListener('mouseleave', function() {
-              // Return to default media on mouseleave
-              if (hasDefaultMedia) {
-                showDefaultMedia();
-              }
-              
-              if ({{ section.settings.enable_autoplay }}) {
-                startAutoplay();
-              }
-            });
-          });
-        } else {
-          // Mobile tap functionality
-          collectionItems.forEach((item, index) => {
-            item.addEventListener('click', function(e) {
-              if (item.querySelector('a').getAttribute('href') === '#' || 
-                  item.querySelector('a').getAttribute('href') === '') {
-                e.preventDefault();
-                changeActiveImage(index);
-              }
-            });
-          });
-
-          // Mobile swipe support
-          let touchStartX = 0;
-          let touchEndX = 0;
-
-          section.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-          });
-
-          section.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-          });
-
-          function handleSwipe() {
-            if (touchEndX < touchStartX - 50) {
-              // Swipe left - next
-              currentIndex = (currentIndex + 1) % imageWrappers.length;
-              changeActiveImage(currentIndex);
-            }
-            if (touchEndX > touchStartX + 50) {
-              // Swipe right - previous
-              currentIndex = (currentIndex - 1 + imageWrappers.length) % imageWrappers.length;
-              changeActiveImage(currentIndex);
-            }
-          }
-        }
-
-        function changeActiveImage(index) {
-          // Hide all wrappers including default
-          imageWrappers.forEach((wrapper) => {
-            wrapper.classList.remove('active');
-          });
-          
-          // Show the selected collection image
-          const targetWrapper = section.querySelector(`[data-collection-index="${index}"]`);
-          if (targetWrapper) {
-            targetWrapper.classList.add('active');
-          }
-          
-          currentIndex = index;
-        }
-
-        function showDefaultMedia() {
-          if (!defaultMedia) return;
-          
-          imageWrappers.forEach((wrapper) => {
-            wrapper.classList.remove('active');
-          });
-          
-          defaultMedia.classList.add('active');
-        }
-
-        function startAutoplay() {
-          if (!{{ section.settings.enable_autoplay }} || !isMobile) return;
-          
-          autoplayInterval = setInterval(() => {
-            currentIndex = (currentIndex + 1) % imageWrappers.length;
-            changeActiveImage(currentIndex);
-          }, {{ section.settings.autoplay_duration }} * 1000);
-        }
-
-        function stopAutoplay() {
-          if (autoplayInterval) {
-            clearInterval(autoplayInterval);
-            autoplayInterval = null;
-          }
-        }
-
-        // Start autoplay on mobile if enabled
-        if (isMobile && {{ section.settings.enable_autoplay }}) {
-          startAutoplay();
-        }
-
-        // Handle window resize - only reload if width actually changes significantly
-        let windowWidth = window.innerWidth;
-        let resizeTimer;
         
-        window.addEventListener('resize', function() {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(function() {
-            const newWidth = window.innerWidth;
-            const widthDiff = Math.abs(windowWidth - newWidth);
+        // Setup based on configuration
+        {%- if section.settings.desktop_height == '100vh-with-collections' -%}
+        if (!isMobile) {
+          const initFullscreenWithCollections = () => {
+            // First adjust layout
+            const heroWrapper = section.querySelector('.fr-hero-wrapper');
+            const collectionsContainer = section.querySelector('.fr-collections-container');
+            const mediaContainer = section.querySelector('.fr-hero-media-container');
             
-            // Only reload if width changed more than 100px AND we're not in the customizer
-            if (widthDiff > 100 && !window.Shopify?.designMode) {
-              windowWidth = newWidth;
+            if (heroWrapper && collectionsContainer && mediaContainer) {
+              const collectionsHeight = collectionsContainer.offsetHeight;
+              const overlap = {{ section.settings.overlap_offset_desktop }};
+              const viewportHeight = window.innerHeight;
+              
+              // Calculate hero height accounting for overlap
+              const heroHeight = viewportHeight - (collectionsHeight - overlap);
+              
+              // Apply the calculated height
+              mediaContainer.style.height = `${heroHeight}px`;
+              heroWrapper.style.height = `${viewportHeight}px`;
+            }
+            
+            // Then setup hover interactions after DOM is settled
+            setTimeout(setupHoverInteractions, 100);
+          };
+          
+          // Use both DOMContentLoaded and load to ensure everything is ready
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFullscreenWithCollections);
+          } else {
+            // DOM already loaded, wait for images
+            if (document.readyState === 'complete') {
+              initFullscreenWithCollections();
+            } else {
+              window.addEventListener('load', initFullscreenWithCollections);
+            }
+          }
+          
+          // Handle resize
+          let resizeTimer;
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(initFullscreenWithCollections, 100);
+          });
+        }
+        {%- else -%}
+        // Normal initialization
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setupHoverInteractions);
+        } else {
+          setupHoverInteractions();
+        }
+        {%- endif -%}
+
+        // Reinitialize on resize (debounced)
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            const newIsMobile = window.innerWidth <= 768;
+            if (newIsMobile !== isMobile && !window.Shopify?.designMode) {
               location.reload();
             }
           }, 250);
         });
-
-        // Utility Functions Integration
-        if ({{ section.settings.enable_utility_functions }}) {
-          // Initialize utility functions here
-          {{ section.settings.utility_scripts }}
-        }
-      });
       })();
     </script>
     {%- endif -%}
   {%- endif -%}
 
   {%- if section.blocks.size == 0 -%}
-    <div class="placeholder-noblocks">
-      {{ 'home_page.onboarding.no_content' | t }}
+    <div class="placeholder-noblocks" style="padding: 80px 20px; text-align: center; background: {{ section.settings.section_bg_color }};">
+      <h2>{{ 'home_page.onboarding.no_content' | t }}</h2>
     </div>
   {%- endif -%}
 </div>
 
+{%- comment -%} Hero Content Snippet - da creare in snippets/hero-content.liquid {%- endcomment -%}
+{%- comment -%}
+  Nel file snippets/hero-content.liquid inserire:
+  
+  <div class="fr-hero-content" style="--content-position-desktop: {{ content_position }}%; --content-position-mobile: {{ content_position_mobile }}%;">
+    <div class="page-width">
+      <div class="fr-hero-text-wrapper {{ text_alignment | default: 'text-center' }}">
+        {%- if title != blank -%}
+          <h2 class="fr-hero-title" style="color: {{ text_color | default: '#FFFFFF' }}; font-weight: {{ title_font_weight | default: 600 }};">
+            {{ title | newline_to_br }}
+          </h2>
+        {%- endif -%}
+        
+        {%- if subtitle != blank -%}
+          <div class="fr-hero-subtitle" style="color: {{ text_color | default: '#FFFFFF' }};">
+            {{ subtitle }}
+          </div>
+        {%- endif -%}
+        
+        {%- if cta_text != blank and cta_link != blank and link_type != 'background' -%}
+          <div class="fr-hero-cta">
+            <a href="{{ cta_link }}" 
+               class="btn {{ cta_style }}"
+               style="
+                 {%- if cta_bg_color != blank -%}background-color: {{ cta_bg_color }};{%- endif -%}
+                 {%- if cta_text_color != blank -%}color: {{ cta_text_color }};{%- endif -%}
+                 {%- if cta_border_color != blank -%}border-color: {{ cta_border_color }};{%- endif -%}
+               ">
+              {{ cta_text }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .fr-hero-content {
+      position: absolute;
+      top: var(--content-position-desktop, 50%);
+      left: 0;
+      width: 100%;
+      transform: translateY(-50%);
+      z-index: 3;
+      pointer-events: none;
+      padding: 0 20px;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .fr-hero-content {
+        top: var(--content-position-mobile, 50%);
+      }
+    }
+    
+    .fr-hero-text-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .fr-hero-title {
+      font-size: clamp(32px, 5vw, 60px);
+      line-height: 1.1;
+      margin: 0 0 20px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    
+    .fr-hero-subtitle {
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.5;
+      margin-bottom: 30px;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.3);
+    }
+    
+    .fr-hero-cta {
+      pointer-events: auto;
+      margin-top: 30px;
+    }
+    
+    .fr-hero-cta .btn {
+      padding: 14px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    .fr-hero-cta .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .text-left { text-align: left; }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+  </style>
+{%- endcomment -%}
+
 {% schema %}
 {
   "name": "Hero Interactive",
-  "class": "index-section--hero-collections",
+  "class": "fr-hero-collections",
   "max_blocks": 6,
   "settings": [
     {
       "type": "header",
-      "content": "🖼️ Media di Default (No Hover)"
+      "content": "Media di Default"
     },
     {
       "type": "image_picker",
       "id": "default_image",
-      "label": "Immagine default desktop",
-      "info": "Visibile quando nessuna collezione è in hover"
+      "label": "Immagine desktop"
     },
     {
       "type": "image_picker",
       "id": "default_image_mobile",
-      "label": "Immagine default mobile"
+      "label": "Immagine mobile"
     },
     {
       "type": "video",
       "id": "default_video",
-      "label": "Video default desktop",
-      "info": "Il video ha priorità sull'immagine se caricato"
+      "label": "Video desktop"
     },
     {
       "type": "video",
       "id": "default_video_mobile",
-      "label": "Video default mobile"
+      "label": "Video mobile"
     },
     {
       "type": "range",
       "id": "default_overlay_opacity",
-      "label": "Opacità overlay default",
-      "default": 0,
+      "label": "Opacità overlay",
       "min": 0,
       "max": 80,
       "step": 5,
+      "default": 20,
       "unit": "%"
     },
     {
       "type": "header",
-      "content": "🔗 Link e Call to Action"
-    },
-    {
-      "type": "url",
-      "id": "default_link",
-      "label": "Link principale",
-      "info": "Questo link può essere applicato all'intero sfondo o al pulsante CTA"
-    },
-    {
-      "type": "select",
-      "id": "link_type",
-      "label": "Tipo di link",
-      "default": "button",
-      "options": [
-        {
-          "value": "background",
-          "label": "Intera sezione cliccabile"
-        },
-        {
-          "value": "button",
-          "label": "Solo pulsante CTA"
-        },
-        {
-          "value": "both",
-          "label": "Entrambi (CTA + sfondo)"
-        }
-      ]
-    },
-    {
-      "type": "text",
-      "id": "cta_text",
-      "label": "Testo pulsante CTA",
-      "default": "Scopri di più",
-      "info": "Visibile se 'Tipo di link' include il pulsante"
-    },
-    {
-      "type": "select",
-      "id": "cta_style",
-      "label": "Stile pulsante",
-      "default": "btn-solid",
-      "options": [
-        {
-          "value": "btn-solid",
-          "label": "Solido"
-        },
-        {
-          "value": "btn-outline",
-          "label": "Contorno"
-        },
-        {
-          "value": "btn-ghost",
-          "label": "Ghost (trasparente)"
-        }
-      ]
-    },
-    {
-      "type": "color",
-      "id": "cta_bg_color",
-      "label": "Colore sfondo CTA",
-      "default": "#C8553D"
-    },
-    {
-      "type": "color",
-      "id": "cta_text_color",
-      "label": "Colore testo CTA",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "cta_border_color",
-      "label": "Colore bordo CTA",
-      "default": "#C8553D"
-    },
-    {
-      "type": "header",
-      "content": "📝 Contenuto di Default"
+      "content": "Contenuto Hero"
     },
     {
       "type": "textarea",
       "id": "default_title",
-      "label": "Titolo hero default",
+      "label": "Titolo",
       "default": "Benvenuti da\nFabindia Roma"
     },
     {
       "type": "text",
       "id": "default_subtitle",
-      "label": "Sottotitolo hero default",
+      "label": "Sottotitolo",
       "default": "Scopri l'autentico artigianato indiano"
     },
     {
       "type": "select",
       "id": "default_text_alignment",
-      "label": "Allineamento testo default",
-      "default": "text-center",
+      "label": "Allineamento testo",
       "options": [
         {
           "value": "text-left",
@@ -1514,261 +1042,447 @@
           "value": "text-right",
           "label": "Destra"
         }
-      ]
+      ],
+      "default": "text-center"
     },
     {
       "type": "color",
       "id": "default_text_color",
-      "label": "Colore testo default",
+      "label": "Colore testo",
       "default": "#FFFFFF"
     },
     {
-  "type": "header",
-  "content": "📍 Posizione Contenuto"
-},
-{
-  "type": "range",
-  "id": "content_vertical_position",
-  "label": "Posizione verticale Desktop",
-  "default": 50,
-  "min": 10,
-  "max": 90,
-  "step": 5,
-  "unit": "%",
-  "info": "Posizione del contenuto su desktop"
-},
-{
-  "type": "range",
-  "id": "content_vertical_position_mobile",
-  "label": "Posizione verticale Mobile",
-  "default": 50,
-  "min": 10,
-  "max": 90,
-  "step": 5,
-  "unit": "%",
-  "info": "Posizione del contenuto su mobile"
-},
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Peso font titoli",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra Bold"
+        }
+      ],
+      "default": "600"
+    },
     {
       "type": "header",
-      "content": "Layout e dimensioni"
+      "content": "Call to Action"
+    },
+    {
+      "type": "url",
+      "id": "default_link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "link_type",
+      "label": "Tipo di link",
+      "options": [
+        {
+          "value": "background",
+          "label": "Sfondo cliccabile"
+        },
+        {
+          "value": "button",
+          "label": "Solo pulsante"
+        },
+        {
+          "value": "both",
+          "label": "Entrambi"
+        }
+      ],
+      "default": "button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo pulsante",
+      "default": "Scopri di più"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Stile pulsante",
+      "options": [
+        {
+          "value": "btn--primary",
+          "label": "Primario"
+        },
+        {
+          "value": "btn--secondary",
+          "label": "Secondario"
+        },
+        {
+          "value": "btn--outline",
+          "label": "Outline"
+        }
+      ],
+      "default": "btn--primary"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "Colore sfondo CTA",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Colore testo CTA",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "Colore bordo CTA",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "Posizione Contenuto"
+    },
+    {
+      "type": "range",
+      "id": "content_vertical_position",
+      "label": "Posizione Desktop",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "default": 50,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "content_vertical_position_mobile",
+      "label": "Posizione Mobile",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "default": 50,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Dimensioni"
     },
     {
       "type": "select",
       "id": "desktop_height",
       "label": "Altezza desktop",
-      "default": "650px",
       "options": [
         {
-          "value": "natural",
-          "label": "Naturale (come l'immagine)"
+          "value": "350px",
+          "label": "Extra piccola (350px)"
         },
         {
           "value": "450px",
           "label": "Piccola (450px)"
         },
         {
+          "value": "500px",
+          "label": "Media-piccola (500px)"
+        },
+        {
           "value": "550px",
           "label": "Media (550px)"
+        },
+        {
+          "value": "600px",
+          "label": "Media-grande (600px)"
         },
         {
           "value": "650px",
           "label": "Grande (650px)"
         },
         {
+          "value": "700px",
+          "label": "Extra grande (700px)"
+        },
+        {
           "value": "750px",
-          "label": "Extra grande (750px)"
+          "label": "XXL (750px)"
+        },
+        {
+          "value": "80vh",
+          "label": "80% schermo"
+        },
+        {
+          "value": "90vh",
+          "label": "90% schermo"
         },
         {
           "value": "100vh",
           "label": "Schermo intero"
+        },
+        {
+          "value": "100vh-with-collections",
+          "label": "Schermo intero con collezioni"
         }
-      ]
+      ],
+      "default": "650px",
+      "info": "'Schermo intero con collezioni' include le card nel viewport"
     },
     {
       "type": "select",
       "id": "mobile_height",
       "label": "Altezza mobile",
-      "default": "400px",
+      "options": [
+        {
+          "value": "350px",
+          "label": "Piccola"
+        },
+        {
+          "value": "450px",
+          "label": "Media"
+        },
+        {
+          "value": "550px",
+          "label": "Grande"
+        },
+        {
+          "value": "100vh",
+          "label": "Schermo intero"
+        }
+      ],
+      "default": "450px"
+    },
+    {
+      "type": "header",
+      "content": "Layout Collezioni"
+    },
+    {
+      "type": "checkbox",
+      "id": "half_overlap",
+      "label": "Sovrapponi collezioni",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlap_offset_desktop",
+      "label": "Sovrapposizione Desktop",
+      "min": 0,
+      "max": 2000,
+      "step": 25,
+      "default": 100,
+      "unit": "px",
+      "info": "Quanto le collezioni si sovrappongono all'hero su desktop"
+    },
+    {
+      "type": "range",
+      "id": "overlap_offset_mobile",
+      "label": "Sovrapposizione Mobile",
+      "min": 0,
+      "max": 300,
+      "step": 10,
+      "default": 60,
+      "unit": "px",
+      "info": "Quanto le collezioni si sovrappongono all'hero su mobile"
+    },
+    {
+      "type": "header",
+      "content": "Dimensioni Collezioni"
+    },
+    {
+      "type": "select",
+      "id": "collections_layout",
+      "label": "Tipo di layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Griglia (responsive)"
+        },
+        {
+          "value": "flex",
+          "label": "Flex (dimensione fissa)"
+        }
+      ],
+      "default": "flex",
+      "info": "Flex: controllo preciso dimensioni. Griglia: card responsive"
+    },
+    {
+      "type": "range",
+      "id": "collection_card_width",
+      "label": "Larghezza card",
+      "min": 200,
+      "max": 500,
+      "step": 10,
+      "default": 340,
+      "unit": "px",
+      "info": "Attivo solo con layout Flex. Imposta la larghezza esatta delle card"
+    },
+    {
+      "type": "select",
+      "id": "collections_columns",
+      "label": "Numero colonne",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 colonne"
+        },
+        {
+          "value": "3",
+          "label": "3 colonne"
+        },
+        {
+          "value": "4",
+          "label": "4 colonne"
+        },
+        {
+          "value": "5",
+          "label": "5 colonne"
+        }
+      ],
+      "default": "3",
+      "info": "Attivo solo con layout Griglia. Le card si adattano alla larghezza disponibile"
+    },
+    {
+      "type": "range",
+      "id": "collections_gap",
+      "label": "Spazio tra card",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "collections_max_width",
+      "label": "Larghezza container",
+      "options": [
+        {
+          "value": "900px",
+          "label": "Molto compatto (900px)"
+        },
+        {
+          "value": "1100px",
+          "label": "Compatto (1100px)"
+        },
+        {
+          "value": "1300px",
+          "label": "Standard (1300px)"
+        },
+        {
+          "value": "1500px",
+          "label": "Largo (1500px)"
+        },
+        {
+          "value": "1700px",
+          "label": "Extra largo (1700px)"
+        },
+        {
+          "value": "100%",
+          "label": "Piena larghezza"
+        }
+      ],
+      "default": "1300px"
+    },
+    {
+      "type": "range",
+      "id": "collections_viewport_height",
+      "label": "Spazio collezioni (100vh)",
+      "min": 150,
+      "max": 400,
+      "step": 10,
+      "default": 250,
+      "unit": "px",
+      "info": "Attivo solo con 'Schermo intero con collezioni'. Spazio riservato alle card nel viewport"
+    },
+    {
+      "type": "select",
+      "id": "collection_image_format",
+      "label": "Formato immagini Desktop",
       "options": [
         {
           "value": "natural",
           "label": "Naturale (come l'immagine)"
         },
         {
-          "value": "300px",
-          "label": "Piccola (300px)"
+          "value": "square",
+          "label": "Quadrato (1:1)"
         },
         {
-          "value": "400px",
-          "label": "Media (400px)"
+          "value": "portrait",
+          "label": "Ritratto (3:4)"
         },
         {
-          "value": "500px",
-          "label": "Grande (500px)"
+          "value": "landscape",
+          "label": "Paesaggio (4:3)"
         },
         {
-          "value": "100vh",
-          "label": "Schermo intero"
+          "value": "wide",
+          "label": "Wide (16:9)"
         }
-      ]
-    },
-    {
-      "type": "range",
-      "id": "title_size",
-      "label": "Dimensione titolo desktop",
-      "default": 60,
-      "min": 30,
-      "max": 80,
-      "step": 2,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "mobile_title_size",
-      "label": "Dimensione titolo mobile",
-      "default": 36,
-      "min": 24,
-      "max": 48,
-      "step": 2,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "🎨 Formato Blocchi Collezioni"
+      ],
+      "default": "natural",
+      "info": "Scegli 'Naturale' per mantenere le proporzioni originali"
     },
     {
       "type": "select",
-      "id": "collection_block_format",
-      "label": "Formato blocchi collezioni",
-      "default": "square",
+      "id": "collection_image_format_mobile",
+      "label": "Formato immagini Mobile",
       "options": [
+        {
+          "value": "same",
+          "label": "Come desktop"
+        },
         {
           "value": "square",
           "label": "Quadrato (1:1)"
         },
         {
-          "value": "horizontal",
-          "label": "Orizzontale (16:10)"
+          "value": "portrait",
+          "label": "Ritratto (3:4)"
         },
         {
-          "value": "vertical",
-          "label": "Verticale (3:4)"
-        }
-      ]
-    },
-    {
-      "type": "header",
-      "content": "Posizionamento collezioni"
-    },
-    {
-      "type": "checkbox",
-      "id": "half_overlap",
-      "label": "Sovrapponi collezioni all'immagine",
-      "default": false,
-      "info": "I blocchi collezioni si sovrappongono parzialmente all'immagine hero dal basso"
-    },
-    {
-      "type": "range",
-      "id": "overlap_offset",
-      "label": "Sovrapposizione (desktop)",
-      "default": 100,
-      "min": 0,
-      "max": 150,
-      "step": 10,
-      "unit": "px",
-      "info": "Quanto i blocchi si sovrappongono all'immagine hero"
-    },
-    {
-      "type": "range",
-      "id": "mobile_overlap_offset",
-      "label": "Sovrapposizione (mobile)",
-      "default": 60,
-      "min": 0,
-      "max": 100,
-      "step": 10,
-      "unit": "px",
-      "info": "Quanto i blocchi si sovrappongono all'immagine su mobile"
-    },
-    {
-      "type": "header",
-      "content": "📱 Layout Mobile Collezioni"
-    },
-    {
-      "type": "select",
-      "id": "mobile_layout",
-      "label": "Layout collezioni su mobile",
-      "default": "grid",
-      "options": [
-        {
-          "value": "grid",
-          "label": "Griglia 2x2"
+          "value": "landscape",
+          "label": "Paesaggio (4:3)"
         },
         {
-          "value": "scroll",
-          "label": "Scroll orizzontale"
-        },
-        {
-          "value": "stack",
-          "label": "Stack verticale"
-        },
-        {
-          "value": "minimal",
-          "label": "Minimalista"
+          "value": "wide",
+          "label": "Wide (16:9)"
         }
       ],
-      "info": "Scegli come visualizzare le collezioni su dispositivi mobili"
+      "default": "same"
     },
     {
-      "type": "header",
-      "content": "Stile e animazioni"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_text_shadow",
-      "label": "Abilita ombra testi",
-      "default": false,
-      "info": "Aggiunge un'ombra elegante a tutti i testi della sezione"
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Raggio bordi",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
     },
     {
       "type": "range",
       "id": "transition_duration",
       "label": "Durata transizione",
-      "default": 600,
       "min": 300,
-      "max": 1500,
+      "max": 1000,
       "step": 100,
+      "default": 600,
       "unit": "ms"
-    },
-    {
-      "type": "range",
-      "id": "card_border_radius",
-      "label": "Raggio bordi card",
-      "default": 8,
-      "min": 0,
-      "max": 20,
-      "step": 2,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Mobile settings"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_autoplay",
-      "label": "Abilita autoplay su mobile",
-      "default": false
-    },
-    {
-      "type": "range",
-      "id": "autoplay_duration",
-      "label": "Durata autoplay",
-      "default": 5,
-      "min": 3,
-      "max": 10,
-      "step": 1,
-      "unit": "s",
-      "info": "Solo per dispositivi mobile"
     },
     {
       "type": "header",
@@ -1777,146 +1491,144 @@
     {
       "type": "color",
       "id": "section_bg_color",
-      "label": "Colore sfondo sezione",
-      "default": "#F5F0E8"
-    },
-    {
-      "type": "header",
-      "content": "📱 Visibilità Responsive"
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
     },
     {
       "type": "checkbox",
-      "id": "hide_on_mobile",
+      "id": "nascondi_mobile",
       "label": "Nascondi su Mobile",
-      "info": "La sezione non sarà visibile su dispositivi mobili",
       "default": false
     },
     {
       "type": "checkbox",
-      "id": "hide_on_desktop",
+      "id": "nascondi_desktop",
       "label": "Nascondi su Desktop",
-      "info": "La sezione non sarà visibile su desktop",
       "default": false
-    },
-    {
-      "type": "header",
-      "content": "📏 Spacing Mobile"
     },
     {
       "type": "range",
       "id": "padding_top_mobile",
-      "label": "Padding superiore",
-      "default": 24,
+      "label": "Padding Top Mobile",
       "min": 0,
       "max": 100,
-      "step": 4,
+      "step": 1,
+      "default": 0,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "padding_bottom_mobile",
-      "label": "Padding inferiore",
-      "default": 24,
+      "label": "Padding Bottom Mobile",
       "min": 0,
       "max": 100,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_top_mobile",
-      "label": "Margine superiore",
-      "info": "Usa valori negativi per sovrapporre sezioni",
+      "step": 1,
       "default": 0,
-      "min": -100,
-      "max": 100,
-      "step": 4,
       "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "margin_bottom_mobile",
-      "label": "Margine inferiore",
-      "default": 0,
-      "min": -100,
-      "max": 100,
-      "step": 4,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "💻 Spacing Desktop"
     },
     {
       "type": "range",
       "id": "padding_top_desktop",
-      "label": "Padding superiore",
-      "default": 48,
+      "label": "Padding Top Desktop",
       "min": 0,
       "max": 200,
-      "step": 8,
+      "step": 2,
+      "default": 0,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "padding_bottom_desktop",
-      "label": "Padding inferiore",
-      "default": 48,
+      "label": "Padding Bottom Desktop",
       "min": 0,
       "max": 200,
-      "step": 8,
+      "step": 2,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "default": 0,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "margin_top_desktop",
-      "label": "Margine superiore",
-      "info": "Usa valori negativi per effetti di sovrapposizione",
-      "default": 0,
+      "label": "Margin Top Desktop",
       "min": -200,
       "max": 200,
-      "step": 8,
+      "step": 4,
+      "default": 0,
       "unit": "px"
     },
     {
       "type": "range",
       "id": "margin_bottom_desktop",
-      "label": "Margine inferiore",
-      "default": 0,
+      "label": "Margin Bottom Desktop",
       "min": -200,
       "max": 200,
-      "step": 8,
+      "step": 4,
+      "default": 0,
       "unit": "px"
     },
     {
-      "type": "header",
-      "content": "⚡ Opzioni Avanzate"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_smooth_transitions",
-      "label": "Abilita transizioni fluide",
-      "info": "Aggiunge animazioni smooth quando la sezione cambia dimensione",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_utility_functions",
-      "label": "Abilita funzioni utility",
-      "default": false,
-      "info": "Attiva le funzioni personalizzate di Fabindia Roma"
-    },
-    {
-      "type": "textarea",
-      "id": "utility_styles",
-      "label": "Stili utility personalizzati",
-      "info": "CSS aggiuntivo per le funzioni utility"
-    },
-    {
-      "type": "textarea",
-      "id": "utility_scripts",
-      "label": "Script utility personalizzati",
-      "info": "JavaScript aggiuntivo per le funzioni utility"
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Massima",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "none"
     }
   ],
   "blocks": [
@@ -1931,45 +1643,37 @@
         {
           "type": "image_picker",
           "id": "hero_image",
-          "label": "Immagine hero desktop"
+          "label": "Immagine desktop"
         },
         {
           "type": "image_picker",
           "id": "hero_image_mobile",
-          "label": "Immagine hero mobile",
-          "info": "Opzionale. Se non impostata, verrà usata l'immagine desktop"
+          "label": "Immagine mobile"
         },
         {
           "type": "range",
           "id": "overlay_opacity",
           "label": "Opacità overlay",
-          "default": 20,
           "min": 0,
           "max": 80,
           "step": 5,
+          "default": 20,
           "unit": "%"
-        },
-        {
-          "type": "header",
-          "content": "Contenuto Hero"
         },
         {
           "type": "textarea",
           "id": "hero_title",
-          "label": "Titolo hero",
-          "default": "Scopri la\nCollezione"
+          "label": "Titolo hero"
         },
         {
           "type": "text",
           "id": "hero_subtitle",
-          "label": "Sottotitolo hero",
-          "default": "Artigianato indiano per la tua casa"
+          "label": "Sottotitolo hero"
         },
         {
           "type": "select",
           "id": "text_alignment",
-          "label": "Allineamento testo",
-          "default": "text-center",
+          "label": "Allineamento",
           "options": [
             {
               "value": "text-left",
@@ -1983,12 +1687,13 @@
               "value": "text-right",
               "label": "Destra"
             }
-          ]
+          ],
+          "default": "text-center"
         },
         {
           "type": "color",
           "id": "hero_text_color",
-          "label": "Colore testo hero",
+          "label": "Colore testo",
           "default": "#FFFFFF"
         },
         {
@@ -1998,53 +1703,42 @@
         {
           "type": "image_picker",
           "id": "collection_image",
-          "label": "Immagine collezione"
+          "label": "Immagine card"
         },
         {
           "type": "text",
           "id": "collection_title",
-          "label": "Titolo collezione",
-          "default": "Abbigliamento"
+          "label": "Titolo"
         },
         {
           "type": "text",
           "id": "collection_subtitle",
-          "label": "Sottotitolo collezione",
-          "default": "Esplora"
+          "label": "Sottotitolo"
         },
         {
           "type": "url",
           "id": "collection_link",
-          "label": "Link collezione"
-        },
-        {
-          "type": "color",
-          "id": "collection_text_color",
-          "label": "Colore testo collezione",
-          "default": "#FFFFFF"
+          "label": "Link"
         },
         {
           "type": "header",
-          "content": "🎬 Animazione Prodotti"
+          "content": "Animazione Prodotti"
         },
         {
           "type": "checkbox",
           "id": "enable_product_animation",
-          "label": "Abilita slider prodotti",
-          "default": false,
-          "info": "Mostra le immagini dei prodotti della collezione come animazione"
+          "label": "Abilita slider",
+          "default": false
         },
         {
           "type": "collection",
           "id": "collection",
-          "label": "Seleziona collezione",
-          "info": "La collezione da cui prendere le immagini dei prodotti"
+          "label": "Collezione"
         },
         {
           "type": "select",
           "id": "animation_type",
-          "label": "Tipo di animazione",
-          "default": "fade",
+          "label": "Tipo animazione",
           "options": [
             {
               "value": "fade",
@@ -2053,126 +1747,37 @@
             {
               "value": "slide",
               "label": "Scorrimento"
-            },
-            {
-              "value": "zoom",
-              "label": "Zoom"
-            },
-            {
-              "value": "flip",
-              "label": "Rotazione"
             }
-          ]
+          ],
+          "default": "fade"
         },
         {
           "type": "range",
           "id": "animation_speed",
-          "label": "Velocità animazione",
-          "default": 3,
+          "label": "Velocità",
           "min": 1,
           "max": 10,
           "step": 0.5,
-          "unit": "s",
-          "info": "Durata di visualizzazione per ogni immagine"
+          "default": 3,
+          "unit": "s"
         },
         {
           "type": "range",
           "id": "max_products",
-          "label": "Numero massimo prodotti",
-          "default": 6,
+          "label": "Max prodotti",
           "min": 2,
-          "max": 12,
+          "max": 10,
           "step": 1,
-          "info": "Quanti prodotti mostrare nell'animazione"
-        },
-        {
-          "type": "select",
-          "id": "image_format",
-          "label": "Formato immagini",
-          "default": "square",
-          "options": [
-            {
-              "value": "square",
-              "label": "Quadrato (1:1)"
-            },
-            {
-              "value": "portrait",
-              "label": "Ritratto (3:4)"
-            },
-            {
-              "value": "landscape",
-              "label": "Paesaggio (16:9)"
-            }
-          ]
+          "default": 6
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Hero con Collezioni",
-      "category": "Fabindia Custom",
-      "settings": {
-        "default_title": "Benvenuti da\nFabindia Roma",
-        "default_subtitle": "Scopri l'autentico artigianato indiano",
-        "default_text_color": "#FFFFFF",
-        "cta_text": "Scopri di più",
-        "cta_style": "btn-solid",
-        "cta_bg_color": "#C8553D",
-        "cta_text_color": "#FFFFFF",
-        "link_type": "button",
-        "content_vertical_position": 50,
-        "collection_block_format": "square",
-        "enable_text_shadow": true,
-        "half_overlap": true,
-        "overlap_offset": 100,
-        "mobile_layout": "grid"
-      },
-      "blocks": [
-        {
-          "type": "collection_block",
-          "settings": {
-            "hero_title": "Abbigliamento\nArtigianale",
-            "hero_subtitle": "Tessuti naturali e design senza tempo",
-            "collection_title": "Abbigliamento",
-            "collection_subtitle": "Esplora",
-            "enable_product_animation": false,
-            "animation_type": "fade",
-            "animation_speed": 3,
-            "max_products": 6
-          }
-        },
-        {
-          "type": "collection_block",
-          "settings": {
-            "hero_title": "Accessori\nUnici",
-            "hero_subtitle": "Dettagli che fanno la differenza",
-            "collection_title": "Accessori",
-            "collection_subtitle": "Scopri",
-            "enable_product_animation": false,
-            "animation_type": "slide",
-            "animation_speed": 2.5,
-            "max_products": 8
-          }
-        },
-        {
-          "type": "collection_block",
-          "settings": {
-            "hero_title": "Casa\n& Living",
-            "hero_subtitle": "Trasforma i tuoi spazi con stile",
-            "collection_title": "Casa",
-            "collection_subtitle": "Arreda",
-            "enable_product_animation": false,
-            "animation_type": "zoom",
-            "animation_speed": 4,
-            "max_products": 5
-          }
-        }
-      ]
+      "name": "Hero Interactive",
+      "category": "Fabindia custom"
     }
-  ],
-  "disabled_on": {
-    "groups": ["footer", "header", "custom.popups"]
-  }
+  ]
 }
 {% endschema %}

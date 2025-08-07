@@ -81,11 +81,73 @@
         "parallax": true,
         "parallax_direction": "top"
       }
+    },
+    "advanced_faq_z4Ewdp": {
+      "type": "advanced-faq",
+      "blocks": {
+        "faq_djHVPY": {
+          "type": "faq",
+          "settings": {
+            "question": "Quali sono i tempi di spedizione?",
+            "answer": "<p>Consegniamo in tutta Italia in 2-3 giorni lavorativi. Per ordini superiori a €100 la spedizione è gratuita.</p>",
+            "initially_open": true
+          }
+        },
+        "faq_W4GzV4": {
+          "type": "faq",
+          "settings": {
+            "question": "I tessuti sono naturali?",
+            "answer": "<p>Utilizziamo esclusivamente tessuti naturali di alta qualità: cotone puro, seta, lana e lino provenienti dall'India.</p>",
+            "initially_open": false
+          }
+        },
+        "faq_NxFiph": {
+          "type": "faq",
+          "settings": {
+            "question": "Come posso curare i miei capi?",
+            "answer": "<p>Ogni capo richiede cure specifiche. Consigliamo lavaggio delicato a 30°, asciugatura all'ombra e stiratura a bassa temperatura.</p>",
+            "initially_open": false
+          }
+        }
+      },
+      "block_order": [
+        "faq_djHVPY",
+        "faq_W4GzV4",
+        "faq_NxFiph"
+      ],
+      "name": "FAQ Elegante",
+      "settings": {
+        "section_title": "Domande Frequenti su Collezione {{ collection.title }}",
+        "section_subtitle": "<p>Trova le risposte alle domande più comuni sui prodotti di questa linea</p>",
+        "background_color": "#fefefe",
+        "title_color": "#3e3e3e",
+        "subtitle_color": "#b5a397",
+        "question_color": "#3e3e3e",
+        "answer_color": "#3e3e3e",
+        "accent_color": "#c33a32",
+        "border_color": "#e5ddd5",
+        "layout_style": "minimal",
+        "columns_desktop": "1",
+        "enable_accordion": true,
+        "enable_schema": true,
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 30,
+        "padding_bottom_mobile": 30,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "1000px"
+      }
     }
   },
   "order": [
     "seo_description_fnKr6T",
     "main-collection",
-    "collection-header"
+    "collection-header",
+    "advanced_faq_z4Ewdp"
   ]
 }
