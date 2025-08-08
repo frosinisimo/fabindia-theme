@@ -114,6 +114,7 @@
     padding: 100px;
     background: {{ section.settings.content_background }};
     position: relative;
+    z-index: 1;
   }
 
   /* Numero grande decorativo */
@@ -127,6 +128,8 @@
     opacity: 0.1;
     line-height: 1;
     font-family: 'Georgia', serif;
+    pointer-events: none;
+    z-index: 0;
   }
 
   #shopify-section-{{ section.id }} .fr-hero-name {
@@ -146,11 +149,15 @@
     line-height: 1.8;
     margin: 0 0 40px;
     max-width: 500px;
+    position: relative;
+    z-index: 1;
   }
 
   /* Dettagli HERO */
   #shopify-section-{{ section.id }} .fr-hero-details {
     margin-top: 40px;
+    position: relative;
+    z-index: 1;
   }
 
   #shopify-section-{{ section.id }} .fr-hero-detail {
@@ -159,20 +166,9 @@
     margin-bottom: 20px;
     font-size: 18px;
     color: {{ section.settings.detail_color }};
-    opacity: 0;
-    animation: slideInLeft 0.8s ease forwards;
-  }
-
-  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-detail:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-
-  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-detail:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-
-  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-detail:nth-child(3) {
-    animation-delay: 0.3s;
+    opacity: 1;
+    position: relative;
+    z-index: 1;
   }
 
   #shopify-section-{{ section.id }} .fr-hero-icon {
@@ -209,6 +205,7 @@
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
+    z-index: 2;
   }
 
   #shopify-section-{{ section.id }} .fr-hero-cta-individual::after {
@@ -233,6 +230,8 @@
     margin-top: 50px;
     padding-top: 40px;
     border-top: 1px solid rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 1;
   }
 
   #shopify-section-{{ section.id }} .fr-hero-step {
@@ -335,17 +334,6 @@
     }
   }
 
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
   /* Responsive Design Mobile */
   @media only screen and (max-width: 768px) {
     #shopify-section-{{ section.id }} .fr-hero-title {
@@ -391,6 +379,7 @@
       font-size: 100px;
       top: 30px;
       right: 30px;
+      pointer-events: none;
     }
 
     #shopify-section-{{ section.id }} .fr-hero-name {
