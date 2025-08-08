@@ -3,7 +3,8 @@
   data-section-type="hero-collections"
   class="fr-hero-section">
 
-  {%- if section.blocks.size > 0 -%}
+  {%- comment -%} Always show hero if there's default media, regardless of blocks {%- endcomment -%}
+  {%- if section.settings.default_image != blank or section.settings.default_video != blank or section.blocks.size > 0 -%}
     {%- assign has_images = false -%}
     {%- for block in section.blocks -%}
       {%- if block.type == 'collection_block' and block.settings.hero_image != blank -%}
@@ -269,11 +270,20 @@
             margin-top: calc(-1 * var(--overlap-desktop));
           }
           
-          /* Ensure proper pointer events */
+          /* Ensure proper pointer events and z-index */
           #shopify-section-{{ section.id }} .fr-collection-card {
             pointer-events: auto;
             position: relative;
             z-index: 20;
+          }
+          
+          #shopify-section-{{ section.id }} .fr-hero-media {
+            pointer-events: none; /* Allow hover through to collections */
+          }
+          
+          #shopify-section-{{ section.id }} .fr-hero-link-overlay,
+          #shopify-section-{{ section.id }} .fr-hero-cta {
+            pointer-events: auto; /* Keep links clickable */
           }
         }
       {%- endif -%}
@@ -403,6 +413,7 @@
 
       #shopify-section-{{ section.id }} .fr-collection-card:hover {
         transform: translateY(-8px);
+        z-index: 25; /* Ensure hovered card is on top */
       }
 
       #shopify-section-{{ section.id }} .fr-collection-link {
@@ -522,13 +533,55 @@
 
       /* Collection Content */
       #shopify-section-{{ section.id }} .fr-collection-content {
-        {%- if section.settings.collections_layout == 'flex' -%}
-          padding: {% if section.settings.collection_card_width < 280 %}16px{% else %}24px{% endif %};
-        {%- else -%}
-          padding: 20px;
+        {%- if section.settings.collection_content_position == 'below' -%}
+          {%- if section.settings.collections_layout == 'flex' -%}
+            padding: {% if section.settings.collection_card_width < 280 %}16px{% else %}24px{% endif %};
+          {%- else -%}
+            padding: 20px;
+          {%- endif -%}
+          background: linear-gradient(to bottom, #fff, #fafafa);
         {%- endif -%}
-        background: linear-gradient(to bottom, #fff, #fafafa);
         text-align: center;
+      }
+      
+      /* Content Overlay Styles */
+      #shopify-section-{{ section.id }} .fr-collection-content.fr-content-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: transparent;
+        z-index: 3;
+        padding: 20px;
+        pointer-events: none; /* Don't block hover on card */
+      }
+      
+      #shopify-section-{{ section.id }} .fr-collection-content.fr-content-overlay * {
+        pointer-events: auto; /* But allow clicks on content */
+      }
+      
+      #shopify-section-{{ section.id }} .fr-collection-overlay-gradient {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70%;
+        background: linear-gradient(to bottom, 
+          rgba(0,0,0,0) 0%, 
+          rgba(0,0,0,0.4) 50%,
+          rgba(0,0,0,0.7) 100%);
+        z-index: 2;
+        pointer-events: none;
+      }
+      
+      #shopify-section-{{ section.id }} .fr-content-overlay .fr-collection-title {
+        color: #FFFFFF;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      }
+      
+      #shopify-section-{{ section.id }} .fr-content-overlay .fr-collection-subtitle {
+        color: rgba(255,255,255,0.9);
+        text-shadow: 0 1px 4px rgba(0,0,0,0.4);
       }
 
       #shopify-section-{{ section.id }} .fr-collection-title {
@@ -538,7 +591,9 @@
           font-size: clamp(18px, 2vw, 24px);
         {%- endif -%}
         font-weight: 600;
-        color: #3E3E3E;
+        {%- if section.settings.collection_content_position == 'below' -%}
+          color: #3E3E3E;
+        {%- endif -%}
         margin: 0 0 8px;
         letter-spacing: -0.02em;
         line-height: 1.2;
@@ -550,7 +605,9 @@
         {%- else -%}
           font-size: clamp(12px, 1.5vw, 15px);
         {%- endif -%}
-        color: #B5A397;
+        {%- if section.settings.collection_content_position == 'below' -%}
+          color: #B5A397;
+        {%- endif -%}
         letter-spacing: 0.08em;
         text-transform: uppercase;
         font-weight: 500;
@@ -633,6 +690,15 @@
 
         #shopify-section-{{ section.id }} .fr-collection-content {
           padding: 16px;
+        }
+        
+        /* Mobile overlay adjustments */
+        #shopify-section-{{ section.id }} .fr-collection-content.fr-content-overlay {
+          padding: 12px;
+        }
+        
+        #shopify-section-{{ section.id }} .fr-collection-overlay-gradient {
+          height: 80%;
         }
 
         #shopify-section-{{ section.id }} .fr-collection-title {
@@ -727,7 +793,8 @@
         const section = document.querySelector(`[data-section-id="${sectionId}"]`);
         if (!section) return;
 
-        const isMobile = window.innerWidth <= 768;
+        let isMobile = window.innerWidth <= 768;
+        let hoverInitialized = false;
 
         // Product Slider Animation
         function initProductSliders() {
@@ -749,8 +816,9 @@
         }
 
         // Hero Image Change on Hover (Desktop only)
-        function setupHoverInteractions() {
+        function setupHoverInteractions(forceReinit = false) {
           if (isMobile) return;
+          if (hoverInitialized && !forceReinit) return;
 
           // Query elements fresh each time
           const currentCards = section.querySelectorAll('.fr-collection-card');
@@ -758,9 +826,7 @@
           const currentDefaultMedia = section.querySelector('[data-media-id="default"]');
           
           if (currentCards.length === 0) {
-            // If cards not ready, retry
-            setTimeout(setupHoverInteractions, 200);
-            return;
+            return; // No cards to setup
           }
           
           currentCards.forEach(card => {
@@ -770,22 +836,34 @@
             if (!targetMedia) return;
             
             // Clean way to add event listeners without duplicates
-            if (!card.hasAttribute('data-hover-initialized')) {
-              card.setAttribute('data-hover-initialized', 'true');
+            if (!card.hasAttribute('data-hover-initialized') || forceReinit) {
+              // Remove old listeners if reinitializing
+              if (forceReinit && card._mouseenterHandler) {
+                card.removeEventListener('mouseenter', card._mouseenterHandler);
+                card.removeEventListener('mouseleave', card._mouseleaveHandler);
+              }
               
-              card.addEventListener('mouseenter', function() {
+              // Create new handlers
+              card._mouseenterHandler = function() {
                 currentMediaElements.forEach(media => media.classList.remove('active'));
                 targetMedia.classList.add('active');
-              });
-
-              card.addEventListener('mouseleave', function() {
+              };
+              
+              card._mouseleaveHandler = function() {
                 if (currentDefaultMedia) {
                   currentMediaElements.forEach(media => media.classList.remove('active'));
                   currentDefaultMedia.classList.add('active');
                 }
-              });
+              };
+              
+              // Add new listeners
+              card.addEventListener('mouseenter', card._mouseenterHandler);
+              card.addEventListener('mouseleave', card._mouseleaveHandler);
+              card.setAttribute('data-hover-initialized', 'true');
             }
           });
+          
+          hoverInitialized = true;
         }
 
         // Initialize Product Sliders
@@ -801,55 +879,85 @@
             const mediaContainer = section.querySelector('.fr-hero-media-container');
             
             if (heroWrapper && collectionsContainer && mediaContainer) {
-              const collectionsHeight = collectionsContainer.offsetHeight;
-              const overlap = {{ section.settings.overlap_offset_desktop }};
-              const viewportHeight = window.innerHeight;
-              
-              // Calculate hero height accounting for overlap
-              const heroHeight = viewportHeight - (collectionsHeight - overlap);
-              
-              // Apply the calculated height
-              mediaContainer.style.height = `${heroHeight}px`;
-              heroWrapper.style.height = `${viewportHeight}px`;
+              // Use requestAnimationFrame to ensure layout is calculated correctly
+              requestAnimationFrame(() => {
+                const collectionsHeight = collectionsContainer.offsetHeight;
+                const overlap = {{ section.settings.overlap_offset_desktop }};
+                const viewportHeight = window.innerHeight;
+                
+                // Calculate hero height accounting for overlap
+                const heroHeight = viewportHeight - (collectionsHeight - overlap);
+                
+                // Apply the calculated height
+                mediaContainer.style.height = `${heroHeight}px`;
+                heroWrapper.style.height = `${viewportHeight}px`;
+                
+                // Setup hover with multiple attempts to ensure it works
+                const attemptHoverSetup = (attempts = 0) => {
+                  if (attempts < 5) {
+                    setTimeout(() => {
+                      setupHoverInteractions(true);
+                      // Verify it worked
+                      const cards = section.querySelectorAll('.fr-collection-card[data-hover-initialized="true"]');
+                      if (cards.length === 0 && section.querySelectorAll('.fr-collection-card').length > 0) {
+                        attemptHoverSetup(attempts + 1);
+                      }
+                    }, 200 * (attempts + 1));
+                  }
+                };
+                
+                attemptHoverSetup();
+              });
             }
-            
-            // Then setup hover interactions after DOM is settled
-            setTimeout(setupHoverInteractions, 100);
           };
           
-          // Use both DOMContentLoaded and load to ensure everything is ready
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFullscreenWithCollections);
+          // Run when DOM and all resources are loaded
+          if (document.readyState === 'complete') {
+            setTimeout(initFullscreenWithCollections, 100);
           } else {
-            // DOM already loaded, wait for images
-            if (document.readyState === 'complete') {
-              initFullscreenWithCollections();
-            } else {
-              window.addEventListener('load', initFullscreenWithCollections);
-            }
+            window.addEventListener('load', () => {
+              setTimeout(initFullscreenWithCollections, 100);
+            });
           }
+          
+          // Also run on first interaction as backup
+          let firstInteraction = false;
+          const handleFirstInteraction = () => {
+            if (!firstInteraction) {
+              firstInteraction = true;
+              initFullscreenWithCollections();
+            }
+          };
+          document.addEventListener('mousemove', handleFirstInteraction, { once: true });
           
           // Handle resize
           let resizeTimer;
           window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(initFullscreenWithCollections, 100);
+            resizeTimer = setTimeout(() => {
+              isMobile = window.innerWidth <= 768;
+              if (!isMobile) {
+                initFullscreenWithCollections();
+              }
+            }, 100);
           });
+        } else {
+          // Mobile - no hover needed
         }
         {%- else -%}
         // Normal initialization
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', setupHoverInteractions);
-        } else {
+        if (document.readyState === 'complete') {
           setupHoverInteractions();
+        } else {
+          window.addEventListener('load', () => setupHoverInteractions());
         }
         {%- endif -%}
 
-        // Reinitialize on resize (debounced)
-        let resizeTimer;
+        // Global resize handler for mobile/desktop switch
+        let globalResizeTimer;
         window.addEventListener('resize', () => {
-          clearTimeout(resizeTimer);
-          resizeTimer = setTimeout(() => {
+          clearTimeout(globalResizeTimer);
+          globalResizeTimer = setTimeout(() => {
             const newIsMobile = window.innerWidth <= 768;
             if (newIsMobile !== isMobile && !window.Shopify?.designMode) {
               location.reload();
@@ -859,9 +967,8 @@
       })();
     </script>
     {%- endif -%}
-  {%- endif -%}
-
-  {%- if section.blocks.size == 0 -%}
+  {%- else -%}
+    {%- comment -%} No default media and no blocks {%- endcomment -%}
     <div class="placeholder-noblocks" style="padding: 80px 20px; text-align: center; background: {{ section.settings.section_bg_color }};">
       <h2>{{ 'home_page.onboarding.no_content' | t }}</h2>
     </div>
@@ -1270,6 +1377,23 @@
       "content": "Layout Collezioni"
     },
     {
+      "type": "select",
+      "id": "collection_content_position",
+      "label": "Posizione testo collezioni",
+      "options": [
+        {
+          "value": "below",
+          "label": "Sotto l'immagine"
+        },
+        {
+          "value": "overlay",
+          "label": "Sovrapposto all'immagine"
+        }
+      ],
+      "default": "below",
+      "info": "Scegli se mostrare titolo e sottotitolo sopra o sotto l'immagine"
+    },
+    {
       "type": "checkbox",
       "id": "half_overlap",
       "label": "Sovrapponi collezioni",
@@ -1280,9 +1404,9 @@
       "id": "overlap_offset_desktop",
       "label": "Sovrapposizione Desktop",
       "min": 0,
-      "max": 2000,
-      "step": 25,
-      "default": 100,
+      "max": 200,
+      "step": 10,
+      "default": 120,
       "unit": "px",
       "info": "Quanto le collezioni si sovrappongono all'hero su desktop"
     },
@@ -1291,8 +1415,8 @@
       "id": "overlap_offset_mobile",
       "label": "Sovrapposizione Mobile",
       "min": 0,
-      "max": 300,
-      "step": 10,
+      "max": 100,
+      "step": 5,
       "default": 60,
       "unit": "px",
       "info": "Quanto le collezioni si sovrappongono all'hero su mobile"

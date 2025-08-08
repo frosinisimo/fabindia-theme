@@ -1,0 +1,743 @@
+<!-- sections/fr-usp-hero.liquid -->
+{%- liquid
+  assign section_id = section.id
+  assign bg_color = section.settings.bg_color
+  assign headline_color = section.settings.headline_color
+  assign subtitle_color = section.settings.subtitle_color
+-%}
+
+<style>
+  #shopify-section-{{ section_id }} {
+    background-color: {{ bg_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-container {
+    padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-headline {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    line-height: 1.2;
+    color: {{ headline_color }};
+    margin: 0 0 12px 0;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-subtitle {
+    font-size: 18px;
+    color: {{ subtitle_color }};
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-card {
+    text-align: center;
+    padding: 32px 24px;
+    background: {{ section.settings.card_bg_color }};
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: {{ section.settings.icon_color }};
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-card-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 500;
+    color: {{ section.settings.card_title_color }};
+    margin: 0 0 12px 0;
+    letter-spacing: -0.01em;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-card-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: {{ section.settings.card_text_color }};
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-trust {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  #shopify-section-{{ section_id }} .fr-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: {{ section.settings.trust_text_color }};
+    opacity: 0.8;
+  }
+
+  #shopify-section-{{ section_id }} .fr-trust-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-cta {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-cta-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section_id }} .fr-usp-microcopy {
+    font-size: 13px;
+    color: {{ section.settings.microcopy_color }};
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+
+  #shopify-section-{{ section_id }} .btn {
+    min-width: 180px;
+  }
+
+  #shopify-section-{{ section_id }} .btn--secondary {
+    background: transparent;
+    border: 1px solid {{ section.settings.secondary_btn_color }};
+    color: {{ section.settings.secondary_btn_color }};
+  }
+
+  #shopify-section-{{ section_id }} .fr-cta-link {
+    color: {{ section.settings.link_color }};
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.2s ease;
+  }
+
+  #shopify-section-{{ section_id }} .fr-cta-link:hover {
+    opacity: 0.7;
+  }
+
+  /* Mobile styles */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section_id }} .fr-usp-headline {
+      font-size: 28px;
+    }
+
+    #shopify-section-{{ section_id }} .fr-usp-subtitle {
+      font-size: 16px;
+    }
+
+    #shopify-section-{{ section_id }} .fr-usp-cards {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    #shopify-section-{{ section_id }} .fr-usp-card {
+      padding: 24px 20px;
+    }
+
+    #shopify-section-{{ section_id }} .fr-usp-trust {
+      gap: 24px;
+    }
+
+    #shopify-section-{{ section_id }} .fr-trust-item {
+      font-size: 13px;
+    }
+  }
+
+  /* Desktop optimizations */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section_id }} {
+      max-width: {{ section.settings.max_dimensione }};
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section_id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+    }
+
+    {% if section.settings.nascondi_desktop %}
+      #shopify-section-{{ section_id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section_id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+    }
+
+    {% if section.settings.nascondi_mobile %}
+      #shopify-section-{{ section_id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+</style>
+
+<section class="fr-usp-section">
+  <div class="fr-usp-container">
+    {% if section.settings.headline != blank or section.settings.subtitle != blank %}
+      <div class="fr-usp-header">
+        {% if section.settings.headline != blank %}
+          <h2 class="fr-usp-headline">{{ section.settings.headline }}</h2>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+          <p class="fr-usp-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="fr-usp-cards">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'usp_card' %}
+            <div class="fr-usp-card" {{ block.shopify_attributes }}>
+              <div class="fr-usp-icon">
+                {% case block.settings.icon %}
+                  {% when 'needle' %}
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 3L5 21l1.5-7L13 7.5L16.5 11l3.5-3.5L19 3z"/>
+                      <circle cx="12" cy="12" r="1"/>
+                    </svg>
+                  {% when 'leaf' %}
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M17 8C17 10.6522 15.9464 13.1957 14.0711 15.0711C12.1957 16.9464 9.65219 18 7 18C7 15.3478 8.05357 12.8043 9.92893 10.9289C11.8043 9.05357 14.3478 8 17 8Z"/>
+                      <path d="M7 18C7 20.21 8.79 22 11 22"/>
+                      <path d="M17 8C17 5.79 15.21 4 13 4"/>
+                      <path d="M3 3L21 21"/>
+                    </svg>
+                  {% when 'star' %}
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  {% when 'map' %}
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  {% when 'heart' %}
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                    </svg>
+                  {% when 'shield' %}
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                {% endcase %}
+              </div>
+              {% if block.settings.title != blank %}
+                <h3 class="fr-usp-card-title">{{ block.settings.title }}</h3>
+              {% endif %}
+              {% if block.settings.text != blank %}
+                <p class="fr-usp-card-text">{{ block.settings.text }}</p>
+              {% endif %}
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_trust_badges %}
+      <div class="fr-usp-trust">
+        {% if section.settings.trust_item_1 != blank %}
+          <div class="fr-trust-item">
+            <svg class="fr-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+            <span>{{ section.settings.trust_item_1 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_2 != blank %}
+          <div class="fr-trust-item">
+            <svg class="fr-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+            <span>{{ section.settings.trust_item_2 }}</span>
+          </div>
+        {% endif %}
+        {% if section.settings.trust_item_3 != blank %}
+          <div class="fr-trust-item">
+            <svg class="fr-trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+            <span>{{ section.settings.trust_item_3 }}</span>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="fr-usp-cta">
+      <div class="fr-usp-cta-wrapper">
+        {% if section.settings.cta_text != blank and section.settings.cta_link != blank %}
+          <a href="{{ section.settings.cta_link }}" class="btn btn--large">
+            {{ section.settings.cta_text }}
+          </a>
+        {% endif %}
+        {% if section.settings.secondary_cta_text != blank and section.settings.secondary_cta_link != blank %}
+          {% if section.settings.secondary_cta_style == 'button' %}
+            <a href="{{ section.settings.secondary_cta_link }}" class="btn btn--large btn--secondary">
+              {{ section.settings.secondary_cta_text }}
+            </a>
+          {% else %}
+            <a href="{{ section.settings.secondary_cta_link }}" class="fr-cta-link">
+              {{ section.settings.secondary_cta_text }}
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
+      {% if section.settings.microcopy != blank %}
+        <p class="fr-usp-microcopy">{{ section.settings.microcopy }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "USP Hero Fabindia",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto principale"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Titolo principale",
+      "default": "Artigianalità indiana, design italiano"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Materiali selezionati, tecniche artigiane e cura sartoriale: scopri le nostre collezioni"
+    },
+    {
+      "type": "header",
+      "content": "Trust badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Mostra elementi trust",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_item_1",
+      "label": "Trust item 1",
+      "default": "Negozio fisico a Roma"
+    },
+    {
+      "type": "text",
+      "id": "trust_item_2",
+      "label": "Trust item 2",
+      "default": "Spedizione gratuita sopra 150€"
+    },
+    {
+      "type": "text",
+      "id": "trust_item_3",
+      "label": "Trust item 3",
+      "default": "Resi gratuiti in 30 giorni"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA primaria",
+      "default": "Scopri la Collezione"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA primaria"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_text",
+      "label": "Testo CTA secondaria",
+      "default": "La nostra storia"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_link",
+      "label": "Link CTA secondaria"
+    },
+    {
+      "type": "select",
+      "id": "secondary_cta_style",
+      "label": "Stile CTA secondaria",
+      "options": [
+        {
+          "value": "link",
+          "label": "Link testuale"
+        },
+        {
+          "value": "button",
+          "label": "Bottone secondario"
+        }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "text",
+      "id": "microcopy",
+      "label": "Microcopy footer",
+      "default": "Consegna in 2-4 giorni lavorativi"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Colore sottotitolo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Sfondo card",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Colore titoli card",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Colore testo card",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Colore icone",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "trust_text_color",
+      "label": "Colore trust badges",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "secondary_btn_color",
+      "label": "Colore bottone second.",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Colore link",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "microcopy_color",
+      "label": "Colore microcopy",
+      "default": "#B5A397"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi sezione da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi sezione da desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 60,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 60,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Massima Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "usp_card",
+      "name": "USP Card",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icona",
+          "options": [
+            {
+              "value": "needle",
+              "label": "Ago e filo"
+            },
+            {
+              "value": "leaf",
+              "label": "Foglia"
+            },
+            {
+              "value": "star",
+              "label": "Stella"
+            },
+            {
+              "value": "map",
+              "label": "Mappa"
+            },
+            {
+              "value": "heart",
+              "label": "Cuore"
+            },
+            {
+              "value": "shield",
+              "label": "Scudo"
+            }
+          ],
+          "default": "needle"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Artigianalità certificata"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Descrizione",
+          "default": "Ogni capo realizzato a mano con tecniche tradizionali"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "USP Hero Fabindia",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "usp_card",
+          "settings": {
+            "icon": "needle",
+            "title": "Artigianalità certificata",
+            "text": "Ogni capo è realizzato a mano con tecniche tradizionali e controlli qualità in loco"
+          }
+        },
+        {
+          "type": "usp_card",
+          "settings": {
+            "icon": "leaf",
+            "title": "Materiali sostenibili",
+            "text": "Fibre naturali e processi responsabili per un guardaroba che rispetta l'ambiente"
+          }
+        },
+        {
+          "type": "usp_card",
+          "settings": {
+            "icon": "star",
+            "title": "Design contemporaneo",
+            "text": "Tagli moderni pensati a Roma, ispirati al patrimonio sartoriale indiano"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

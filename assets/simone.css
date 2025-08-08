@@ -1,4 +1,18 @@
 /* STILI GENERALI  */
+
+
+.fabindia-products-grid{
+
+    h3.fabindia-product-title {
+    font-family: 'Inter'!important;
+    text-transform: capitalize!important;
+}
+
+}
+
+
+
+
 .fr-color-name {
     -webkit-line-clamp: var(--line-clamp-count, 1) !important;
     -webkit-box-orient: vertical !important;
@@ -6,6 +20,7 @@
     overflow: hidden !important;
     margin-bottom: 0px !important;
 }
+
 
 .fr-hero-title {
     font-weight: 400!important;
@@ -95,6 +110,7 @@ button.btn.btn--full.add-to-cart.disabled:hover {
 /* DESKTOP VISTA */
 @media only screen and (min-width: 590px) {
 
+
     .fr-color-title {
     font-size: 15px;
     font-weight: 400;
@@ -153,7 +169,7 @@ button.btn.btn--full.add-to-cart.disabled:hover {
     .rte .btn,
     .shopify-payment-button .shopify-payment-button__button--unbranded {
         font-size: max(calc(var(--typeBaseSize) - 4px), 15px);
-        padding: 15px 17px !important;
+        padding: 17px 35px !important;
     }
 }
 
