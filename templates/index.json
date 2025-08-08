@@ -1183,6 +1183,225 @@
         "margin_bottom_desktop": 0,
         "max_dimensione": "1200px"
       }
+    },
+    "lavorazioni_kKpWme": {
+      "type": "lavorazioni",
+      "blocks": {
+        "lavorazione_JWETVt": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Block Printing",
+            "descrizione_breve": "Antica tecnica di stampa manuale con blocchi di legno intagliati",
+            "descrizione_completa": "Il block printing è una delle tecniche più antiche di stampa tessile, praticata in India da oltre 500 anni. Ogni blocco di legno viene intagliato a mano da maestri artigiani. La precisione richiesta è millimetrica: ogni colore necessita di un passaggio separato e l'allineamento deve essere perfetto.",
+            "image": "shopify://shop_images/amazzonia3_e9b78322-ec20-48eb-8913-d6e84e36c0d1.jpg",
+            "tempo": "6-8 ore",
+            "show_details": true,
+            "dettaglio_1": "Blocchi secolari tramandati",
+            "dettaglio_2": "Colori vegetali naturali",
+            "dettaglio_3": "Ogni pezzo è irripetibile",
+            "show_process": true,
+            "step_1": "Selezione e intaglio dei blocchi di legno di teak",
+            "step_2": "Preparazione dei colori con pigmenti naturali",
+            "step_3": "Stampa manuale su tessuto con allineamento perfetto"
+          }
+        },
+        "lavorazione_qVwn3N": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Trapuntatura",
+            "descrizione_breve": "Lavorazione reversibile iconica che richiede 8-10 ore per giacca",
+            "descrizione_completa": "La trapuntatura è la nostra lavorazione più iconica. Ogni giacca richiede dalle 8 alle 10 ore di lavoro manuale. La tecnica reversibile permette di avere due capi in uno, con cuciture perfette su entrambi i lati. Una maestria che in Europa nessuno sa più eseguire.",
+            "tempo": "8-10 ore",
+            "show_details": true,
+            "dettaglio_1": "Completamente reversibile",
+            "dettaglio_2": "Cuciture a mano millimetriche",
+            "dettaglio_3": "Imbottitura naturale",
+            "show_process": true,
+            "step_1": "Taglio manuale dei tessuti con precisione sartoriale",
+            "step_2": "Assemblaggio e imbottitura con cotone naturale",
+            "step_3": "Trapuntatura manuale punto per punto"
+          }
+        },
+        "lavorazione_T4hiqF": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Ricamo",
+            "descrizione_breve": "Arte millenaria che richiede 3-4 giorni per completare un capo",
+            "descrizione_completa": "I nostri ricami sono realizzati interamente a mano da artigiani che hanno imparato quest'arte dai loro padri. Ogni ricamo richiede dai 3 ai 4 giorni di lavoro continuo. La precisione e la pazienza richieste rendono ogni pezzo un'opera d'arte indossabile.",
+            "tempo": "3-4 giorni",
+            "show_details": true,
+            "dettaglio_1": "Fili di seta e cotone pregiati",
+            "dettaglio_2": "Disegni esclusivi Fabindia",
+            "dettaglio_3": "Tecniche tradizionali secolari",
+            "show_process": true,
+            "step_1": "Trasferimento del disegno sul tessuto",
+            "step_2": "Selezione dei fili e dei colori",
+            "step_3": "Ricamo manuale con tecniche tradizionali"
+          }
+        },
+        "lavorazione_9PEbX9": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Block Printing",
+            "descrizione_breve": "Antica tecnica di stampa manuale con blocchi di legno intagliati",
+            "descrizione_completa": "Il block printing è una delle tecniche più antiche di stampa tessile, praticata in India da oltre 500 anni. Ogni blocco di legno viene intagliato a mano da maestri artigiani, e ogni colore richiede un passaggio separato.",
+            "tempo": "8-10 ore",
+            "show_details": true,
+            "dettaglio_1": "Blocchi intagliati a mano",
+            "dettaglio_2": "Colori naturali vegetali",
+            "dettaglio_3": "Ogni pezzo è unico",
+            "show_process": true,
+            "step_1": "Intaglio manuale dei blocchi di legno",
+            "step_2": "Preparazione dei colori naturali",
+            "step_3": "Stampa manuale con precisione millimetrica"
+          }
+        }
+      },
+      "block_order": [
+        "lavorazione_JWETVt",
+        "lavorazione_qVwn3N",
+        "lavorazione_T4hiqF",
+        "lavorazione_9PEbX9"
+      ],
+      "name": "Showcase Lavorazioni",
+      "settings": {
+        "show_header": true,
+        "title": "Le Nostre Lavorazioni",
+        "subtitle": "Tecniche artigianali secolari che richiedono maestria, pazienza e passione",
+        "show_cta": true,
+        "cta_text": "Scopri le Collezioni",
+        "cta_link": "shopify://pages/privacy-policy",
+        "background_color": "#fefefe",
+        "title_color": "#3e3e3e",
+        "subtitle_color": "#b5a397",
+        "card_background": "#fefefe",
+        "card_title_color": "#3e3e3e",
+        "card_text_color": "#3e3e3e",
+        "detail_color": "#b5a397",
+        "icon_color": "#c33a32",
+        "tempo_background": "#c33a32",
+        "tempo_color": "#fefefe",
+        "cta_background": "#3e3e3e",
+        "cta_color": "#fefefe",
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top_desktop": 80,
+        "padding_bottom_desktop": 80,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "1200px"
+      }
+    },
+    "lavorazioni_hero_PJtxfU": {
+      "type": "lavorazioni-hero",
+      "blocks": {
+        "lavorazione_gY7g3H": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Block Printing",
+            "descrizione": "Un'arte millenaria che trasforma il tessuto in un capolavoro. Ogni blocco di legno viene intagliato a mano da maestri artigiani che hanno ereditato questa tecnica dai loro padri. La precisione richiesta è millimetrica: ogni colore necessita di un passaggio separato.",
+            "image": "shopify://shop_images/amazzonia1.jpg",
+            "tempo": "6-8 ore per metro",
+            "show_details": true,
+            "dettaglio_1": "Blocchi di teak secolari tramandati di generazione",
+            "dettaglio_2": "Pigmenti vegetali naturali estratti da piante e minerali",
+            "dettaglio_3": "Ogni stampa è unica, con piccole imperfezioni che la rendono preziosa",
+            "show_process": true,
+            "step_1": "Intaglio manuale dei blocchi",
+            "step_2": "Preparazione colori naturali",
+            "step_3": "Stampa con allineamento perfetto",
+            "cta_text": "Esplora Block Print",
+            "cta_link": ""
+          }
+        },
+        "lavorazione_LYxTQJ": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Trapuntatura Reversibile",
+            "descrizione": "La nostra lavorazione più iconica, che richiede dalle 8 alle 10 ore per ogni giacca. Una tecnica che in Europa nessuno sa più eseguire: due capi in uno, con cuciture perfette su entrambi i lati e un'imbottitura che dona calore senza peso.",
+            "tempo": "8-10 ore per giacca",
+            "show_details": true,
+            "dettaglio_1": "Completamente reversibile con finiture perfette",
+            "dettaglio_2": "Cuciture a mano millimetriche su entrambi i lati",
+            "dettaglio_3": "Imbottitura in puro cotone naturale",
+            "show_process": true,
+            "step_1": "Taglio sartoriale dei tessuti",
+            "step_2": "Assemblaggio e imbottitura",
+            "step_3": "Trapuntatura punto per punto",
+            "cta_text": "Scopri le Giacche",
+            "cta_link": ""
+          }
+        },
+        "lavorazione_RGpgjz": {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Ricamo a Mano",
+            "descrizione": "I nostri ricami sono opere d'arte che richiedono dai 3 ai 4 giorni di lavoro continuo. Ogni artigiano ha imparato quest'arte dai propri antenati, creando motivi che raccontano storie di tradizione e bellezza senza tempo.",
+            "tempo": "3-4 giorni per capo",
+            "show_details": true,
+            "dettaglio_1": "Fili di seta e cotone pregiati selezionati a mano",
+            "dettaglio_2": "Disegni esclusivi creati da Fabindia Roma",
+            "dettaglio_3": "Tecniche tradizionali tramandate da secoli",
+            "show_process": true,
+            "step_1": "Trasferimento del disegno",
+            "step_2": "Selezione fili e colori",
+            "step_3": "Ricamo con tecniche secolari",
+            "cta_text": "Vedi i Ricami",
+            "cta_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "lavorazione_gY7g3H",
+        "lavorazione_LYxTQJ",
+        "lavorazione_RGpgjz"
+      ],
+      "name": "HERO Lavorazioni",
+      "settings": {
+        "show_header": true,
+        "title": "Le Nostre Lavorazioni",
+        "subtitle": "Tecniche artigianali secolari che richiedono maestria, pazienza e passione. Ogni pezzo è un'opera d'arte realizzata a mano.",
+        "show_footer": true,
+        "footer_title": "Scopri l'Arte del Fatto a Mano",
+        "cta_text": "Esplora le Collezioni",
+        "cta_link": "",
+        "background_color": "#FEFEFE",
+        "title_color": "#3E3E3E",
+        "subtitle_color": "#B5A397",
+        "accent_color": "#C33A32",
+        "content_background": "#FEFEFE",
+        "card_title_color": "#3E3E3E",
+        "card_text_color": "#3E3E3E",
+        "detail_color": "#3E3E3E",
+        "number_color": "#B5A397",
+        "icon_background": "#F0E6E0",
+        "icon_color": "#C33A32",
+        "tempo_background": "#3E3E3E",
+        "tempo_color": "#FEFEFE",
+        "link_color": "#C33A32",
+        "link_hover_color": "#3E3E3E",
+        "footer_gradient": "#F0E6E0",
+        "footer_title_color": "#3E3E3E",
+        "cta_background": "#3E3E3E",
+        "cta_color": "#FEFEFE",
+        "cta_hover_background": "#C33A32",
+        "cta_hover_color": "#FEFEFE",
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top_desktop": 100,
+        "padding_bottom_desktop": 100,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "none"
+      }
     }
   },
   "order": [
@@ -1198,6 +1417,8 @@
     "collection_pro_J7FQby",
     "map_VAF3NN",
     "inspirational_aqyRXT",
-    "new_processo_pro_hcPKex"
+    "new_processo_pro_hcPKex",
+    "lavorazioni_kKpWme",
+    "lavorazioni_hero_PJtxfU"
   ]
 }

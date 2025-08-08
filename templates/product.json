@@ -602,6 +602,54 @@
         "margin_bottom_desktop": 0,
         "max_dimensione": "1200px"
       }
+    },
+    "lavorazioni_product_page_DVK4aB": {
+      "type": "lavorazioni-product-page",
+      "name": "Lavorazione Prodotto",
+      "settings": {
+        "show_header": true,
+        "title": "Come Nasce Questo Capo",
+        "subtitle": "Ogni pezzo racconta una storia di maestria artigianale e tradizione",
+        "foto_1": "shopify://shop_images/shopperambience1.jpg",
+        "tempo_1": "Block Printing",
+        "foto_2": "shopify://shop_images/amazzonia1.jpg",
+        "tempo_2": "Trapuntatura",
+        "foto_3": "shopify://shop_images/maggiorana1.jpg",
+        "tempo_3": "Ricamo",
+        "content_title": "Artigianalità che fa la Differenza",
+        "content_text": "Ogni capo Fabindia Roma nasce dall'incontro tra il design italiano e l'artigianalità indiana. Le nostre lavorazioni richiedono dalle 6 alle 10 ore per ogni pezzo, realizzate interamente a mano da maestri artigiani che hanno ereditato queste tecniche dai loro padri.",
+        "show_punti": true,
+        "punto_1": "100% Fatto a Mano",
+        "punto_2": "8-10 ore per pezzo",
+        "punto_3": "Tecniche secolari",
+        "punto_4": "Pezzi unici",
+        "show_cta": true,
+        "cta_text": "Scopri Tutte le Lavorazioni",
+        "cta_link": "",
+        "background_color": "#fefefe",
+        "title_color": "#3e3e3e",
+        "subtitle_color": "#b5a397",
+        "badge_background": "#3e3e3ee6",
+        "badge_color": "#fefefe",
+        "content_title_color": "#3e3e3e",
+        "content_text_color": "#3e3e3e",
+        "punto_color": "#3e3e3e",
+        "icon_background": "#f0e6e0",
+        "icon_color": "#c33a32",
+        "cta_background": "#3e3e3e",
+        "cta_color": "#fefefe",
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top_desktop": 80,
+        "padding_bottom_desktop": 80,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "1400px"
+      }
     }
   },
   "order": [
@@ -611,6 +659,7 @@
     "recently-viewed",
     "collection-return",
     "sub",
-    "advanced_faq_nn6qqB"
+    "advanced_faq_nn6qqB",
+    "lavorazioni_product_page_DVK4aB"
   ]
 }

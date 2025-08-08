@@ -1,0 +1,968 @@
+<!-- Sezione Showcase Lavorazioni Fabindia Roma -->
+<style>
+  /* Reset e variabili base */
+  #shopify-section-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  /* Container principale */
+  #shopify-section-{{ section.id }} .fr-lavorazioni-wrapper {
+    background: {{ section.settings.background_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header sezione */
+  #shopify-section-{{ section.id }} .fr-lavorazioni-header {
+    text-align: center;
+    padding: 0 20px;
+    margin-bottom: 60px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazioni-title {
+    font-size: 48px;
+    font-weight: 300;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazioni-subtitle {
+    font-size: 20px;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* Grid delle lavorazioni */
+  #shopify-section-{{ section.id }} .fr-lavorazioni-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    padding: 0 40px;
+  }
+
+  /* Card singola lavorazione */
+  #shopify-section-{{ section.id }} .fr-lavorazione-card {
+    position: relative;
+    background: {{ section.settings.card_background }};
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazione-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  /* Immagine lavorazione */
+  #shopify-section-{{ section.id }} .fr-lavorazione-image-wrapper {
+    position: relative;
+    padding-top: 75%;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazione-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazione-card:hover .fr-lavorazione-image {
+    transform: scale(1.08);
+  }
+
+  /* Overlay tempo di lavorazione */
+  #shopify-section-{{ section.id }} .fr-tempo-overlay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: {{ section.settings.tempo_background }};
+    color: {{ section.settings.tempo_color }};
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+
+  /* Contenuto card */
+  #shopify-section-{{ section.id }} .fr-lavorazione-content {
+    padding: 30px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazione-name {
+    font-size: 24px;
+    font-weight: 400;
+    color: {{ section.settings.card_title_color }};
+    margin: 0 0 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-lavorazione-description {
+    font-size: 16px;
+    color: {{ section.settings.card_text_color }};
+    line-height: 1.6;
+    margin: 0 0 20px;
+  }
+
+  /* Dettagli tecnici */
+  #shopify-section-{{ section.id }} .fr-tecnica-details {
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-tecnica-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: {{ section.settings.detail_color }};
+  }
+
+  #shopify-section-{{ section.id }} .fr-tecnica-icon {
+    width: 6px;
+    height: 6px;
+    background: {{ section.settings.icon_color }};
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Modal dettaglio */
+  #shopify-section-{{ section.id }} .fr-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    background: #FEFEFE;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-overlay.active .fr-modal-content {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-close:hover {
+    background: #F0E6E0;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-close::before,
+  #shopify-section-{{ section.id }} .fr-modal-close::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #3E3E3E;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-close::before {
+    transform: rotate(45deg);
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-close::after {
+    transform: rotate(-45deg);
+  }
+
+  /* Modal grid layout */
+  #shopify-section-{{ section.id }} .fr-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 500px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-image-section {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-info {
+    padding: 60px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-title {
+    font-size: 36px;
+    font-weight: 300;
+    color: #3E3E3E;
+    margin: 0 0 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-modal-description {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #3E3E3E;
+    margin-bottom: 40px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-process-steps {
+    margin-top: 40px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-process-title {
+    font-size: 20px;
+    font-weight: 400;
+    color: #3E3E3E;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-process-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-step-number {
+    width: 32px;
+    height: 32px;
+    background: #F0E6E0;
+    color: #C33A32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 500;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .fr-step-text {
+    flex: 1;
+    font-size: 16px;
+    color: #3E3E3E;
+    line-height: 1.6;
+  }
+
+  /* CTA Button */
+  #shopify-section-{{ section.id }} .fr-cta-wrapper {
+    text-align: center;
+    margin-top: 60px;
+    padding: 0 20px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-cta-button {
+    display: inline-block;
+    padding: 16px 40px;
+    background: {{ section.settings.cta_background }};
+    color: {{ section.settings.cta_color }};
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  #shopify-section-{{ section.id }} .fr-cta-button:hover {
+    background: transparent;
+    color: {{ section.settings.cta_background }};
+    border-color: {{ section.settings.cta_background }};
+  }
+
+  /* Responsive Design */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .fr-lavorazioni-title {
+      font-size: 32px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-lavorazioni-subtitle {
+      font-size: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-lavorazioni-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      padding: 0 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-modal-grid {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .fr-modal-info {
+      padding: 40px 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-modal-title {
+      font-size: 28px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-modal-image-section {
+      height: 300px;
+    }
+  }
+
+  /* Funzioni Base CSS */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      max-width: {{ section.settings.max_dimensione }};
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+    }
+
+    {% if section.settings.nascondi_desktop %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+    }
+
+    {% if section.settings.nascondi_mobile %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+</style>
+
+<div class="fr-lavorazioni-wrapper">
+  {% if section.settings.show_header %}
+    <div class="fr-lavorazioni-header">
+      <h2 class="fr-lavorazioni-title">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="fr-lavorazioni-subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="fr-lavorazioni-grid">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'lavorazione' %}
+          <div class="fr-lavorazione-card" data-modal-trigger="{{ block.id }}">
+            <div class="fr-lavorazione-image-wrapper">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 800 | image_tag: 
+                  class: 'fr-lavorazione-image',
+                  loading: 'lazy'
+                }}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'fr-lavorazione-image' }}
+              {% endif %}
+              {% if block.settings.tempo != blank %}
+                <div class="fr-tempo-overlay">{{ block.settings.tempo }}</div>
+              {% endif %}
+            </div>
+            <div class="fr-lavorazione-content">
+              <h3 class="fr-lavorazione-name">{{ block.settings.nome }}</h3>
+              <p class="fr-lavorazione-description">{{ block.settings.descrizione_breve }}</p>
+              
+              {% if block.settings.show_details %}
+                <div class="fr-tecnica-details">
+                  {% if block.settings.dettaglio_1 != blank %}
+                    <div class="fr-tecnica-item">
+                      <span class="fr-tecnica-icon"></span>
+                      <span>{{ block.settings.dettaglio_1 }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.dettaglio_2 != blank %}
+                    <div class="fr-tecnica-item">
+                      <span class="fr-tecnica-icon"></span>
+                      <span>{{ block.settings.dettaglio_2 }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.dettaglio_3 != blank %}
+                    <div class="fr-tecnica-item">
+                      <span class="fr-tecnica-icon"></span>
+                      <span>{{ block.settings.dettaglio_3 }}</span>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Modal per questa lavorazione -->
+          <div class="fr-modal-overlay" data-modal="{{ block.id }}">
+            <div class="fr-modal-content">
+              <button class="fr-modal-close" data-modal-close></button>
+              <div class="fr-modal-grid">
+                <div class="fr-modal-image-section">
+                  {% if block.settings.image != blank %}
+                    {{ block.settings.image | image_url: width: 1200 | image_tag: 
+                      class: 'fr-modal-image'
+                    }}
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'fr-modal-image' }}
+                  {% endif %}
+                </div>
+                <div class="fr-modal-info">
+                  <h3 class="fr-modal-title">{{ block.settings.nome }}</h3>
+                  <p class="fr-modal-description">{{ block.settings.descrizione_completa }}</p>
+                  
+                  {% if block.settings.show_process %}
+                    <div class="fr-process-steps">
+                      <h4 class="fr-process-title">Il Processo</h4>
+                      {% if block.settings.step_1 != blank %}
+                        <div class="fr-process-step">
+                          <span class="fr-step-number">1</span>
+                          <span class="fr-step-text">{{ block.settings.step_1 }}</span>
+                        </div>
+                      {% endif %}
+                      {% if block.settings.step_2 != blank %}
+                        <div class="fr-process-step">
+                          <span class="fr-step-number">2</span>
+                          <span class="fr-step-text">{{ block.settings.step_2 }}</span>
+                        </div>
+                      {% endif %}
+                      {% if block.settings.step_3 != blank %}
+                        <div class="fr-process-step">
+                          <span class="fr-step-number">3</span>
+                          <span class="fr-step-text">{{ block.settings.step_3 }}</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endcase %}
+    {% endfor %}
+  </div>
+
+  {% if section.settings.show_cta %}
+    <div class="fr-cta-wrapper">
+      <a href="{{ section.settings.cta_link }}" class="fr-cta-button">
+        {{ section.settings.cta_text }}
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.querySelector('#shopify-section-{{ section.id }}');
+    
+    // Modal functionality
+    const modalTriggers = section.querySelectorAll('[data-modal-trigger]');
+    const modalCloses = section.querySelectorAll('[data-modal-close]');
+    const modalOverlays = section.querySelectorAll('.fr-modal-overlay');
+    
+    modalTriggers.forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        const modalId = this.getAttribute('data-modal-trigger');
+        const modal = section.querySelector(`[data-modal="${modalId}"]`);
+        if (modal) {
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    });
+    
+    modalCloses.forEach(close => {
+      close.addEventListener('click', function() {
+        const modal = this.closest('.fr-modal-overlay');
+        if (modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+    
+    modalOverlays.forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+    
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const activeModal = section.querySelector('.fr-modal-overlay.active');
+        if (activeModal) {
+          activeModal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Showcase Lavorazioni",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Mostra intestazione",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Le Nostre Lavorazioni"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Tecniche artigianali secolari che richiedono maestria, pazienza e passione"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Mostra CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA",
+      "default": "Scopri le Collezioni"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Colore sottotitolo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Sfondo card",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Titolo card",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Testo card",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "detail_color",
+      "label": "Colore dettagli",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Colore icone",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "tempo_background",
+      "label": "Sfondo tempo",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "tempo_color",
+      "label": "Testo tempo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Sfondo CTA",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "Testo CTA",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 80,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 80,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lavorazione",
+      "name": "Lavorazione",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nome",
+          "label": "Nome lavorazione",
+          "default": "Block Printing"
+        },
+        {
+          "type": "textarea",
+          "id": "descrizione_breve",
+          "label": "Descrizione breve",
+          "default": "Antica tecnica di stampa manuale con blocchi di legno intagliati"
+        },
+        {
+          "type": "textarea",
+          "id": "descrizione_completa",
+          "label": "Descrizione completa",
+          "default": "Il block printing è una delle tecniche più antiche di stampa tessile, praticata in India da oltre 500 anni. Ogni blocco di legno viene intagliato a mano da maestri artigiani, e ogni colore richiede un passaggio separato."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "tempo",
+          "label": "Tempo lavorazione",
+          "default": "8-10 ore",
+          "info": "Es: 8-10 ore"
+        },
+        {
+          "type": "header",
+          "content": "Dettagli tecnici"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_details",
+          "label": "Mostra dettagli",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "dettaglio_1",
+          "label": "Dettaglio 1",
+          "default": "Blocchi intagliati a mano"
+        },
+        {
+          "type": "text",
+          "id": "dettaglio_2",
+          "label": "Dettaglio 2",
+          "default": "Colori naturali vegetali"
+        },
+        {
+          "type": "text",
+          "id": "dettaglio_3",
+          "label": "Dettaglio 3",
+          "default": "Ogni pezzo è unico"
+        },
+        {
+          "type": "header",
+          "content": "Processo (Modal)"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_process",
+          "label": "Mostra processo",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "step_1",
+          "label": "Step 1",
+          "default": "Intaglio manuale dei blocchi di legno"
+        },
+        {
+          "type": "text",
+          "id": "step_2",
+          "label": "Step 2",
+          "default": "Preparazione dei colori naturali"
+        },
+        {
+          "type": "text",
+          "id": "step_3",
+          "label": "Step 3",
+          "default": "Stampa manuale con precisione millimetrica"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Showcase Lavorazioni",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Block Printing",
+            "descrizione_breve": "Antica tecnica di stampa manuale con blocchi di legno intagliati",
+            "descrizione_completa": "Il block printing è una delle tecniche più antiche di stampa tessile, praticata in India da oltre 500 anni. Ogni blocco di legno viene intagliato a mano da maestri artigiani. La precisione richiesta è millimetrica: ogni colore necessita di un passaggio separato e l'allineamento deve essere perfetto.",
+            "tempo": "6-8 ore",
+            "dettaglio_1": "Blocchi secolari tramandati",
+            "dettaglio_2": "Colori vegetali naturali",
+            "dettaglio_3": "Ogni pezzo è irripetibile",
+            "step_1": "Selezione e intaglio dei blocchi di legno di teak",
+            "step_2": "Preparazione dei colori con pigmenti naturali",
+            "step_3": "Stampa manuale su tessuto con allineamento perfetto"
+          }
+        },
+        {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Trapuntatura",
+            "descrizione_breve": "Lavorazione reversibile iconica che richiede 8-10 ore per giacca",
+            "descrizione_completa": "La trapuntatura è la nostra lavorazione più iconica. Ogni giacca richiede dalle 8 alle 10 ore di lavoro manuale. La tecnica reversibile permette di avere due capi in uno, con cuciture perfette su entrambi i lati. Una maestria che in Europa nessuno sa più eseguire.",
+            "tempo": "8-10 ore",
+            "dettaglio_1": "Completamente reversibile",
+            "dettaglio_2": "Cuciture a mano millimetriche",
+            "dettaglio_3": "Imbottitura naturale",
+            "step_1": "Taglio manuale dei tessuti con precisione sartoriale",
+            "step_2": "Assemblaggio e imbottitura con cotone naturale",
+            "step_3": "Trapuntatura manuale punto per punto"
+          }
+        },
+        {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Ricamo",
+            "descrizione_breve": "Arte millenaria che richiede 3-4 giorni per completare un capo",
+            "descrizione_completa": "I nostri ricami sono realizzati interamente a mano da artigiani che hanno imparato quest'arte dai loro padri. Ogni ricamo richiede dai 3 ai 4 giorni di lavoro continuo. La precisione e la pazienza richieste rendono ogni pezzo un'opera d'arte indossabile.",
+            "tempo": "3-4 giorni",
+            "dettaglio_1": "Fili di seta e cotone pregiati",
+            "dettaglio_2": "Disegni esclusivi Fabindia",
+            "dettaglio_3": "Tecniche tradizionali secolari",
+            "step_1": "Trasferimento del disegno sul tessuto",
+            "step_2": "Selezione dei fili e dei colori",
+            "step_3": "Ricamo manuale con tecniche tradizionali"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

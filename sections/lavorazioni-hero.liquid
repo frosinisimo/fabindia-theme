@@ -1,0 +1,1100 @@
+<!-- Sezione HERO Showcase Lavorazioni Fabindia Roma -->
+<style>
+  /* Reset e variabili base */
+  #shopify-section-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  /* Container principale */
+  #shopify-section-{{ section.id }} .fr-hero-lavorazioni-wrapper {
+    background: {{ section.settings.background_color }};
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header HERO sezione */
+  #shopify-section-{{ section.id }} .fr-hero-header {
+    text-align: center;
+    padding: 0 20px;
+    margin-bottom: 100px;
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-title {
+    font-size: 72px;
+    font-weight: 200;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 30px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    opacity: 0;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-subtitle {
+    font-size: 24px;
+    color: {{ section.settings.subtitle_color }};
+    margin: 0 auto;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.2s forwards;
+  }
+
+  /* Decorative line */
+  #shopify-section-{{ section.id }} .fr-hero-line {
+    width: 120px;
+    height: 1px;
+    background: {{ section.settings.accent_color }};
+    margin: 40px auto;
+    opacity: 0;
+    animation: expandWidth 1s ease 0.4s forwards;
+  }
+
+  /* Layout HERO alternato */
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 80vh;
+    margin-bottom: 0;
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.6s forwards;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione:nth-child(even) {
+    direction: rtl;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione:nth-child(even) > * {
+    direction: ltr;
+  }
+
+  /* Immagine HERO */
+  #shopify-section-{{ section.id }} .fr-hero-image-section {
+    position: relative;
+    overflow: hidden;
+    background: #F0E6E0;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1);
+    transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-image {
+    transform: scale(1.05);
+  }
+
+  /* Overlay tempo HERO */
+  #shopify-section-{{ section.id }} .fr-tempo-hero {
+    position: absolute;
+    top: 60px;
+    left: 60px;
+    background: {{ section.settings.tempo_background }};
+    color: {{ section.settings.tempo_color }};
+    padding: 20px 30px;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  /* Contenuto HERO */
+  #shopify-section-{{ section.id }} .fr-hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 100px;
+    background: {{ section.settings.content_background }};
+    position: relative;
+  }
+
+  /* Numero grande decorativo */
+  #shopify-section-{{ section.id }} .fr-hero-number {
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    font-size: 180px;
+    font-weight: 100;
+    color: {{ section.settings.number_color }};
+    opacity: 0.1;
+    line-height: 1;
+    font-family: 'Georgia', serif;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-name {
+    font-size: 48px;
+    font-weight: 300;
+    color: {{ section.settings.card_title_color }};
+    margin: 0 0 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-description {
+    font-size: 20px;
+    color: {{ section.settings.card_text_color }};
+    line-height: 1.8;
+    margin: 0 0 40px;
+    max-width: 500px;
+  }
+
+  /* Dettagli HERO */
+  #shopify-section-{{ section.id }} .fr-hero-details {
+    margin-top: 40px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: {{ section.settings.detail_color }};
+    opacity: 0;
+    animation: slideInLeft 0.8s ease forwards;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-detail:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-detail:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-lavorazione:hover .fr-hero-detail:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-icon {
+    width: 40px;
+    height: 40px;
+    background: {{ section.settings.icon_background }};
+    border-radius: 50%;
+    margin-right: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-icon::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: {{ section.settings.icon_color }};
+    border-radius: 50%;
+  }
+
+  /* CTA individuale */
+  #shopify-section-{{ section.id }} .fr-hero-cta-individual {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 40px;
+    font-size: 16px;
+    color: {{ section.settings.link_color }};
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-individual::after {
+    content: '→';
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-individual:hover {
+    color: {{ section.settings.link_hover_color }};
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-individual:hover::after {
+    transform: translateX(5px);
+  }
+
+  /* Process steps HERO */
+  #shopify-section-{{ section.id }} .fr-hero-process {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 50px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-step {
+    text-align: left;
+  }
+
+  #shopify-section-{{ section.id }} .fr-step-label {
+    font-size: 14px;
+    color: {{ section.settings.accent_color }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  #shopify-section-{{ section.id }} .fr-step-text {
+    font-size: 16px;
+    color: {{ section.settings.card_text_color }};
+    line-height: 1.6;
+  }
+
+  /* Footer CTA sezione */
+  #shopify-section-{{ section.id }} .fr-hero-footer {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(to bottom, transparent, {{ section.settings.footer_gradient }});
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-footer-title {
+    font-size: 36px;
+    font-weight: 300;
+    color: {{ section.settings.footer_title_color }};
+    margin: 0 0 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-button {
+    display: inline-block;
+    padding: 20px 60px;
+    background: {{ section.settings.cta_background }};
+    color: {{ section.settings.cta_color }};
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: {{ section.settings.cta_hover_background }};
+    transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-button:hover::before {
+    left: 0;
+  }
+
+  #shopify-section-{{ section.id }} .fr-hero-cta-button:hover {
+    color: {{ section.settings.cta_hover_color }};
+    border-color: {{ section.settings.cta_hover_background }};
+  }
+
+  /* Animazioni */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes expandWidth {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 120px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Responsive Design Mobile */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} .fr-hero-title {
+      font-size: 36px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-subtitle {
+      font-size: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-header {
+      margin-bottom: 60px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-lavorazione {
+      grid-template-columns: 1fr;
+      min-height: auto;
+      margin-bottom: 40px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-lavorazione:nth-child(even) {
+      direction: ltr;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-image-section {
+      height: 400px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-content {
+      padding: 60px 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-tempo-hero {
+      top: 30px;
+      left: 30px;
+      padding: 12px 20px;
+      font-size: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-number {
+      font-size: 100px;
+      top: 30px;
+      right: 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-name {
+      font-size: 32px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-description {
+      font-size: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-detail {
+      font-size: 15px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-process {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-footer {
+      padding: 60px 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-footer-title {
+      font-size: 24px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-cta-button {
+      padding: 16px 40px;
+      font-size: 12px;
+    }
+  }
+
+  /* Funzioni Base CSS */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      max-width: {{ section.settings.max_dimensione }};
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+    }
+
+    {% if section.settings.nascondi_desktop %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+    }
+
+    {% if section.settings.nascondi_mobile %}
+      #shopify-section-{{ section.id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+</style>
+
+<div class="fr-hero-lavorazioni-wrapper">
+  {% if section.settings.show_header %}
+    <div class="fr-hero-header">
+      <h2 class="fr-hero-title">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="fr-hero-subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+      <div class="fr-hero-line"></div>
+    </div>
+  {% endif %}
+
+  <div class="fr-hero-lavorazioni-container">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'lavorazione' %}
+          {% assign index = forloop.index %}
+          <div class="fr-hero-lavorazione">
+            <div class="fr-hero-image-section">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1600 | image_tag: 
+                  class: 'fr-hero-image',
+                  loading: 'lazy'
+                }}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'fr-hero-image' }}
+              {% endif %}
+              {% if block.settings.tempo != blank %}
+                <div class="fr-tempo-hero">{{ block.settings.tempo }}</div>
+              {% endif %}
+            </div>
+            
+            <div class="fr-hero-content">
+              <span class="fr-hero-number">{{ index | prepend: '0' }}</span>
+              <h3 class="fr-hero-name">{{ block.settings.nome }}</h3>
+              <p class="fr-hero-description">{{ block.settings.descrizione }}</p>
+              
+              {% if block.settings.show_details %}
+                <div class="fr-hero-details">
+                  {% if block.settings.dettaglio_1 != blank %}
+                    <div class="fr-hero-detail">
+                      <span class="fr-hero-icon"></span>
+                      <span>{{ block.settings.dettaglio_1 }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.dettaglio_2 != blank %}
+                    <div class="fr-hero-detail">
+                      <span class="fr-hero-icon"></span>
+                      <span>{{ block.settings.dettaglio_2 }}</span>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.dettaglio_3 != blank %}
+                    <div class="fr-hero-detail">
+                      <span class="fr-hero-icon"></span>
+                      <span>{{ block.settings.dettaglio_3 }}</span>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.show_process %}
+                <div class="fr-hero-process">
+                  {% if block.settings.step_1 != blank %}
+                    <div class="fr-hero-step">
+                      <div class="fr-step-label">Fase 1</div>
+                      <div class="fr-step-text">{{ block.settings.step_1 }}</div>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.step_2 != blank %}
+                    <div class="fr-hero-step">
+                      <div class="fr-step-label">Fase 2</div>
+                      <div class="fr-step-text">{{ block.settings.step_2 }}</div>
+                    </div>
+                  {% endif %}
+                  {% if block.settings.step_3 != blank %}
+                    <div class="fr-hero-step">
+                      <div class="fr-step-label">Fase 3</div>
+                      <div class="fr-step-text">{{ block.settings.step_3 }}</div>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if block.settings.cta_text != blank %}
+                <a href="{{ block.settings.cta_link }}" class="fr-hero-cta-individual">
+                  {{ block.settings.cta_text }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+      {% endcase %}
+    {% endfor %}
+  </div>
+
+  {% if section.settings.show_footer %}
+    <div class="fr-hero-footer">
+      {% if section.settings.footer_title != blank %}
+        <h3 class="fr-hero-footer-title">{{ section.settings.footer_title }}</h3>
+      {% endif %}
+      {% if section.settings.cta_text != blank %}
+        <a href="{{ section.settings.cta_link }}" class="fr-hero-cta-button">
+          {{ section.settings.cta_text }}
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const section = document.querySelector('#shopify-section-{{ section.id }}');
+    const lavorazioni = section.querySelectorAll('.fr-hero-lavorazione');
+    
+    // Intersection Observer per animazioni on scroll
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    
+    lavorazioni.forEach(lavorazione => {
+      lavorazione.style.opacity = '0';
+      lavorazione.style.transform = 'translateY(50px)';
+      lavorazione.style.transition = 'all 1s cubic-bezier(0.19, 1, 0.22, 1)';
+      observer.observe(lavorazione);
+    });
+
+    // Rimosso effetto parallax per migliorare le performance
+  });
+</script>
+
+{% schema %}
+{
+  "name": "HERO Lavorazioni",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Mostra intestazione",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Le Nostre Lavorazioni"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Tecniche artigianali secolari che richiedono maestria, pazienza e passione. Ogni pezzo è un'opera d'arte realizzata a mano."
+    },
+    {
+      "type": "header",
+      "content": "Footer CTA"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_footer",
+      "label": "Mostra footer",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "footer_title",
+      "label": "Titolo footer",
+      "default": "Scopri l'Arte del Fatto a Mano"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA",
+      "default": "Esplora le Collezioni"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA"
+    },
+    {
+      "type": "header",
+      "content": "Colori Principali"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Sfondo sezione",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Colore sottotitolo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "header",
+      "content": "Colori Card"
+    },
+    {
+      "type": "color",
+      "id": "content_background",
+      "label": "Sfondo contenuto",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Titolo card",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Testo card",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "detail_color",
+      "label": "Colore dettagli",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Numero decorativo",
+      "default": "#B5A397"
+    },
+    {
+      "type": "header",
+      "content": "Colori Elementi"
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Sfondo icone",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Colore icone",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "tempo_background",
+      "label": "Sfondo tempo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "tempo_color",
+      "label": "Testo tempo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Colore link",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "Footer e CTA"
+    },
+    {
+      "type": "color",
+      "id": "footer_gradient",
+      "label": "Gradiente footer",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "footer_title_color",
+      "label": "Titolo footer",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Sfondo CTA",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "Testo CTA",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_background",
+      "label": "Sfondo CTA hover",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_color",
+      "label": "Testo CTA hover",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 100,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 100,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "none"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lavorazione",
+      "name": "Lavorazione",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nome",
+          "label": "Nome lavorazione",
+          "default": "Block Printing"
+        },
+        {
+          "type": "textarea",
+          "id": "descrizione",
+          "label": "Descrizione",
+          "default": "Un'arte millenaria che trasforma il tessuto in un capolavoro. Ogni blocco di legno viene intagliato a mano da maestri artigiani, e ogni colore richiede un passaggio separato con precisione millimetrica."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "tempo",
+          "label": "Tempo lavorazione",
+          "default": "6-8 ore per pezzo",
+          "info": "Es: 8-10 ore"
+        },
+        {
+          "type": "header",
+          "content": "Dettagli"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_details",
+          "label": "Mostra dettagli",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "dettaglio_1",
+          "label": "Dettaglio 1",
+          "default": "Blocchi di teak intagliati a mano"
+        },
+        {
+          "type": "text",
+          "id": "dettaglio_2",
+          "label": "Dettaglio 2",
+          "default": "Colori vegetali naturali al 100%"
+        },
+        {
+          "type": "text",
+          "id": "dettaglio_3",
+          "label": "Dettaglio 3",
+          "default": "Ogni pezzo è unico e irripetibile"
+        },
+        {
+          "type": "header",
+          "content": "Processo"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_process",
+          "label": "Mostra processo",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "step_1",
+          "label": "Step 1",
+          "default": "Intaglio manuale"
+        },
+        {
+          "type": "text",
+          "id": "step_2",
+          "label": "Step 2",
+          "default": "Preparazione colori"
+        },
+        {
+          "type": "text",
+          "id": "step_3",
+          "label": "Step 3",
+          "default": "Stampa precisione"
+        },
+        {
+          "type": "header",
+          "content": "Link"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Testo link",
+          "default": "Scopri di più"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "URL link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HERO Lavorazioni",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Block Printing",
+            "descrizione": "Un'arte millenaria che trasforma il tessuto in un capolavoro. Ogni blocco di legno viene intagliato a mano da maestri artigiani che hanno ereditato questa tecnica dai loro padri. La precisione richiesta è millimetrica: ogni colore necessita di un passaggio separato.",
+            "tempo": "6-8 ore per metro",
+            "dettaglio_1": "Blocchi di teak secolari tramandati di generazione",
+            "dettaglio_2": "Pigmenti vegetali naturali estratti da piante e minerali",
+            "dettaglio_3": "Ogni stampa è unica, con piccole imperfezioni che la rendono preziosa",
+            "step_1": "Intaglio manuale dei blocchi",
+            "step_2": "Preparazione colori naturali",
+            "step_3": "Stampa con allineamento perfetto",
+            "cta_text": "Esplora Block Print"
+          }
+        },
+        {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Trapuntatura Reversibile",
+            "descrizione": "La nostra lavorazione più iconica, che richiede dalle 8 alle 10 ore per ogni giacca. Una tecnica che in Europa nessuno sa più eseguire: due capi in uno, con cuciture perfette su entrambi i lati e un'imbottitura che dona calore senza peso.",
+            "tempo": "8-10 ore per giacca",
+            "dettaglio_1": "Completamente reversibile con finiture perfette",
+            "dettaglio_2": "Cuciture a mano millimetriche su entrambi i lati",
+            "dettaglio_3": "Imbottitura in puro cotone naturale",
+            "step_1": "Taglio sartoriale dei tessuti",
+            "step_2": "Assemblaggio e imbottitura",
+            "step_3": "Trapuntatura punto per punto",
+            "cta_text": "Scopri le Giacche"
+          }
+        },
+        {
+          "type": "lavorazione",
+          "settings": {
+            "nome": "Ricamo a Mano",
+            "descrizione": "I nostri ricami sono opere d'arte che richiedono dai 3 ai 4 giorni di lavoro continuo. Ogni artigiano ha imparato quest'arte dai propri antenati, creando motivi che raccontano storie di tradizione e bellezza senza tempo.",
+            "tempo": "3-4 giorni per capo",
+            "dettaglio_1": "Fili di seta e cotone pregiati selezionati a mano",
+            "dettaglio_2": "Disegni esclusivi creati da Fabindia Roma",
+            "dettaglio_3": "Tecniche tradizionali tramandate da secoli",
+            "step_1": "Trasferimento del disegno",
+            "step_2": "Selezione fili e colori",
+            "step_3": "Ricamo con tecniche secolari",
+            "cta_text": "Vedi i Ricami"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
