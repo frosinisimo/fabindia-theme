@@ -1,0 +1,909 @@
+<!-- Hero Section: Non Siamo un Prodotto Etnico - Fabindia Roma -->
+<section class="fr-hero-identity">
+  <div class="fr-hero-container">
+    <!-- Immagine Hero a sinistra -->
+    {% if section.settings.hero_image %}
+    <div class="fr-hero-image">
+      <img 
+        src="{{ section.settings.hero_image | img_url: '800x' }}"
+        srcset="{{ section.settings.hero_image | img_url: '400x' }} 400w,
+                {{ section.settings.hero_image | img_url: '600x' }} 600w,
+                {{ section.settings.hero_image | img_url: '800x' }} 800w,
+                {{ section.settings.hero_image | img_url: '1200x' }} 1200w"
+        sizes="(max-width: 768px) 100vw, 50vw"
+        alt="{{ section.settings.image_alt }}"
+        loading="lazy"
+        class="fr-image"
+      >
+      <div class="fr-image-overlay"></div>
+    </div>
+    {% endif %}
+    
+    <!-- Main Content a destra -->
+    <div class="fr-hero-content">
+      <!-- Elemento decorativo superiore -->
+      <div class="fr-decorative-line"></div>
+      
+      <!-- Titolo principale con animazione -->
+      <h1 class="fr-hero-title">
+        <span class="fr-title-line-1">{{ section.settings.title_1 | default: 'Design Italiano' }}</span>
+        <span class="fr-title-separator"></span>
+        <span class="fr-title-line-2">{{ section.settings.title_2 | default: 'Artigianato di Eccellenza' }}</span>
+      </h1>
+      
+      <!-- Sottotitolo raffinato -->
+      <p class="fr-hero-subtitle">
+        {{ section.settings.subtitle | default: 'Non un prodotto etnico. Una visione contemporanea dove Roma incontra India.' }}
+      </p>
+      
+      <!-- Testo descrittivo elegante -->
+      <div class="fr-hero-description">
+        {{ section.settings.description }}
+      </div>
+      
+      <!-- Call to action elegante -->
+      {% if section.settings.cta_text != blank %}
+      <div class="fr-hero-cta">
+        <a href="{{ section.settings.cta_link }}" class="btn btn--large">
+          {{ section.settings.cta_text }}
+        </a>
+      </div>
+      {% endif %}
+      
+      <!-- Elemento visivo distintivo -->
+      <div class="fr-visual-element">
+        <div class="fr-circle-1"></div>
+        <div class="fr-circle-2"></div>
+        <div class="fr-circle-3"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Sezione valori distintivi -->
+  {% if section.blocks.size > 0 %}
+  <div class="fr-values-container">
+    {% for block in section.blocks %}
+      {% if block.type == 'value' %}
+      <div class="fr-value-item">
+        {% if block.settings.icon %}
+        <div class="fr-value-icon">
+          <img 
+            src="{{ block.settings.icon | img_url: '60x60' }}"
+            alt="{{ block.settings.title }}"
+            loading="lazy"
+          >
+        </div>
+        {% else %}
+        <span class="fr-value-number">{{ forloop.index | prepend: '0' }}</span>
+        {% endif %}
+        <h3 class="fr-value-title">{{ block.settings.title }}</h3>
+        <p class="fr-value-text">{{ block.settings.text }}</p>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+
+<style>
+  /* Reset e variabili */
+  #shopify-section-{{ section.id }} {
+    --fr-primary: {{ section.settings.primary_color | default: '#C33A32' }};
+    --fr-secondary: {{ section.settings.secondary_color | default: '#B5A397' }};
+    --fr-background: {{ section.settings.bg_color | default: '#FEFEFE' }};
+    --fr-text: {{ section.settings.text_color | default: '#3E3E3E' }};
+    --fr-accent: {{ section.settings.accent_color | default: '#E5DDD5' }};
+  }
+  
+  #shopify-section-{{ section.id }} * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Container principale */
+  #shopify-section-{{ section.id }} .fr-hero-identity {
+    background: var(--fr-background);
+    position: relative;
+    overflow: hidden;
+    min-height: 60vh;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-hero-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    position: relative;
+    align-items: center;
+    overflow: visible;
+  }
+  
+  /* Content styling con allineamento dinamico */
+  #shopify-section-{{ section.id }} .fr-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    {% if section.settings.hero_image %}
+      {% if section.settings.text_align_desktop == 'center' %}
+        margin: 0 auto;
+        text-align: center;
+      {% else %}
+        text-align: left;
+      {% endif %}
+    {% else %}
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    {% endif %}
+  }
+  
+  /* Linea decorativa */
+  #shopify-section-{{ section.id }} .fr-decorative-line {
+    width: 60px;
+    height: 1px;
+    background: var(--fr-primary);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeInScale 0.8s ease forwards;
+    {% if section.settings.hero_image %}
+      {% if section.settings.text_align_desktop == 'center' %}
+        margin-left: auto;
+        margin-right: auto;
+      {% endif %}
+    {% else %}
+      margin-left: auto;
+      margin-right: auto;
+    {% endif %}
+  }
+  
+  /* Titolo principale */
+  #shopify-section-{{ section.id }} .fr-hero-title {
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    {% if section.settings.hero_image %}
+      {% if section.settings.text_align_desktop == 'center' %}
+        align-items: center;
+      {% else %}
+        align-items: flex-start;
+      {% endif %}
+    {% else %}
+      align-items: center;
+    {% endif %}
+  }
+  
+  #shopify-section-{{ section.id }} .fr-title-line-1 {
+    font-size: clamp(28px, 4.5vw, 48px);
+    color: var(--fr-text);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s 0.2s ease forwards;
+    line-height: 1.2;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-title-separator {
+    width: 40px;
+    height: 1px;
+    background: var(--fr-secondary);
+    opacity: 0;
+    animation: fadeInScale 0.8s 0.4s ease forwards;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-title-line-2 {
+    font-size: clamp(24px, 3.5vw, 40px);
+    color: var(--fr-primary);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s 0.3s ease forwards;
+    line-height: 1.2;
+  }
+  
+  /* Sottotitolo */
+  #shopify-section-{{ section.id }} .fr-hero-subtitle {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 300;
+    color: var(--fr-text);
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeIn 1s 0.5s ease forwards;
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+  }
+  
+  /* Descrizione */
+  #shopify-section-{{ section.id }} .fr-hero-description {
+    max-width: 100%;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeIn 1s 0.6s ease forwards;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-hero-description p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--fr-text);
+    font-weight: 300;
+    opacity: 0.9;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-highlight {
+    color: var(--fr-primary);
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  /* CTA Button - usando solo classe nativa */
+  #shopify-section-{{ section.id }} .fr-hero-cta {
+    opacity: 0;
+    animation: fadeInUp 1s 0.8s ease forwards;
+  }
+  
+  /* Elementi visivi decorativi */
+  #shopify-section-{{ section.id }} .fr-visual-element {
+    position: absolute;
+    top: 10%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-circle-1,
+  #shopify-section-{{ section.id }} .fr-circle-2,
+  #shopify-section-{{ section.id }} .fr-circle-3 {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-circle-1 {
+    width: 250px;
+    height: 250px;
+    background: var(--fr-accent);
+    top: 0;
+    right: 0;
+    animation: float 20s infinite ease-in-out;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-circle-2 {
+    width: 180px;
+    height: 180px;
+    background: var(--fr-secondary);
+    top: 150px;
+    right: 100px;
+    animation: float 25s infinite ease-in-out reverse;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-circle-3 {
+    width: 120px;
+    height: 120px;
+    background: var(--fr-primary);
+    top: 50px;
+    right: 200px;
+    animation: float 30s infinite ease-in-out;
+  }
+  
+  /* Immagine Hero */
+  #shopify-section-{{ section.id }} .fr-hero-image {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeIn 1s 0.4s ease forwards;
+    height: 100%;
+    min-height: 400px;
+    max-height: 600px;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.05) 100%);
+    pointer-events: none;
+  }
+  
+  /* Sezione valori */
+  #shopify-section-{{ section.id }} .fr-values-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 50px;
+    max-width: 1200px;
+    margin: 80px auto 0;
+    padding: 0 40px;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-value-item {
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: calc(0.1s * var(--item-index));
+  }
+  
+  #shopify-section-{{ section.id }} .fr-value-item:nth-child(1) { --item-index: 1; }
+  #shopify-section-{{ section.id }} .fr-value-item:nth-child(2) { --item-index: 2; }
+  #shopify-section-{{ section.id }} .fr-value-item:nth-child(3) { --item-index: 3; }
+  #shopify-section-{{ section.id }} .fr-value-item:nth-child(4) { --item-index: 4; }
+  
+  /* Icona valore */
+  #shopify-section-{{ section.id }} .fr-value-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--fr-accent);
+    border-radius: 50%;
+    padding: 12px;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-value-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-value-number {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: var(--fr-primary);
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin: 0 auto 20px;
+    border: 1px solid var(--fr-accent);
+    border-radius: 50%;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-value-title {
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--fr-text);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+  
+  #shopify-section-{{ section.id }} .fr-value-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fr-text);
+    opacity: 0.8;
+    font-weight: 300;
+  }
+  
+  /* Animazioni */
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInScale {
+    to {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) translateX(0);
+    }
+    25% {
+      transform: translateY(-15px) translateX(8px);
+    }
+    50% {
+      transform: translateY(8px) translateX(-8px);
+    }
+    75% {
+      transform: translateY(-8px) translateX(15px);
+    }
+  }
+  
+  /* Responsive Desktop */
+  @media only screen and (min-width: 769px) {
+    #shopify-section-{{ section.id }} {
+      max-width: {{ section.settings.max_dimensione }};
+      margin: 0 auto;
+    }
+    
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin-top: {{ section.settings.margin_top_desktop }}px;
+      margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+    }
+    
+    {% if section.settings.nascondi_desktop %}
+    #shopify-section-{{ section.id }} {
+      display: none;
+    }
+    {% endif %}
+    
+    {% if section.settings.hero_image %}
+    #shopify-section-{{ section.id }} .fr-hero-container {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 80px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-content {
+      {% if section.settings.text_align_desktop == 'center' %}
+        text-align: center;
+        margin: 0 auto;
+      {% else %}
+        text-align: left;
+      {% endif %}
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-title {
+      {% if section.settings.text_align_desktop == 'center' %}
+        align-items: center;
+      {% else %}
+        align-items: flex-start;
+      {% endif %}
+    }
+    
+    #shopify-section-{{ section.id }} .fr-decorative-line {
+      {% if section.settings.text_align_desktop == 'center' %}
+        margin: 0 auto 40px;
+      {% else %}
+        margin: 0 0 40px;
+      {% endif %}
+    }
+    {% else %}
+    /* Senza immagine - sempre centrato */
+    #shopify-section-{{ section.id }} .fr-hero-container {
+      grid-template-columns: 1fr;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-content {
+      text-align: center;
+      margin: 0 auto;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-title {
+      align-items: center;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-decorative-line {
+      margin: 0 auto 40px;
+    }
+    {% endif %}
+  }
+  
+  /* Responsive Mobile */
+  @media only screen and (max-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_mobile }}px;
+      padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+      margin-top: {{ section.settings.margin_top_mobile }}px;
+      margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+    }
+    
+    {% if section.settings.nascondi_mobile %}
+    #shopify-section-{{ section.id }} {
+      display: none;
+    }
+    {% endif %}
+    
+    #shopify-section-{{ section.id }} .fr-hero-container {
+      padding: 40px 20px;
+      gap: 40px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-identity {
+      min-height: auto;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-content {
+      {% if section.settings.hero_image %}
+        {% if section.settings.text_align_mobile == 'center' %}
+          text-align: center;
+          margin: 0 auto;
+        {% else %}
+          text-align: left;
+        {% endif %}
+      {% else %}
+        text-align: center;
+        margin: 0 auto;
+      {% endif %}
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-title {
+      {% if section.settings.hero_image %}
+        {% if section.settings.text_align_mobile == 'center' %}
+          align-items: center;
+        {% else %}
+          align-items: flex-start;
+        {% endif %}
+      {% else %}
+        align-items: center;
+      {% endif %}
+    }
+    
+    #shopify-section-{{ section.id }} .fr-decorative-line {
+      {% if section.settings.hero_image %}
+        {% if section.settings.text_align_mobile == 'center' %}
+          margin: 0 auto 30px;
+        {% else %}
+          margin: 0 0 30px;
+        {% endif %}
+      {% else %}
+        margin: 0 auto 30px;
+      {% endif %}
+    }
+    
+    #shopify-section-{{ section.id }} .fr-visual-element {
+      display: none;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-values-container {
+      margin-top: 60px;
+      padding: 0 20px;
+      gap: 35px;
+    }
+    
+    #shopify-section-{{ section.id }} .fr-hero-image {
+      min-height: 280px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero Non Etnico",
+  "class": "section-hero-identity",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Titolo principale",
+      "default": "Design Italiano"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Titolo secondario",
+      "default": "Artigianato di Eccellenza"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Non un prodotto etnico. Una visione contemporanea dove Roma incontra India."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "<p>Da 26 anni creiamo collezioni uniche che trascendono i confini geografici. I nostri tessuti potrebbero essere Liberty, i pattern provenzali, lo stile nordeuropeo. È questo il nostro segreto: <em>universalità elegante</em>.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo CTA",
+      "default": "Scopri le Collezioni"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA"
+    },
+    {
+      "type": "header",
+      "content": "Immagine"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Immagine Hero",
+      "info": "Consigliati 800x600px"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Alt text immagine",
+      "default": "Fabindia Roma Design"
+    },
+    {
+      "type": "header",
+      "content": "Allineamento"
+    },
+    {
+      "type": "select",
+      "id": "text_align_desktop",
+      "label": "Allineamento Desktop",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        }
+      ],
+      "default": "left",
+      "info": "Con immagine attiva"
+    },
+    {
+      "type": "select",
+      "id": "text_align_mobile",
+      "label": "Allineamento Mobile",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Colore primario",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "secondary_color",
+      "label": "Colore secondario",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Colore sfondo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da Desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 60,
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 60,
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Valore distintivo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icona (opzionale)",
+          "info": "60x60px consigliati"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Design Contemporaneo"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Testo",
+          "default": "Linee pure che dialogano con ogni stile"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Non Etnico",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "value",
+          "settings": {
+            "title": "Design Universale",
+            "text": "Trasversale, senza confini"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Artigianato Vero",
+            "text": "26 anni di eccellenza"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Visione Italiana",
+            "text": "Roma incontra il mondo"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

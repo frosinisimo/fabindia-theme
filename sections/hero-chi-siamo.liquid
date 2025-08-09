@@ -1,0 +1,1092 @@
+<!-- Sezione Hero Chi Siamo - Fabindia Roma -->
+<section class="fr-about-hero">
+  <div class="fr-hero-container" data-section-id="{{ section.id }}">
+    
+    <!-- Background parallax -->
+    <div class="fr-parallax-bg">
+      {% if section.settings.background_image != blank %}
+        <img src="{{ section.settings.background_image | image_url: width: 2400 }}" 
+             alt="{{ section.settings.background_image.alt | escape }}"
+             loading="eager"
+             class="fr-bg-image">
+      {% endif %}
+      <div class="fr-overlay" style="background: linear-gradient(135deg, {{ section.settings.overlay_color_1 }}{{ section.settings.overlay_opacity }}, {{ section.settings.overlay_color_2 }}{{ section.settings.overlay_opacity }});"></div>
+    </div>
+
+    <!-- Main content -->
+    <div class="fr-content-wrapper">
+      
+      <!-- Intro section -->
+      <div class="fr-intro-section">
+        <span class="fr-subtitle">{{ section.settings.subtitle }}</span>
+        <h1 class="fr-main-title">{{ section.settings.main_title }}</h1>
+        <div class="fr-divider"></div>
+      </div>
+
+      <!-- Story cards -->
+      <div class="fr-story-grid">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'story_card' %}
+              <div class="fr-story-card" {{ block.shopify_attributes }}>
+                <div class="fr-card-inner">
+                  <div class="fr-card-icon">
+                    {% if block.settings.icon != blank %}
+                      {{ block.settings.icon }}
+                    {% endif %}
+                  </div>
+                  <h3 class="fr-card-title">{{ block.settings.title }}</h3>
+                  <p class="fr-card-text">{{ block.settings.text }}</p>
+                </div>
+              </div>
+            {% when 'founder_card' %}
+              <div class="fr-founder-card" {{ block.shopify_attributes }}>
+                <div class="fr-founder-inner">
+                  {% if block.settings.image != blank %}
+                    <div class="fr-founder-image">
+                      <img src="{{ block.settings.image | image_url: width: 600 }}" 
+                           alt="{{ block.settings.name }}"
+                           loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="fr-founder-content">
+                    <h3 class="fr-founder-name">{{ block.settings.name }}</h3>
+                    <span class="fr-founder-role">{{ block.settings.role }}</span>
+                    <p class="fr-founder-quote">"{{ block.settings.quote }}"</p>
+                  </div>
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+
+      <!-- Values section -->
+      <div class="fr-values-section">
+        <h2 class="fr-values-title">{{ section.settings.values_title }}</h2>
+        <div class="fr-values-grid">
+          <div class="fr-value-item" data-value="quality">
+            <span class="fr-value-number">01</span>
+            <h4>{{ section.settings.value_1_title }}</h4>
+            <p>{{ section.settings.value_1_text }}</p>
+          </div>
+          <div class="fr-value-item" data-value="design">
+            <span class="fr-value-number">02</span>
+            <h4>{{ section.settings.value_2_title }}</h4>
+            <p>{{ section.settings.value_2_text }}</p>
+          </div>
+          <div class="fr-value-item" data-value="tradition">
+            <span class="fr-value-number">03</span>
+            <h4>{{ section.settings.value_3_title }}</h4>
+            <p>{{ section.settings.value_3_text }}</p>
+          </div>
+          <div class="fr-value-item" data-value="uniqueness">
+            <span class="fr-value-number">04</span>
+            <h4>{{ section.settings.value_4_title }}</h4>
+            <p>{{ section.settings.value_4_text }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="fr-timeline-section">
+        <h2 class="fr-timeline-title">{{ section.settings.timeline_title }}</h2>
+        <div class="fr-timeline">
+          <div class="fr-timeline-line"></div>
+          <div class="fr-timeline-item" data-year="1999">
+            <div class="fr-timeline-dot"></div>
+            <div class="fr-timeline-content">
+              <span class="fr-timeline-year">1999</span>
+              <p>{{ section.settings.milestone_1 }}</p>
+            </div>
+          </div>
+          <div class="fr-timeline-item" data-year="2010">
+            <div class="fr-timeline-dot"></div>
+            <div class="fr-timeline-content">
+              <span class="fr-timeline-year">2010</span>
+              <p>{{ section.settings.milestone_2 }}</p>
+            </div>
+          </div>
+          <div class="fr-timeline-item" data-year="2020">
+            <div class="fr-timeline-dot"></div>
+            <div class="fr-timeline-content">
+              <span class="fr-timeline-year">2020</span>
+              <p>{{ section.settings.milestone_3 }}</p>
+            </div>
+          </div>
+          <div class="fr-timeline-item" data-year="oggi">
+            <div class="fr-timeline-dot active"></div>
+            <div class="fr-timeline-content">
+              <span class="fr-timeline-year">Oggi</span>
+              <p>{{ section.settings.milestone_4 }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      {% if section.settings.show_cta %}
+      <div class="fr-cta-section">
+        <h3>{{ section.settings.cta_title }}</h3>
+        <div class="fr-cta-buttons">
+          {% if section.settings.cta_button_1_text != blank %}
+            <a href="{{ section.settings.cta_button_1_link }}" class="btn btn--primary">
+              {{ section.settings.cta_button_1_text }}
+            </a>
+          {% endif %}
+          {% if section.settings.cta_button_2_text != blank %}
+            <a href="{{ section.settings.cta_button_2_link }}" class="btn btn--secondary">
+              {{ section.settings.cta_button_2_text }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <style>
+    /* Container principale */
+    #shopify-section-{{ section.id }} .fr-about-hero {
+      position: relative;
+      overflow: hidden;
+      background-color: {{ section.settings.background_color }};
+    }
+
+    #shopify-section-{{ section.id }} .fr-hero-container {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Parallax background */
+    #shopify-section-{{ section.id }} .fr-parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    #shopify-section-{{ section.id }} .fr-bg-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.1);
+      transition: transform 0.3s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Content wrapper */
+    #shopify-section-{{ section.id }} .fr-content-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    /* Intro section */
+    #shopify-section-{{ section.id }} .fr-intro-section {
+      text-align: center;
+      margin-bottom: 80px;
+      animation: fadeInUp 1s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-subtitle {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: {{ section.settings.accent_color }};
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-main-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300;
+      color: {{ section.settings.text_color }};
+      margin-bottom: 30px;
+      line-height: 1.2;
+    }
+
+    #shopify-section-{{ section.id }} .fr-divider {
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, {{ section.settings.accent_color }}, transparent);
+      margin: 0 auto;
+    }
+
+    /* Story grid */
+    #shopify-section-{{ section.id }} .fr-story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-story-card {
+      background: {{ section.settings.card_background }};
+      border-radius: 12px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      animation: fadeInUp 1s ease backwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-story-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    #shopify-section-{{ section.id }} .fr-story-card:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    #shopify-section-{{ section.id }} .fr-story-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    #shopify-section-{{ section.id }} .fr-card-icon {
+      font-size: 48px;
+      color: {{ section.settings.accent_color }};
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-card-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 15px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-card-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: {{ section.settings.text_color }};
+      opacity: 0.9;
+    }
+
+    /* Founder cards */
+    #shopify-section-{{ section.id }} .fr-founder-card {
+      background: {{ section.settings.card_background }};
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-founder-inner {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      padding: 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-founder-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    #shopify-section-{{ section.id }} .fr-founder-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #shopify-section-{{ section.id }} .fr-founder-name {
+      font-size: 22px;
+      font-weight: 500;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 5px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-founder-role {
+      display: block;
+      font-size: 14px;
+      color: {{ section.settings.accent_color }};
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-founder-quote {
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.6;
+      color: {{ section.settings.text_color }};
+      opacity: 0.9;
+    }
+
+    /* Values section */
+    #shopify-section-{{ section.id }} .fr-values-section {
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-values-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 300;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 50px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-value-item {
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-value-item:nth-child(1) { animation-delay: 0.1s; }
+    #shopify-section-{{ section.id }} .fr-value-item:nth-child(2) { animation-delay: 0.2s; }
+    #shopify-section-{{ section.id }} .fr-value-item:nth-child(3) { animation-delay: 0.3s; }
+    #shopify-section-{{ section.id }} .fr-value-item:nth-child(4) { animation-delay: 0.4s; }
+
+    #shopify-section-{{ section.id }} .fr-value-number {
+      display: inline-block;
+      font-size: 48px;
+      font-weight: 200;
+      color: {{ section.settings.accent_color }};
+      opacity: 0.3;
+      margin-bottom: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-value-item h4 {
+      font-size: 20px;
+      font-weight: 500;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-value-item p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: {{ section.settings.text_color }};
+      opacity: 0.8;
+    }
+
+    /* Timeline */
+    #shopify-section-{{ section.id }} .fr-timeline-section {
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 300;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 60px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-line {
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      background: {{ section.settings.accent_color }}20;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-item {
+      position: relative;
+      margin-bottom: 60px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-item:nth-child(even) {
+      text-align: right;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-item:nth-child(odd) .fr-timeline-content {
+      padding-right: calc(50% + 40px);
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-item:nth-child(even) .fr-timeline-content {
+      padding-left: calc(50% + 40px);
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-dot {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: {{ section.settings.background_color }};
+      border: 3px solid {{ section.settings.accent_color }};
+      border-radius: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      transition: all 0.3s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-dot.active {
+      background: {{ section.settings.accent_color }};
+      box-shadow: 0 0 0 8px {{ section.settings.accent_color }}20;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-year {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: {{ section.settings.accent_color }};
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-timeline-content p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: {{ section.settings.text_color }};
+    }
+
+    /* CTA Section */
+    #shopify-section-{{ section.id }} .fr-cta-section {
+      text-align: center;
+      padding: 60px 40px;
+      background: {{ section.settings.cta_background }};
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    }
+
+    #shopify-section-{{ section.id }} .fr-cta-section h3 {
+      font-size: 32px;
+      font-weight: 300;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Responsive */
+    @media only screen and (max-width: 768px) {
+      #shopify-section-{{ section.id }} .fr-content-wrapper {
+        padding: 40px 15px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-intro-section {
+        margin-bottom: 50px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-main-title {
+        font-size: 2rem;
+      }
+
+      #shopify-section-{{ section.id }} .fr-story-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-founder-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      #shopify-section-{{ section.id }} .fr-values-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline-line {
+        left: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline-item {
+        text-align: left !important;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline-item .fr-timeline-content {
+        padding-left: 60px !important;
+        padding-right: 0 !important;
+      }
+
+      #shopify-section-{{ section.id }} .fr-timeline-dot {
+        left: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-cta-section {
+        padding: 40px 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #shopify-section-{{ section.id }} .fr-cta-buttons .btn {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+
+    /* Funzioni base - Padding e Margin */
+    @media only screen and (min-width: 769px) {
+      #shopify-section-{{ section.id }} {
+        max-width: {{ section.settings.max_dimensione }};
+        margin: 0 auto;
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      }
+
+      {% if section.settings.nascondi_desktop %}
+        #shopify-section-{{ section.id }} {
+          display: none;
+        }
+      {% endif %}
+    }
+
+    @media only screen and (max-width: 768px) {
+      #shopify-section-{{ section.id }} {
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      }
+
+      {% if section.settings.nascondi_mobile %}
+        #shopify-section-{{ section.id }} {
+          display: none;
+        }
+      {% endif %}
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const section = document.querySelector('#shopify-section-{{ section.id }}');
+      
+      // Parallax effect
+      const parallaxBg = section.querySelector('.fr-bg-image');
+      if (parallaxBg) {
+        window.addEventListener('scroll', () => {
+          const scrolled = window.pageYOffset;
+          const rate = scrolled * -0.5;
+          parallaxBg.style.transform = `translateY(${rate}px) scale(1.1)`;
+        });
+      }
+
+      // Timeline animation on scroll
+      const timelineItems = section.querySelectorAll('.fr-timeline-item');
+      const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            const dot = entry.target.querySelector('.fr-timeline-dot');
+            if (dot) {
+              setTimeout(() => {
+                dot.classList.add('active');
+              }, 300);
+            }
+          }
+        });
+      }, observerOptions);
+
+      timelineItems.forEach(item => {
+        observer.observe(item);
+      });
+
+      // Value items animation
+      const valueItems = section.querySelectorAll('.fr-value-item');
+      valueItems.forEach(item => {
+        observer.observe(item);
+      });
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Chi Siamo",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto Principale"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Dal 1999"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Titolo Principale",
+      "default": "Design Italiano, Anima Indiana"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Immagine di Sfondo"
+    },
+    {
+      "type": "header",
+      "content": "Sezione Valori"
+    },
+    {
+      "type": "text",
+      "id": "values_title",
+      "label": "Titolo Sezione Valori",
+      "default": "I Nostri Valori"
+    },
+    {
+      "type": "text",
+      "id": "value_1_title",
+      "label": "Valore 1 - Titolo",
+      "default": "Qualità Artigianale"
+    },
+    {
+      "type": "textarea",
+      "id": "value_1_text",
+      "label": "Valore 1 - Testo",
+      "default": "Ogni pezzo è realizzato a mano con cura"
+    },
+    {
+      "type": "text",
+      "id": "value_2_title",
+      "label": "Valore 2 - Titolo",
+      "default": "Design Italiano"
+    },
+    {
+      "type": "textarea",
+      "id": "value_2_text",
+      "label": "Valore 2 - Testo",
+      "default": "Creazioni disegnate nel cuore di Roma"
+    },
+    {
+      "type": "text",
+      "id": "value_3_title",
+      "label": "Valore 3 - Titolo",
+      "default": "Tradizione Indiana"
+    },
+    {
+      "type": "textarea",
+      "id": "value_3_text",
+      "label": "Valore 3 - Testo",
+      "default": "Tecniche millenarie di tessuti e stampe"
+    },
+    {
+      "type": "text",
+      "id": "value_4_title",
+      "label": "Valore 4 - Titolo",
+      "default": "Pezzi Unici"
+    },
+    {
+      "type": "textarea",
+      "id": "value_4_text",
+      "label": "Valore 4 - Testo",
+      "default": "Limited edition e produzioni esclusive"
+    },
+    {
+      "type": "header",
+      "content": "Timeline"
+    },
+    {
+      "type": "text",
+      "id": "timeline_title",
+      "label": "Titolo Timeline",
+      "default": "La Nostra Storia"
+    },
+    {
+      "type": "textarea",
+      "id": "milestone_1",
+      "label": "1999 - Descrizione",
+      "default": "Lara e Sibilla fondano Fabindia Roma con una visione unica"
+    },
+    {
+      "type": "textarea",
+      "id": "milestone_2",
+      "label": "2010 - Descrizione",
+      "default": "Apertura negozio davanti Castel Sant'Angelo"
+    },
+    {
+      "type": "textarea",
+      "id": "milestone_3",
+      "label": "2020 - Descrizione",
+      "default": "Nuova unit produttiva dedicata esclusivamente a noi"
+    },
+    {
+      "type": "textarea",
+      "id": "milestone_4",
+      "label": "Oggi - Descrizione",
+      "default": "26 anni di eccellenza nel design italiano-indiano"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Mostra CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "Titolo CTA",
+      "default": "Scopri la nostra collezione"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_1_text",
+      "label": "Testo Bottone 1",
+      "default": "Visita il Negozio"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_1_link",
+      "label": "Link Bottone 1"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_2_text",
+      "label": "Testo Bottone 2",
+      "default": "Shop Online"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_2_link",
+      "label": "Link Bottone 2"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore Sfondo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore Testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Colore Titoli",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore Accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Sfondo Card",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Sfondo CTA",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color_1",
+      "label": "Overlay Colore 1",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color_2",
+      "label": "Overlay Colore 2",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "text",
+      "id": "overlay_opacity",
+      "label": "Opacità Overlay",
+      "default": "90",
+      "info": "Valore da 00 a FF in esadecimale"
+    },
+    {
+      "type": "header",
+      "content": "Impostazioni Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da Desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "story_card",
+      "name": "Card Storia",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icona (HTML)",
+          "default": "✨"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "La Nostra Visione"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Testo",
+          "default": "Uniamo il meglio di due mondi: la creatività italiana e l'artigianato indiano"
+        }
+      ]
+    },
+    {
+      "type": "founder_card",
+      "name": "Card Fondatrici",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nome",
+          "default": "Lara Patriarca"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Ruolo",
+          "default": "Co-Fondatrice"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Citazione",
+          "default": "Ci ispiriamo alla tradizione orientale reinterpretandola"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Chi Siamo",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "story_card",
+          "settings": {
+            "icon": "🎨",
+            "title": "Design Italiano",
+            "text": "Ogni creazione nasce nel cuore di Roma, dove il design italiano incontra l'ispirazione orientale"
+          }
+        },
+        {
+          "type": "story_card",
+          "settings": {
+            "icon": "🧵",
+            "title": "Artigianato Indiano",
+            "text": "Collaboriamo con artigiani selezionati che realizzano a mano ogni singolo pezzo"
+          }
+        },
+        {
+          "type": "story_card",
+          "settings": {
+            "icon": "💎",
+            "title": "Pezzi Unici",
+            "text": "Limited edition e produzioni esclusive che raccontano una storia di qualità e unicità"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

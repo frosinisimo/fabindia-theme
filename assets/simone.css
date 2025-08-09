@@ -11,7 +11,10 @@
 }
 
 
+.btn, .rte .btn, .shopify-payment-button .shopify-payment-button__button--unbranded {
+    font-weight: 400!important;
 
+}
 
 .fr-color-name {
     -webkit-line-clamp: var(--line-clamp-count, 1) !important;

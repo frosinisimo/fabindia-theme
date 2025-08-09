@@ -11,10 +11,199 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {}
+    },
+    "hero_chi_siamo_9jneFH": {
+      "type": "hero-chi-siamo",
+      "blocks": {
+        "story_card_8GkkYM": {
+          "type": "story_card",
+          "settings": {
+            "icon": "🎨",
+            "title": "Design Italiano",
+            "text": "Ogni creazione nasce nel cuore di Roma, dove il design italiano incontra l'ispirazione orientale"
+          }
+        },
+        "story_card_JVyJqV": {
+          "type": "story_card",
+          "settings": {
+            "icon": "🧵",
+            "title": "Artigianato Indiano",
+            "text": "Collaboriamo con artigiani selezionati che realizzano a mano ogni singolo pezzo"
+          }
+        },
+        "story_card_Y4VWzq": {
+          "type": "story_card",
+          "settings": {
+            "icon": "💎",
+            "title": "Pezzi Unici",
+            "text": "Limited edition e produzioni esclusive che raccontano una storia di qualità e unicità"
+          }
+        }
+      },
+      "block_order": [
+        "story_card_8GkkYM",
+        "story_card_JVyJqV",
+        "story_card_Y4VWzq"
+      ],
+      "name": "Hero Chi Siamo",
+      "settings": {
+        "subtitle": "Dal 1999",
+        "main_title": "Design Italiano, Anima Indiana",
+        "values_title": "I Nostri Valori",
+        "value_1_title": "Qualità Artigianale",
+        "value_1_text": "Ogni pezzo è realizzato a mano con cura",
+        "value_2_title": "Design Italiano",
+        "value_2_text": "Creazioni disegnate nel cuore di Roma",
+        "value_3_title": "Tradizione Indiana",
+        "value_3_text": "Tecniche millenarie di tessuti e stampe",
+        "value_4_title": "Pezzi Unici",
+        "value_4_text": "Limited edition e produzioni esclusive",
+        "timeline_title": "La Nostra Storia",
+        "milestone_1": "Lara e Sibilla fondano Fabindia Roma con una visione unica",
+        "milestone_2": "Apertura negozio davanti Castel Sant'Angelo",
+        "milestone_3": "Nuova unit produttiva dedicata esclusivamente a noi",
+        "milestone_4": "26 anni di eccellenza nel design italiano-indiano",
+        "show_cta": false,
+        "cta_title": "Scopri la nostra collezione",
+        "cta_button_1_text": "Visita il Negozio",
+        "cta_button_1_link": "",
+        "cta_button_2_text": "Shop Online",
+        "cta_button_2_link": "",
+        "background_color": "#FEFEFE",
+        "text_color": "#3E3E3E",
+        "heading_color": "#3E3E3E",
+        "accent_color": "#C33A32",
+        "card_background": "#F0E6E0",
+        "cta_background": "#E5DDD5",
+        "overlay_color_1": "#ffffff",
+        "overlay_color_2": "#ffffff",
+        "overlay_opacity": "90",
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_top_desktop": 0,
+        "padding_bottom_desktop": 0,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "none"
+      }
+    },
+    "viaggio_creativo_H4f8D7": {
+      "type": "viaggio-creativo",
+      "blocks": {
+        "process_step_JhEpEF": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "01",
+            "step_title": "Concezione a Roma",
+            "step_description": "Nel nostro studio romano nascono i design che fondono l'eleganza italiana con i pattern tradizionali indiani",
+            "show_techniques": true,
+            "technique_1": "Design",
+            "technique_2": "Pattern",
+            "technique_3": "Colori"
+          }
+        },
+        "process_step_CfNh8f": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "02",
+            "step_title": "Produzione in India",
+            "step_description": "I nostri artigiani trasformano i disegni in realtà utilizzando tecniche millenarie tramandate di generazione",
+            "show_techniques": true,
+            "technique_1": "Block Print",
+            "technique_2": "Trapuntatura",
+            "technique_3": "Ricamo"
+          }
+        },
+        "process_step_ahegft": {
+          "type": "process_step",
+          "settings": {
+            "step_number": "03",
+            "step_title": "Qualità a Roma",
+            "step_description": "Ogni pezzo ritorna a Roma per un rigoroso controllo qualità prima di raggiungere le vostre mani",
+            "show_techniques": true,
+            "technique_1": "Controllo",
+            "technique_2": "Selezione",
+            "technique_3": "Eccellenza"
+          }
+        }
+      },
+      "block_order": [
+        "process_step_JhEpEF",
+        "process_step_CfNh8f",
+        "process_step_ahegft"
+      ],
+      "name": "Viaggio Creativo",
+      "settings": {
+        "eyebrow_text": "Il Nostro Processo",
+        "section_title": "Dal Design alla Realizzazione",
+        "section_subtitle": "Un viaggio che unisce la creatività italiana con la maestria artigianale indiana",
+        "techniques_title": "Le Nostre Tecniche Artigianali",
+        "block_print_description": "Antica tecnica di stampa con blocchi di legno intagliati a mano, tramandati di generazione in generazione.",
+        "trapuntatura_description": "La nostra lavorazione iconica, completamente reversibile, richiede maestria unica.",
+        "ricamo_description": "Ricami elaborati realizzati con fili di seta pregiati e tecniche tradizionali secolari.",
+        "screen_description": "Stampa serigrafica per pattern complessi con colori vibranti e duraturi.",
+        "show_quote": true,
+        "quote_text": "Ci ispiriamo alla tradizione orientale reinterpretandola, puntando sulla cura dei tagli, sui dettagli e sulla qualità e varietà dei tessuti",
+        "quote_author": "Lara & Sibilla Patriarca",
+        "show_gallery": true,
+        "gallery_title": "Il Processo in Immagini",
+        "gallery_image_1": "shopify://shop_images/amazzonia2_06a01e3e-cb0b-4387-9db4-2980774857d8.jpg",
+        "gallery_caption_1": "Selezione tessuti",
+        "gallery_image_2": "shopify://shop_images/timo.jpg",
+        "gallery_caption_2": "Block print",
+        "gallery_image_3": "shopify://shop_images/timo.jpg",
+        "gallery_caption_3": "Trapuntatura",
+        "gallery_image_4": "shopify://shop_images/maggiorana1.jpg",
+        "gallery_caption_4": "Ricamo a mano",
+        "gallery_image_5": "shopify://shop_images/timo.jpg",
+        "gallery_caption_5": "Controllo qualità",
+        "gallery_image_6": "shopify://shop_images/shopperambience1.jpg",
+        "gallery_caption_6": "Prodotto finito",
+        "show_cta": true,
+        "cta_title": "Scopri le Nostre Creazioni",
+        "cta_subtitle": "Ogni pezzo racconta una storia di passione e maestria",
+        "cta_button_text": "Esplora la Collezione",
+        "cta_link": "",
+        "background_color": "#FEFEFE",
+        "heading_color": "#3E3E3E",
+        "text_color": "#3E3E3E",
+        "accent_color": "#C33A32",
+        "card_background": "#F0E6E0",
+        "roma_color": "#C33A32",
+        "india_color": "#B5A397",
+        "line_color": "#A4B8C4",
+        "tag_background": "#E5DDD5",
+        "tag_color": "#3E3E3E",
+        "gradient_start": "#C33A32",
+        "gradient_end": "#B5A397",
+        "quote_background": "#E5DDD5",
+        "cta_gradient_start": "#F0E6E0",
+        "cta_gradient_end": "#E5DDD5",
+        "cta_heading_color": "#3E3E3E",
+        "cta_text_color": "#3E3E3E",
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_top_desktop": 0,
+        "padding_bottom_desktop": 0,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "none"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "hero_chi_siamo_9jneFH",
+    "viaggio_creativo_H4f8D7"
   ]
 }

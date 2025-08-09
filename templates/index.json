@@ -34,27 +34,6 @@
             "max_products": 10
           }
         },
-        "collection_block_qJTtXx": {
-          "type": "collection_block",
-          "disabled": true,
-          "settings": {
-            "hero_image": "shopify://shop_images/blockprinttavololavoro_5be6554f-9814-479a-8309-7c91fea886e4.jpg",
-            "overlay_opacity": 20,
-            "hero_title": "Accessori\nUnici",
-            "hero_subtitle": "Dettagli che fanno la differenza",
-            "text_alignment": "text-center",
-            "hero_text_color": "#ffffff",
-            "collection_image": "shopify://shop_images/IMG_8445.jpg",
-            "collection_title": "Accessori",
-            "collection_subtitle": "Scopri",
-            "collection_link": "shopify://collections/accessori",
-            "enable_product_animation": false,
-            "collection": "accessori",
-            "animation_type": "fade",
-            "animation_speed": 1.5,
-            "max_products": 10
-          }
-        },
         "collection_block_NCcBAd": {
           "type": "collection_block",
           "disabled": true,
@@ -79,7 +58,6 @@
       },
       "block_order": [
         "collection_block_dcraHM",
-        "collection_block_qJTtXx",
         "collection_block_NCcBAd"
       ],
       "name": "Hero con Collezioni Interactive",
@@ -100,13 +78,13 @@
         "cta_text_color": "#ffffff",
         "cta_border_color": "#c33a32",
         "content_vertical_position": 50,
-        "content_vertical_position_mobile": 45,
-        "desktop_height": "100vh-with-collections",
-        "mobile_height": "natural",
+        "content_vertical_position_mobile": 50,
+        "desktop_height": "750px",
+        "mobile_height": "450px",
         "collection_content_position": "below",
         "half_overlap": false,
         "overlap_offset_desktop": 200,
-        "overlap_offset_mobile": 60,
+        "overlap_offset_mobile": 100,
         "collections_layout": "grid",
         "collection_card_width": 340,
         "collections_columns": "3",
@@ -135,14 +113,14 @@
       "type": "collection-pro",
       "name": "Featured Collection Pro",
       "settings": {
-        "title": "Collezione in Evidenza",
+        "title": "{{ section.settings.home_featured_products.title }}",
         "subtitle": "Scopri i nostri prodotti selezionati",
         "home_featured_products": "abbigliamento",
         "product_mode": "automatic",
         "per_row": 4,
         "per_row_mobile": 2,
         "rows": 1,
-        "mobile_scrollable": true,
+        "mobile_scrollable": false,
         "grid_gap_desktop": 20,
         "grid_gap_mobile": 12,
         "view_all": true,
@@ -189,9 +167,9 @@
         "max_width": "default",
         "hide_on_mobile": false,
         "hide_on_desktop": false,
-        "padding_top_mobile": 24,
+        "padding_top_mobile": 0,
         "padding_bottom_mobile": 24,
-        "margin_top_mobile": 0,
+        "margin_top_mobile": -60,
         "margin_bottom_mobile": 0,
         "padding_top_desktop": 48,
         "padding_bottom_desktop": 48,
@@ -199,10 +177,198 @@
         "margin_bottom_desktop": 0,
         "enable_smooth_transitions": false
       }
+    },
+    "domande_hero_DxnLWp": {
+      "type": "domande-hero",
+      "blocks": {
+        "faq_n6XAyJ": {
+          "type": "faq",
+          "settings": {
+            "question": "Come posso tracciare il mio ordine?",
+            "answer": "<p>Dopo la spedizione, riceverai un'email con il numero di tracking. Puoi utilizzarlo per monitorare il tuo ordine in tempo reale.</p>",
+            "link_text": "Scopri di più",
+            "link_url": "shopify://products/agra"
+          }
+        },
+        "faq_HHgxcb": {
+          "type": "faq",
+          "settings": {
+            "question": "Quali metodi di pagamento accettate?",
+            "answer": "<p>Accettiamo tutte le principali carte di credito, PayPal, Apple Pay e bonifico bancario. Tutti i pagamenti sono processati in modo sicuro.</p>",
+            "link_text": "",
+            "link_url": ""
+          }
+        },
+        "faq_Re4XQz": {
+          "type": "faq",
+          "settings": {
+            "question": "Quanto tempo ci vuole per la consegna?",
+            "answer": "<p>La consegna standard richiede 3-5 giorni lavorativi. Offriamo anche spedizione express in 24-48 ore per ordini urgenti.</p>",
+            "link_text": "",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "faq_n6XAyJ",
+        "faq_HHgxcb",
+        "faq_Re4XQz"
+      ],
+      "name": "FAQ Elite",
+      "settings": {
+        "show_badge": true,
+        "badge_text": "FAQ",
+        "title_prefix": "Domande",
+        "title_accent": "Frequenti",
+        "title_suffix": "",
+        "subtitle": "Trova le risposte alle domande più comuni",
+        "show_decoration": true,
+        "layout_type": "grid",
+        "accordion_max_width": 1000,
+        "grid_columns": 1,
+        "grid_gap": 35,
+        "show_numbers": true,
+        "open_first": false,
+        "item_radius": 12,
+        "item_gap": 16,
+        "header_spacing": 50,
+        "footer_spacing": 60,
+        "question_size": 1.5,
+        "question_size_mobile": 1,
+        "question_weight": "400",
+        "answer_size": 1,
+        "answer_size_mobile": 1,
+        "question_padding": 25,
+        "question_padding_mobile": 18,
+        "answer_padding": 25,
+        "answer_padding_mobile": 18,
+        "background_color": "#fefefe",
+        "accent_color": "#e5ddd5",
+        "secondary_accent": "#f0e6e0",
+        "badge_bg": "#c33a32",
+        "badge_color": "#ffffff",
+        "title_color": "#3e3e3e",
+        "accent_text_color": "#c33a32",
+        "subtitle_color": "#3e3e3e",
+        "decoration_color": "#b5a397",
+        "item_bg": "#ffffff",
+        "item_border": "#e5ddd5",
+        "item_hover_border": "#b5a397",
+        "item_active_bg": "#fefefe",
+        "item_active_border": "#c33a32",
+        "number_bg": "#f0e6e0",
+        "number_color": "#c33a32",
+        "number_active_bg": "#c33a32",
+        "number_active_color": "#ffffff",
+        "question_color": "#3e3e3e",
+        "question_active_color": "#c33a32",
+        "answer_color": "#3e3e3e",
+        "toggle_color": "#b5a397",
+        "toggle_active_color": "#c33a32",
+        "highlight_color": "#c33a32",
+        "highlight_underline": "#f0e6e0",
+        "show_stats": false,
+        "stats_bg": "#f0e6e0",
+        "stat_number_color": "#c33a32",
+        "stat_label_color": "#3e3e3e",
+        "stat1_number": "100+",
+        "stat1_label": "Clienti soddisfatti",
+        "stat2_number": "24h",
+        "stat2_label": "Risposta garantita",
+        "stat3_number": "98%",
+        "stat3_label": "Tasso soddisfazione",
+        "show_cta": true,
+        "cta_text": "Non hai trovato la risposta?",
+        "cta_button_text": "CONTATTACI SU WHATSAPP",
+        "cta_link": "",
+        "cta_text_color": "#3e3e3e",
+        "btn_bg": "#c33a32",
+        "btn_color": "#ffffff",
+        "btn_hover_bg": "#a02e28",
+        "enable_pattern": true,
+        "pattern_opacity": 30,
+        "enable_schema": true,
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 30,
+        "padding_bottom_mobile": 30,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "1200px"
+      }
+    },
+    "etnico_pro_hJWiJp": {
+      "type": "etnico-pro",
+      "blocks": {
+        "value_c7rmHy": {
+          "type": "value",
+          "disabled": true,
+          "settings": {
+            "title": "Design Universale",
+            "text": "Trasversale, senza confini"
+          }
+        },
+        "value_gXYKKW": {
+          "type": "value",
+          "disabled": true,
+          "settings": {
+            "title": "Artigianato Vero",
+            "text": "26 anni di eccellenza"
+          }
+        },
+        "value_wGUca7": {
+          "type": "value",
+          "disabled": true,
+          "settings": {
+            "title": "Visione Italiana",
+            "text": "Roma incontra il mondo"
+          }
+        }
+      },
+      "block_order": [
+        "value_c7rmHy",
+        "value_gXYKKW",
+        "value_wGUca7"
+      ],
+      "name": "Hero Non Etnico",
+      "settings": {
+        "title_1": "Design Italiano",
+        "title_2": "Artigianato d'Eccellenza",
+        "subtitle": "Non un prodotto etnico. Una visione contemporanea dove Roma incontra l'India.",
+        "description": "<p>Da 26 anni creiamo collezioni uniche che trascendono i confini geografici. I nostri tessuti potrebbero essere Liberty, i pattern provenzali, lo stile nordeuropeo. È questo il nostro segreto: <em>l'universalità dell'eleganza</em>.</p>",
+        "cta_text": "Scopri le Collezioni",
+        "cta_link": "",
+        "hero_image": "shopify://shop_images/prati_molli1.jpg",
+        "image_alt": "Fabindia Roma Design",
+        "text_align_desktop": "left",
+        "text_align_mobile": "center",
+        "primary_color": "#c33a32",
+        "secondary_color": "#b5a397",
+        "bg_color": "#fefefe",
+        "text_color": "#3e3e3e",
+        "accent_color": "#e5ddd5",
+        "nascondi_mobile": false,
+        "nascondi_desktop": false,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top_desktop": 60,
+        "padding_bottom_desktop": 60,
+        "margin_top_mobile": 0,
+        "margin_bottom_mobile": 0,
+        "margin_top_desktop": 0,
+        "margin_bottom_desktop": 0,
+        "max_dimensione": "none"
+      }
     }
   },
   "order": [
     "hero_collection_slider_ercxMH",
-    "collection_pro_FQ4y9H"
+    "collection_pro_FQ4y9H",
+    "domande_hero_DxnLWp",
+    "etnico_pro_hJWiJp"
   ]
 }

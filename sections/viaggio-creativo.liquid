@@ -1,0 +1,1297 @@
+<!-- Sezione Viaggio Creativo - Fabindia Roma -->
+<section class="fr-viaggio-creativo">
+  <div class="fr-viaggio-container" data-section-id="{{ section.id }}">
+    
+    <!-- Header sezione -->
+    <div class="fr-section-header">
+      <span class="fr-eyebrow">{{ section.settings.eyebrow_text }}</span>
+      <h2 class="fr-section-title">{{ section.settings.section_title }}</h2>
+      <p class="fr-section-subtitle">{{ section.settings.section_subtitle }}</p>
+    </div>
+
+    <!-- Mappa interattiva del viaggio -->
+    <div class="fr-journey-map">
+      <svg class="fr-map-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
+        <!-- Linea di connessione animata -->
+        <path class="fr-connection-line" d="M 200 200 Q 600 100 1000 200" stroke="{{ section.settings.line_color }}" stroke-width="2" fill="none" stroke-dasharray="5,5">
+          <animate attributeName="stroke-dashoffset" values="10;0" dur="0.5s" repeatCount="indefinite"/>
+        </path>
+        
+        <!-- Roma -->
+        <g class="fr-location-roma" transform="translate(200, 200)">
+          <circle r="60" fill="{{ section.settings.roma_color }}" opacity="0.2"/>
+          <circle r="40" fill="{{ section.settings.roma_color }}" opacity="0.4"/>
+          <circle r="20" fill="{{ section.settings.roma_color }}"/>
+          <text y="90" text-anchor="middle" class="fr-location-text">ROMA</text>
+        </g>
+        
+        <!-- India -->
+        <g class="fr-location-india" transform="translate(1000, 200)">
+          <circle r="60" fill="{{ section.settings.india_color }}" opacity="0.2"/>
+          <circle r="40" fill="{{ section.settings.india_color }}" opacity="0.4"/>
+          <circle r="20" fill="{{ section.settings.india_color }}"/>
+          <text y="90" text-anchor="middle" class="fr-location-text">INDIA</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Steps del processo -->
+    <div class="fr-process-steps">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'process_step' %}
+            <div class="fr-step-card" data-step="{{ forloop.index }}" {{ block.shopify_attributes }}>
+              <div class="fr-step-number">{{ block.settings.step_number }}</div>
+              <div class="fr-step-content">
+                <h3 class="fr-step-title">{{ block.settings.step_title }}</h3>
+                <p class="fr-step-description">{{ block.settings.step_description }}</p>
+                
+                {% if block.settings.show_techniques %}
+                <div class="fr-techniques-preview">
+                  <span class="fr-technique-tag">{{ block.settings.technique_1 }}</span>
+                  <span class="fr-technique-tag">{{ block.settings.technique_2 }}</span>
+                  <span class="fr-technique-tag">{{ block.settings.technique_3 }}</span>
+                </div>
+                {% endif %}
+                
+                {% if block.settings.step_image != blank %}
+                <div class="fr-step-image">
+                  <img src="{{ block.settings.step_image | image_url: width: 600 }}" 
+                       alt="{{ block.settings.step_title }}"
+                       loading="lazy">
+                </div>
+                {% endif %}
+              </div>
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    <!-- Tecniche artigianali showcase -->
+    <div class="fr-techniques-section">
+      <h3 class="fr-techniques-title">{{ section.settings.techniques_title }}</h3>
+      
+      <div class="fr-techniques-grid">
+        <!-- Block Print -->
+        <div class="fr-technique-card" data-technique="block-print">
+          <div class="fr-technique-front">
+            <div class="fr-technique-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60">
+                <rect x="10" y="10" width="40" height="40" fill="{{ section.settings.accent_color }}" opacity="0.2"/>
+                <rect x="15" y="15" width="30" height="30" fill="{{ section.settings.accent_color }}" opacity="0.4"/>
+                <rect x="20" y="20" width="20" height="20" fill="{{ section.settings.accent_color }}"/>
+              </svg>
+            </div>
+            <h4>Block Print</h4>
+            <p class="fr-technique-time">6-8 ore per pezzo</p>
+          </div>
+          <div class="fr-technique-back">
+            <h4>Block Print</h4>
+            <p>{{ section.settings.block_print_description }}</p>
+            <ul class="fr-technique-details">
+              <li>Blocchi di legno secolari</li>
+              <li>Colori vegetali naturali</li>
+              <li>Allineamento millimetrico</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Trapuntatura -->
+        <div class="fr-technique-card" data-technique="trapuntatura">
+          <div class="fr-technique-front">
+            <div class="fr-technique-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60">
+                <path d="M10,30 L30,10 L50,30 L30,50 Z" fill="{{ section.settings.accent_color }}" opacity="0.3"/>
+                <path d="M20,30 L30,20 L40,30 L30,40 Z" fill="{{ section.settings.accent_color }}"/>
+              </svg>
+            </div>
+            <h4>Trapuntatura</h4>
+            <p class="fr-technique-time">8-10 ore per giacca</p>
+          </div>
+          <div class="fr-technique-back">
+            <h4>Trapuntatura</h4>
+            <p>{{ section.settings.trapuntatura_description }}</p>
+            <ul class="fr-technique-details">
+              <li>Completamente reversibile</li>
+              <li>Cuciture millimetriche</li>
+              <li>Imbottitura naturale</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Ricamo -->
+        <div class="fr-technique-card" data-technique="ricamo">
+          <div class="fr-technique-front">
+            <div class="fr-technique-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60">
+                <circle cx="30" cy="30" r="20" fill="none" stroke="{{ section.settings.accent_color }}" stroke-width="2" stroke-dasharray="2,2"/>
+                <circle cx="30" cy="30" r="10" fill="{{ section.settings.accent_color }}" opacity="0.5"/>
+                <circle cx="30" cy="30" r="5" fill="{{ section.settings.accent_color }}"/>
+              </svg>
+            </div>
+            <h4>Ricamo</h4>
+            <p class="fr-technique-time">3-4 giorni per capo</p>
+          </div>
+          <div class="fr-technique-back">
+            <h4>Ricamo</h4>
+            <p>{{ section.settings.ricamo_description }}</p>
+            <ul class="fr-technique-details">
+              <li>Fili di seta pregiati</li>
+              <li>Disegni esclusivi</li>
+              <li>Tecniche secolari</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Stampa Screen -->
+        <div class="fr-technique-card" data-technique="screen">
+          <div class="fr-technique-front">
+            <div class="fr-technique-icon">
+              <svg width="60" height="60" viewBox="0 0 60 60">
+                <rect x="15" y="15" width="30" height="30" fill="none" stroke="{{ section.settings.accent_color }}" stroke-width="2"/>
+                <line x1="15" y1="25" x2="45" y2="25" stroke="{{ section.settings.accent_color }}" stroke-width="1" opacity="0.5"/>
+                <line x1="15" y1="35" x2="45" y2="35" stroke="{{ section.settings.accent_color }}" stroke-width="1" opacity="0.5"/>
+                <line x1="25" y1="15" x2="25" y2="45" stroke="{{ section.settings.accent_color }}" stroke-width="1" opacity="0.5"/>
+                <line x1="35" y1="15" x2="35" y2="45" stroke="{{ section.settings.accent_color }}" stroke-width="1" opacity="0.5"/>
+              </svg>
+            </div>
+            <h4>Screen Print</h4>
+            <p class="fr-technique-time">4-6 ore per tessuto</p>
+          </div>
+          <div class="fr-technique-back">
+            <h4>Screen Print</h4>
+            <p>{{ section.settings.screen_description }}</p>
+            <ul class="fr-technique-details">
+              <li>Telai in seta tensionata</li>
+              <li>Colori vibranti duraturi</li>
+              <li>Pattern complessi</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote section -->
+    {% if section.settings.show_quote %}
+    <div class="fr-quote-section">
+      <blockquote class="fr-quote">
+        <p>"{{ section.settings.quote_text }}"</p>
+        <cite>{{ section.settings.quote_author }}</cite>
+      </blockquote>
+    </div>
+    {% endif %}
+
+    <!-- Gallery showcase -->
+    {% if section.settings.show_gallery %}
+    <div class="fr-gallery-section">
+      <h3 class="fr-gallery-title">{{ section.settings.gallery_title }}</h3>
+      <div class="fr-gallery-grid">
+        {% for i in (1..6) %}
+          {% assign image_setting = 'gallery_image_' | append: i %}
+          {% assign caption_setting = 'gallery_caption_' | append: i %}
+          {% if section.settings[image_setting] != blank %}
+            <div class="fr-gallery-item" data-index="{{ i }}">
+              <img src="{{ section.settings[image_setting] | image_url: width: 400 }}" 
+                   alt="Processo artigianale {{ i }}"
+                   loading="lazy">
+              <div class="fr-gallery-overlay">
+                <span class="fr-gallery-caption">{{ section.settings[caption_setting] }}</span>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- CTA finale -->
+    {% if section.settings.show_cta %}
+    <div class="fr-cta-wrapper">
+      <h3>{{ section.settings.cta_title }}</h3>
+      <p>{{ section.settings.cta_subtitle }}</p>
+      <a href="{{ section.settings.cta_link }}" class="btn btn--primary">
+        {{ section.settings.cta_button_text }}
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <style>
+    /* Container principale */
+    #shopify-section-{{ section.id }} .fr-viaggio-creativo {
+      background: {{ section.settings.background_color }};
+      position: relative;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .fr-viaggio-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    /* Header sezione */
+    #shopify-section-{{ section.id }} .fr-section-header {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInUp 1s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: {{ section.settings.accent_color }};
+      margin-bottom: 15px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    #shopify-section-{{ section.id }} .fr-section-subtitle {
+      font-size: 18px;
+      color: {{ section.settings.text_color }};
+      opacity: 0.8;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Mappa del viaggio */
+    #shopify-section-{{ section.id }} .fr-journey-map {
+      margin-bottom: 80px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease 0.5s forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-map-svg {
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-location-text {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      fill: {{ section.settings.text_color }};
+    }
+
+    #shopify-section-{{ section.id }} .fr-location-roma,
+    #shopify-section-{{ section.id }} .fr-location-india {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Process steps */
+    #shopify-section-{{ section.id }} .fr-process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-card {
+      background: {{ section.settings.card_background }};
+      border-radius: 16px;
+      padding: 40px 30px;
+      position: relative;
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-card:nth-child(1) { animation-delay: 0.2s; }
+    #shopify-section-{{ section.id }} .fr-step-card:nth-child(2) { animation-delay: 0.4s; }
+    #shopify-section-{{ section.id }} .fr-step-card:nth-child(3) { animation-delay: 0.6s; }
+
+    #shopify-section-{{ section.id }} .fr-step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-number {
+      position: absolute;
+      top: -20px;
+      left: 30px;
+      width: 50px;
+      height: 50px;
+      background: {{ section.settings.accent_color }};
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 300;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 15px;
+      margin-top: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-description {
+      font-size: 16px;
+      line-height: 1.6;
+      color: {{ section.settings.text_color }};
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-techniques-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-tag {
+      display: inline-block;
+      padding: 5px 15px;
+      background: {{ section.settings.tag_background }};
+      color: {{ section.settings.tag_color }};
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-image {
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-image img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-step-card:hover .fr-step-image img {
+      transform: scale(1.05);
+    }
+
+    /* Tecniche showcase */
+    #shopify-section-{{ section.id }} .fr-techniques-section {
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-techniques-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 300;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 50px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-techniques-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-card {
+      position: relative;
+      height: 300px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-front,
+    #shopify-section-{{ section.id }} .fr-technique-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: {{ section.settings.card_background }};
+      border-radius: 16px;
+      padding: 30px;
+      backface-visibility: hidden;
+      transition: transform 0.6s;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(135deg, {{ section.settings.gradient_start }}, {{ section.settings.gradient_end }});
+      color: white;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-card:hover .fr-technique-front {
+      transform: rotateY(-180deg);
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-card:hover .fr-technique-back {
+      transform: rotateY(0);
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-icon {
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-card h4 {
+      font-size: 22px;
+      font-weight: 500;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 10px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-back h4 {
+      color: white;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-time {
+      font-size: 14px;
+      color: {{ section.settings.accent_color }};
+      font-weight: 500;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-back p {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-details {
+      list-style: none;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-details li {
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    #shopify-section-{{ section.id }} .fr-technique-details li:last-child {
+      border-bottom: none;
+    }
+
+    /* Quote section */
+    #shopify-section-{{ section.id }} .fr-quote-section {
+      text-align: center;
+      padding: 60px 40px;
+      background: {{ section.settings.quote_background }};
+      border-radius: 16px;
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-quote {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    #shopify-section-{{ section.id }} .fr-quote p {
+      font-size: 28px;
+      font-weight: 300;
+      font-style: italic;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    #shopify-section-{{ section.id }} .fr-quote cite {
+      display: block;
+      font-size: 16px;
+      font-style: normal;
+      color: {{ section.settings.accent_color }};
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* Gallery */
+    #shopify-section-{{ section.id }} .fr-gallery-section {
+      margin-bottom: 80px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 300;
+      color: {{ section.settings.heading_color }};
+      margin-bottom: 50px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      height: 250px;
+      cursor: pointer;
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 20px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-item:hover .fr-gallery-overlay {
+      transform: translateY(0);
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-item:hover img {
+      transform: scale(1.1);
+    }
+
+    #shopify-section-{{ section.id }} .fr-gallery-caption {
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* CTA */
+    #shopify-section-{{ section.id }} .fr-cta-wrapper {
+      text-align: center;
+      padding: 60px 40px;
+      background: linear-gradient(135deg, {{ section.settings.cta_gradient_start }}, {{ section.settings.cta_gradient_end }});
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    #shopify-section-{{ section.id }} .fr-cta-wrapper h3 {
+      font-size: 32px;
+      font-weight: 300;
+      color: {{ section.settings.cta_heading_color }};
+      margin-bottom: 15px;
+    }
+
+    #shopify-section-{{ section.id }} .fr-cta-wrapper p {
+      font-size: 18px;
+      color: {{ section.settings.cta_text_color }};
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    /* Responsive */
+    @media only screen and (max-width: 768px) {
+      #shopify-section-{{ section.id }} .fr-viaggio-container {
+        padding: 40px 15px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-process-steps {
+        grid-template-columns: 1fr;
+      }
+
+      #shopify-section-{{ section.id }} .fr-techniques-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #shopify-section-{{ section.id }} .fr-gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-quote p {
+        font-size: 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-cta-wrapper {
+        padding: 40px 20px;
+      }
+
+      #shopify-section-{{ section.id }} .fr-map-svg {
+        max-height: 250px;
+      }
+    }
+
+    /* Funzioni base */
+    @media only screen and (min-width: 769px) {
+      #shopify-section-{{ section.id }} {
+        max-width: {{ section.settings.max_dimensione }};
+        margin: 0 auto;
+        padding-top: {{ section.settings.padding_top_desktop }}px;
+        padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+        margin-top: {{ section.settings.margin_top_desktop }}px;
+        margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+      }
+
+      {% if section.settings.nascondi_desktop %}
+        #shopify-section-{{ section.id }} {
+          display: none;
+        }
+      {% endif %}
+    }
+
+    @media only screen and (max-width: 768px) {
+      #shopify-section-{{ section.id }} {
+        padding-top: {{ section.settings.padding_top_mobile }}px;
+        padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+        margin-top: {{ section.settings.margin_top_mobile }}px;
+        margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+      }
+
+      {% if section.settings.nascondi_mobile %}
+        #shopify-section-{{ section.id }} {
+          display: none;
+        }
+      {% endif %}
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const section = document.querySelector('#shopify-section-{{ section.id }}');
+      
+      // Animazione scroll per elementi
+      const observerOptions = {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      // Osserva elementi da animare
+      const elementsToAnimate = section.querySelectorAll('.fr-step-card, .fr-technique-card, .fr-gallery-item');
+      elementsToAnimate.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+      });
+
+      // Gestione click su tecniche per mobile
+      const techniqueCards = section.querySelectorAll('.fr-technique-card');
+      techniqueCards.forEach(card => {
+        card.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            this.classList.toggle('flipped');
+          }
+        });
+      });
+
+      // Animazione mappa SVG
+      const svgPath = section.querySelector('.fr-connection-line');
+      if (svgPath) {
+        const pathLength = svgPath.getTotalLength();
+        svgPath.style.strokeDasharray = pathLength;
+        svgPath.style.strokeDashoffset = pathLength;
+        
+        const animatePath = () => {
+          svgPath.style.transition = 'stroke-dashoffset 2s ease-in-out';
+          svgPath.style.strokeDashoffset = '0';
+        };
+        
+        // Attiva animazione quando la mappa è visibile
+        const mapObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              animatePath();
+              mapObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.5 });
+        
+        const map = section.querySelector('.fr-journey-map');
+        if (map) mapObserver.observe(map);
+      }
+    });
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Viaggio Creativo",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto Principale"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Testo Sopratitolo",
+      "default": "Il Nostro Processo"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Dal Design alla Realizzazione"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Sottotitolo",
+      "default": "Un viaggio che unisce la creatività italiana con la maestria artigianale indiana"
+    },
+    {
+      "type": "header",
+      "content": "Tecniche Artigianali"
+    },
+    {
+      "type": "text",
+      "id": "techniques_title",
+      "label": "Titolo Tecniche",
+      "default": "Le Nostre Tecniche Artigianali"
+    },
+    {
+      "type": "textarea",
+      "id": "block_print_description",
+      "label": "Descrizione Block Print",
+      "default": "Antica tecnica di stampa con blocchi di legno intagliati a mano, tramandati di generazione in generazione."
+    },
+    {
+      "type": "textarea",
+      "id": "trapuntatura_description",
+      "label": "Descrizione Trapuntatura",
+      "default": "La nostra lavorazione iconica, completamente reversibile, richiede maestria unica."
+    },
+    {
+      "type": "textarea",
+      "id": "ricamo_description",
+      "label": "Descrizione Ricamo",
+      "default": "Ricami elaborati realizzati con fili di seta pregiati e tecniche tradizionali secolari."
+    },
+    {
+      "type": "textarea",
+      "id": "screen_description",
+      "label": "Descrizione Screen Print",
+      "default": "Stampa serigrafica per pattern complessi con colori vibranti e duraturi."
+    },
+    {
+      "type": "header",
+      "content": "Quote"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quote",
+      "label": "Mostra Citazione",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "quote_text",
+      "label": "Testo Citazione",
+      "default": "Ci ispiriamo alla tradizione orientale reinterpretandola, puntando sulla cura dei tagli, sui dettagli e sulla qualità e varietà dei tessuti"
+    },
+    {
+      "type": "text",
+      "id": "quote_author",
+      "label": "Autore Citazione",
+      "default": "Lara & Sibilla Patriarca"
+    },
+    {
+      "type": "header",
+      "content": "Gallery"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gallery",
+      "label": "Mostra Gallery",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gallery_title",
+      "label": "Titolo Gallery",
+      "default": "Il Processo in Immagini"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_1",
+      "label": "Immagine 1"
+    },
+    {
+      "type": "text",
+      "id": "gallery_caption_1",
+      "label": "Didascalia 1",
+      "default": "Selezione tessuti"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_2",
+      "label": "Immagine 2"
+    },
+    {
+      "type": "text",
+      "id": "gallery_caption_2",
+      "label": "Didascalia 2",
+      "default": "Block print"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_3",
+      "label": "Immagine 3"
+    },
+    {
+      "type": "text",
+      "id": "gallery_caption_3",
+      "label": "Didascalia 3",
+      "default": "Trapuntatura"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_4",
+      "label": "Immagine 4"
+    },
+    {
+      "type": "text",
+      "id": "gallery_caption_4",
+      "label": "Didascalia 4",
+      "default": "Ricamo a mano"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_5",
+      "label": "Immagine 5"
+    },
+    {
+      "type": "text",
+      "id": "gallery_caption_5",
+      "label": "Didascalia 5",
+      "default": "Controllo qualità"
+    },
+    {
+      "type": "image_picker",
+      "id": "gallery_image_6",
+      "label": "Immagine 6"
+    },
+    {
+      "type": "text",
+      "id": "gallery_caption_6",
+      "label": "Didascalia 6",
+      "default": "Prodotto finito"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Mostra CTA",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "Titolo CTA",
+      "default": "Scopri le Nostre Creazioni"
+    },
+    {
+      "type": "text",
+      "id": "cta_subtitle",
+      "label": "Sottotitolo CTA",
+      "default": "Ogni pezzo racconta una storia di passione e maestria"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_text",
+      "label": "Testo Bottone",
+      "default": "Esplora la Collezione"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link CTA"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore Sfondo",
+      "default": "#FEFEFE"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Colore Titoli",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore Testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore Accento",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Sfondo Card",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "roma_color",
+      "label": "Colore Roma",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "india_color",
+      "label": "Colore India",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Colore Linea",
+      "default": "#A4B8C4"
+    },
+    {
+      "type": "color",
+      "id": "tag_background",
+      "label": "Sfondo Tag",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "tag_color",
+      "label": "Colore Tag",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "Gradiente Inizio",
+      "default": "#C33A32"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "Gradiente Fine",
+      "default": "#B5A397"
+    },
+    {
+      "type": "color",
+      "id": "quote_background",
+      "label": "Sfondo Quote",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "cta_gradient_start",
+      "label": "CTA Gradiente Inizio",
+      "default": "#F0E6E0"
+    },
+    {
+      "type": "color",
+      "id": "cta_gradient_end",
+      "label": "CTA Gradiente Fine",
+      "default": "#E5DDD5"
+    },
+    {
+      "type": "color",
+      "id": "cta_heading_color",
+      "label": "CTA Colore Titolo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA Colore Testo",
+      "default": "#3E3E3E"
+    },
+    {
+      "type": "header",
+      "content": "Impostazioni Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_mobile",
+      "label": "Nascondi da Mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "nascondi_desktop",
+      "label": "Nascondi da Desktop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding Top Desktop",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding Bottom Desktop",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "label": "Margin Top Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "label": "Margin Bottom Mobile",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "label": "Margin Top Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "label": "Margin Bottom Desktop",
+      "default": 0,
+      "min": -200,
+      "max": 200,
+      "step": 4,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "max_dimensione",
+      "label": "Larghezza Max Desktop",
+      "options": [
+        {
+          "value": "none",
+          "label": "100%"
+        },
+        {
+          "value": "1400px",
+          "label": "1400px"
+        },
+        {
+          "value": "1300px",
+          "label": "1300px"
+        },
+        {
+          "value": "1200px",
+          "label": "1200px"
+        },
+        {
+          "value": "1100px",
+          "label": "1100px"
+        },
+        {
+          "value": "1000px",
+          "label": "1000px"
+        },
+        {
+          "value": "900px",
+          "label": "900px"
+        },
+        {
+          "value": "800px",
+          "label": "800px"
+        },
+        {
+          "value": "700px",
+          "label": "700px"
+        }
+      ],
+      "default": "1200px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "process_step",
+      "name": "Step Processo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "step_number",
+          "label": "Numero Step",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "step_title",
+          "label": "Titolo Step",
+          "default": "Design a Roma"
+        },
+        {
+          "type": "textarea",
+          "id": "step_description",
+          "label": "Descrizione",
+          "default": "Ogni collezione nasce nel nostro studio di Roma"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_techniques",
+          "label": "Mostra Tecniche",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "technique_1",
+          "label": "Tecnica 1",
+          "default": "Design"
+        },
+        {
+          "type": "text",
+          "id": "technique_2",
+          "label": "Tecnica 2",
+          "default": "Creatività"
+        },
+        {
+          "type": "text",
+          "id": "technique_3",
+          "label": "Tecnica 3",
+          "default": "Stile"
+        },
+        {
+          "type": "image_picker",
+          "id": "step_image",
+          "label": "Immagine Step"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Viaggio Creativo",
+      "category": "Fabindia custom",
+      "blocks": [
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "01",
+            "step_title": "Concezione a Roma",
+            "step_description": "Nel nostro studio romano nascono i design che fondono l'eleganza italiana con i pattern tradizionali indiani",
+            "technique_1": "Design",
+            "technique_2": "Pattern",
+            "technique_3": "Colori"
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "02",
+            "step_title": "Produzione in India",
+            "step_description": "I nostri artigiani trasformano i disegni in realtà utilizzando tecniche millenarie tramandate di generazione",
+            "technique_1": "Block Print",
+            "technique_2": "Trapuntatura",
+            "technique_3": "Ricamo"
+          }
+        },
+        {
+          "type": "process_step",
+          "settings": {
+            "step_number": "03",
+            "step_title": "Qualità a Roma",
+            "step_description": "Ogni pezzo ritorna a Roma per un rigoroso controllo qualità prima di raggiungere le vostre mani",
+            "technique_1": "Controllo",
+            "technique_2": "Selezione",
+            "technique_3": "Eccellenza"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
